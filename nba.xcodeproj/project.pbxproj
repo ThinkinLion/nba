@@ -15,6 +15,7 @@
 		C21E6A1E2AFA421B00307366 /* nbaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E6A1D2AFA421B00307366 /* nbaUITests.swift */; };
 		C21E6A202AFA421B00307366 /* nbaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E6A1F2AFA421B00307366 /* nbaUITestsLaunchTests.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
+		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */,
 				C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +151,7 @@
 			name = nba;
 			packageProductDependencies = (
 				C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */,
+				C23AF2F62AFB833700984545 /* GoogleMobileAds */,
 			);
 			productName = nba;
 			productReference = C21E69FE2AFA421900307366 /* nba.app */;
@@ -224,6 +227,7 @@
 			mainGroup = C21E69F52AFA421900307366;
 			packageReferences = (
 				C23AF2F22AFB816700984545 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C23AF2F52AFB833700984545 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			productRefGroup = C21E69FF2AFA421900307366 /* Products */;
 			projectDirPath = "";
@@ -630,6 +634,14 @@
 				minimumVersion = 10.0.0;
 			};
 		};
+		C23AF2F52AFB833700984545 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -637,6 +649,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C23AF2F22AFB816700984545 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestoreSwift;
+		};
+		C23AF2F62AFB833700984545 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C23AF2F52AFB833700984545 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
