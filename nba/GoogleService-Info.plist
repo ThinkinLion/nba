@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>618973343014-c7im0nu6flgef14h9185mbnrojuto9sk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.618973343014-c7im0nu6flgef14h9185mbnrojuto9sk</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCAYU402TaPMonYdnfOZBKizOI98meYhaU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>618973343014</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.spearhead.nba</string>
+	<key>PROJECT_ID</key>
+	<string>green-for-swiftui</string>
+	<key>STORAGE_BUCKET</key>
+	<string>green-for-swiftui.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:618973343014:ios:e34751579491321c4665e7</string>
+	<key>DATABASE_URL</key>
+	<string>https://green-for-swiftui.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-3499543148696658~8787237300</string>
+</dict>
+</plist>
