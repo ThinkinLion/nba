@@ -17,7 +17,7 @@ struct nbaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StandingsView()
         }
     }
 }
