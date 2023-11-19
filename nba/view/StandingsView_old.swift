@@ -12,7 +12,7 @@ enum TypeOfConference: String, CaseIterable {
     case west = "West"
 }
 
-struct StandingsView: View {
+struct Standings2View: View {
     @StateObject var viewModel = StandingsViewModel()
     @State private var selectedConference: TypeOfConference = .east
     
@@ -79,12 +79,12 @@ struct StandingListView: View {
 
             if element != items.last {
                 if 5 == index {
-                    Line()
+                    HorizontalLineView()
                         .stroke(Color.red, style: StrokeStyle(lineWidth: 1, dash: [5]))
                         .frame(height: 1)
                         .padding(.horizontal, 15)
                 } else if 9 == index {
-                    Line()
+                    HorizontalLineView()
                         .stroke(Color.red)
                         .frame(height: 1)
                         .padding(.horizontal, 15)
@@ -168,14 +168,7 @@ struct StandingRow: View {
 //    }
 }
 
-struct Line: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: rect.width, y: 0))
-        return path
-    }
-}
+
 
 struct TitleView: View {
     var title: LocalizedStringKey
@@ -193,7 +186,7 @@ struct TitleView: View {
     }
 }
 
-struct StandingsView_Previews: PreviewProvider {
+struct Standings2View_Previews: PreviewProvider {
     static var previews: some View {
         StandingsView()
     }
