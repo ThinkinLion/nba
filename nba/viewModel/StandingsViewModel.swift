@@ -12,16 +12,18 @@ import Firebase
 final class StandingsViewModel: ObservableObject {
     @Published var standings = StandingsModel.empty
     @Published var newItem = StandingsModel.sample
+    @Published var east: ([Team], [Team], [Team])?
+    @Published var west: ([Team], [Team], [Team])?
     @Published var errorMessage: String?
 
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
       
     func fetchStandings() {
-        Task {
-            await asyncFetch(documentId: "5OlFabQXrrz129xunRbm")
-        }
-//        fetchStandings(documentId: "5OlFabQXrrz129xunRbm")
+//        Task {
+//            await asyncFetch(documentId: "4Ly0HefCvRXdNsHPwmvf")
+//        }
+        fetchStandings(documentId: "M5mVzGMIb4pdj1KtKVQ1")
     }
 
     @MainActor
@@ -49,7 +51,10 @@ final class StandingsViewModel: ObservableObject {
         db.collection("nba").document(documentId).getDocument(as: StandingsModel.self) { result in
             switch result {
             case .success(let standings):
-                self.standings = standings
+//                self.standings = standings
+                print("fetchStandings: \(standings)")
+                self.east = self.divideConferenceStandings(conference: standings.east)
+                self.west = self.divideConferenceStandings(conference: standings.west)
                 self.errorMessage = nil
             case .failure(let error):
                 switch error {
@@ -89,112 +94,32 @@ final class StandingsViewModel: ObservableObject {
             }
         }
     }
-}
-
-struct TeamViewModel {
-    private let team: Team
     
-    init(team: Team) {
-        self.team = team
-    }
-    
-    var teamName: String {
-        return team.teamName
-    }
-    
-//    var teamNickname: String {
-//        return team.teamSitesOnly.teamNickname
-//    }
-    
-    var teamCode: String {
-        return team.teamCode
-    }
-    
-    var win: String {
-        return team.win
-    }
-    
-    var loss: String {
-        return team.loss
-    }
-    
-    var winLoss: String {
-        return team.win + " - " + team.loss
-    }
-    
-//    var winLossInConference: String {
-//        return team.confWin + " - " + team.confLoss
-//    }
-//
-//    var winLossInDivision: String {
-//        return team.divWin + " - " + team.divLoss
-//    }
-    
-    var winPct: String {
-        return team.winPct
-    }
-    
-    var gamesBehind: String {
-        return (team.gamesBehind == "0.0") ? "-" : team.gamesBehind
-    }
+    func divideConferenceStandings(conference: [Team]) -> ([Team], [Team], [Team])? {
+        guard conference.count == 15 else { return nil }
         
-//    var conferenceRankFullName: String {
-//        return self.conferenceRank + self.conferenceRankSuffix
-//    }
-//
-    var conferenceRank: String {
-        return team.confRank
+        // 배열을 나누고자 하는 각 섹션의 길이
+        let sectionLengths = [6, 4, 5]
+        
+        // 배열을 나누어서 튜플로 반환
+        let dividedSections = sectionLengths.reduce(into: ([Team](), [Team](), [Team]())) { result, length in
+            var startIndex = result.0.count
+            if !result.0.isEmpty && !result.1.isEmpty {
+                startIndex = result.0.count + result.1.count
+            }
+            
+            let endIndex = startIndex + length
+            let section = Array(conference[startIndex..<endIndex])
+            
+            if result.0.isEmpty {
+                result.0 = section
+            } else if result.1.isEmpty {
+                result.1 = section
+            } else {
+                result.2 = section
+            }
+        }
+        
+        return dividedSections
     }
-//
-//    var conferenceRankSuffix: String {
-//        var suffix = "th"
-//        if team.confRank == "1" {
-//            suffix = "st"
-//        } else if team.confRank == "2" {
-//            suffix = "nd"
-//        } else if team.confRank == "3" {
-//            suffix = "rd"
-//        }
-//        return suffix
-//    }
-//
-//    var homeWinLoss: String {
-//        return self.homeWin + "-" + self.homeLoss
-//    }
-//
-//    var homeWin: String {
-//        return team.homeWin
-//    }
-//
-//    var homeLoss: String {
-//        return team.homeLoss
-//    }
-//
-//    var awayWinLoss: String {
-//        return self.awayWin + "-" + self.awayLoss
-//    }
-//
-//    var awayWin: String {
-//        return team.awayWin
-//    }
-//
-//    var awayLoss: String {
-//        return team.awayLoss
-//    }
-//
-//    var lastTenWinLoss: String {
-//        return self.lastTenWin + "-" + self.lastTenLoss
-//    }
-//
-//    var lastTenWin: String {
-//        return team.lastTenWin
-//    }
-//
-//    var lastTenLoss: String {
-//        return team.lastTenLoss
-//    }
-//
-//    var streak: String {
-//        return (team.isWinStreak ? "W" : "L") + team.streak
-//    }
 }
