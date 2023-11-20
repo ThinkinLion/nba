@@ -26,68 +26,18 @@ struct StandingsView: View {
             .padding(.top, 15)
             .padding(.horizontal, 10)
             
-            VStack {
-                Text("EASTERN CONFERENCE")
-                    .foregroundColor(.white)
-//                Spacer()
-                
-                HStack(alignment: .top) {
-                    standingRowView(items: viewModel.east?.0 ?? [])
-                    
-                    VerticalLineView()
-                        .stroke(Color.white, style: StrokeStyle(lineWidth: 1, dash: [5]))
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                    
-                    standingRowView(items: viewModel.east?.1 ?? [])
-                    
-                    VerticalLineView()
-                        .stroke(Color.white)
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                    
-                    standingRowView(items: viewModel.east?.2 ?? [])
-                }
-                .padding(.horizontal, 5)
-                
-            }
-            .frame(height: 400)
-            .frame(maxWidth: .infinity)
-//            .padding()
-            .background(Color("#101D46"))
-            .cornerRadius(10)
-            .padding(.horizontal, 10)
+            conferenceView(playoffs: viewModel.east.0,
+                           playInTournament: viewModel.east.1,
+                           nonPlayoff: viewModel.east.2,
+                           title: "EASTERN CONFERENCE",
+                           backgroundColor: Color("#101D46"))
             
-            VStack {
-                Text("WESTERN CONFERENCE")
-                    .foregroundColor(.white)
-                
-                HStack(alignment: .top) {
-                    standingRowView(items: viewModel.west?.0 ?? [])
-                    
-                    VerticalLineView()
-                        .stroke(Color.white, style: StrokeStyle(lineWidth: 1, dash: [5]))
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                    
-                    standingRowView(items: viewModel.west?.1 ?? [])
-                    
-                    VerticalLineView()
-                        .stroke(Color.white)
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                    
-                    standingRowView(items: viewModel.west?.2 ?? [])
-                }
-                .padding(.horizontal, 5)
-                
-            }
-            .frame(height: 400)
-            .frame(maxWidth: .infinity)
-            .background(Color("#821E26"))
-            .cornerRadius(10)
+            conferenceView(playoffs: viewModel.west.0,
+                           playInTournament: viewModel.west.1,
+                           nonPlayoff: viewModel.west.2,
+                           title: "WESTERN CONFERENCE",
+                           backgroundColor: Color("#821E26"))
             .padding(.top, 15)
-            .padding(.horizontal, 10)
             
             Button(action: viewModel.addSampleItem ) {
                 Label("Then add it", systemImage: "plus")
@@ -106,6 +56,44 @@ struct StandingsView: View {
 }
 
 extension StandingsView {
+    @ViewBuilder
+    func conferenceView(playoffs: [Team],
+                        playInTournament: [Team],
+                        nonPlayoff: [Team],
+                        title: String,
+                        backgroundColor: Color) -> some View {
+        VStack {
+            Text(title)
+                .padding(.top, 10)
+                .foregroundColor(.white)
+                .font(.system(size: 20, weight: .bold, design: .monospaced))
+            
+            HStack(alignment: .top) {
+                standingRowView(items: playoffs)
+                
+                VerticalLineView()
+                    .stroke(Color.white, style: StrokeStyle(lineWidth: 1, dash: [5]))
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+                
+                standingRowView(items: playInTournament)
+                
+                VerticalLineView()
+                    .stroke(Color.white)
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+                
+                standingRowView(items: nonPlayoff)
+            }
+        }
+        .frame(height: 360)
+        .frame(maxWidth: .infinity)
+        .padding(7)
+        .background(backgroundColor)
+        .cornerRadius(10)
+        .padding(.horizontal, 10)
+    }
+    
     @ViewBuilder
     func standingRowView(items: [Team]) -> some View {
 

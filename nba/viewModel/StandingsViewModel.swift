@@ -12,8 +12,8 @@ import Firebase
 final class StandingsViewModel: ObservableObject {
     @Published var standings = StandingsModel.empty
     @Published var newItem = StandingsModel.sample
-    @Published var east: ([Team], [Team], [Team])?
-    @Published var west: ([Team], [Team], [Team])?
+    @Published var east: ([Team], [Team], [Team]) = ([], [], [])
+    @Published var west: ([Team], [Team], [Team]) = ([], [], [])
     @Published var errorMessage: String?
 
     private var db = Firestore.firestore()
@@ -95,8 +95,8 @@ final class StandingsViewModel: ObservableObject {
         }
     }
     
-    func divideConferenceStandings(conference: [Team]) -> ([Team], [Team], [Team])? {
-        guard conference.count == 15 else { return nil }
+    func divideConferenceStandings(conference: [Team]) -> ([Team], [Team], [Team]) {
+        guard conference.count == 15 else { return ([], [], []) }
         
         // 배열을 나누고자 하는 각 섹션의 길이
         let sectionLengths = [6, 4, 5]
