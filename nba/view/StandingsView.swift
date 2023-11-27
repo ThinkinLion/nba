@@ -18,7 +18,7 @@ struct StandingsView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 35, height: 35)
                     .clipShape(Circle())
-                Text("The NBA's East & West standings following Friday's games!")
+                Text("The NBA's East & West standings following \(viewModel.getCurrentDayOfWeek())'s games!")
                     .font(.callout)
                 Spacer()
             }
@@ -39,9 +39,14 @@ struct StandingsView: View {
                            backgroundColor: Color("#821E26"))
             .padding(.top, 15)
             
-            Button(action: viewModel.addSampleItem ) {
-                Label("Then add it", systemImage: "plus")
-            }
+            BannerView()
+            
+//            Button("Crash") {
+//              fatalError("Crash was triggered")
+//            }
+//            Button(action: viewModel.addSampleItem ) {
+//                Label("Then add it", systemImage: "plus")
+//            }
         }
         .preferredColorScheme(.dark)
         .navigationBarTitle("")
@@ -113,15 +118,18 @@ extension StandingsView {
                     Image(viewModel.teamCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 40)
+                        .frame(width: 40, height: 40)
+                        .scaleEffect(1.5)
+                        .clipped()
                     
                     Text(" ")
                     
-                    Text(viewModel.winLoss) //Text("79-19")
+                    Text(viewModel.winLoss)
                         .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .frame(width: 55)
+                        .frame(width: 50, height: 25)
                         .frame(alignment: .leading)
                         .foregroundColor(.white)
+                        .minimumScaleFactor(0.5)
                 }
                 .background(Color(viewModel.teamCode))
             }
@@ -132,5 +140,6 @@ extension StandingsView {
 struct StandingsView_Previews: PreviewProvider {
     static var previews: some View {
         StandingsView()
+            .previewDevice(PreviewDevice(rawValue: "iPhone 14 pro"))
     }
 }
