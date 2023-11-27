@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
-//import FirebaseFirestore
+import GoogleMobileAds
 import Firebase
 
 @main
 struct nbaApp: App {
     init() {
         FirebaseApp.configure()
+        
+        //admob
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
     }
     
     var body: some Scene {
