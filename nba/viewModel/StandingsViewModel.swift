@@ -21,14 +21,14 @@ final class StandingsViewModel: ObservableObject {
       
     func fetchStandings() {
 //        Task {
-//            await asyncFetch(documentId: "4Ly0HefCvRXdNsHPwmvf")
+//            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
 //        }
-        fetchStandings(documentId: "M5mVzGMIb4pdj1KtKVQ1")
+        fetchStandings(documentId: "2023")
     }
 
     @MainActor
     private func asyncFetch(documentId: String) async {
-        let docRef = db.collection("nba").document(documentId)
+        let docRef = db.collection("standings").document(documentId)
         do {
             self.standings = try await docRef.getDocument(as: StandingsModel.self)
         } catch {
@@ -48,11 +48,11 @@ final class StandingsViewModel: ObservableObject {
     }
     
     private func fetchStandings(documentId: String) {
-        db.collection("nba").document(documentId).getDocument(as: StandingsModel.self) { result in
+        db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in
             switch result {
             case .success(let standings):
 //                self.standings = standings
-                print("fetchStandings: \(standings)")
+//                print("fetchStandings: \(standings)")
                 self.east = self.divideConferenceStandings(conference: standings.east)
                 self.west = self.divideConferenceStandings(conference: standings.west)
                 self.errorMessage = nil
@@ -74,7 +74,8 @@ final class StandingsViewModel: ObservableObject {
     }
     
     func addSampleItem() {
-        let collectionRef = db.collection("nba")
+//        db.collection("nba").document("aa").setData(from: newItem)
+        let collectionRef = db.collection("standings")
         do {
             let newDocReference = try collectionRef.addDocument(from: newItem)
             
@@ -86,7 +87,7 @@ final class StandingsViewModel: ObservableObject {
     
     func updateStandings() {
         if let id = standings.id {
-            let docRef = db.collection("nba").document(id)
+            let docRef = db.collection("standings").document(id)
             do {
                 try docRef.setData(from: standings)
             } catch {
@@ -122,4 +123,13 @@ final class StandingsViewModel: ObservableObject {
         
         return dividedSections
     }
+    
+    func getCurrentDayOfWeek() -> String {
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter.string(from: currentDate)
+    }
 }
+

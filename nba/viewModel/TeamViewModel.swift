@@ -23,7 +23,7 @@ struct TeamViewModel {
 //    }
     
     var teamCode: String {
-        return team.teamCode
+        return team.teamCode.lowercased()
     }
     
     var win: String {
