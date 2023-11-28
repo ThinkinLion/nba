@@ -34,10 +34,10 @@ struct BannerView: View {
     var body: some View{
         HStack{
             Spacer()
-            if idiom == .phone {
+//            if idiom == .phone {
                 AdView(adUnitId: adUnitId, paddingHorizontal: paddingHorizontal)
                     .frame(width: 320, height: 50, alignment: .center)
-            }
+//            }
             Spacer()
         }
         .padding(.top, paddingTop)
