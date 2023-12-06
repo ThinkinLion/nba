@@ -10,7 +10,22 @@ import FirebaseFirestoreSwift
 
 struct GamesModel: Codable {
     @DocumentID var id: String?
-    let items: [Game]
+    let items: [HomeAway]
+}
+
+struct HomeAway: Codable, Hashable {
+    let home: Game
+    let away: Game
+}
+
+extension HomeAway {
+    static func ==(lhs: HomeAway, rhs: HomeAway) -> Bool {
+        return lhs.home.id == rhs.home.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(home.id)
+    }
 }
 
 struct Game: Identifiable, Codable, Hashable {
@@ -18,7 +33,7 @@ struct Game: Identifiable, Codable, Hashable {
     let teamId: String
     let teamCode: String
     let record: String
-    let score: String
+    let score: String?
 }
 
 extension Game {
