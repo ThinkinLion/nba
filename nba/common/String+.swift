@@ -1,0 +1,154 @@
+//
+//  String+.swift
+//  nba
+//
+//  Created by 1100690 on 12/1/23.
+//
+
+import Foundation
+
+extension String {
+    var nickNameToTriCode: String {
+        switch self.lowercased() {
+        case "76ers", "sixers": return "PHI"
+        case "blazers", "trail blazers": return "POR"
+        case "bucks": return "MIL"
+        case "bulls": return "CHI"
+        case "cavaliers": return "CLE"
+        case "celtics": return "BOS"
+        case "clippers": return "LAC"
+        case "grizzlies": return "MEM"
+        case "hawks": return "ATL"
+        case "heat": return "MIA"
+        case "hornets": return "CHA"
+        case "jazz": return "UTA"
+        case "kings": return "SAC"
+        case "knicks": return "NYK"
+        case "lakers": return "LAL"
+        case "magic": return "ORL"
+        case "mavericks": return "DAL"
+        case "nets": return "BKN"
+        case "nuggets": return "DEN"
+        case "pacers": return "IND"
+        case "pelicans": return "NOP"
+        case "pistons": return "DET"
+        case "raptors": return "TOR"
+        case "rockets": return "HOU"
+        case "spurs": return "SAS"
+        case "suns": return "PHX"
+        case "thunder": return "OKC"
+        case "timberwolves": return "MIN"
+        case "warriors": return "GSW"
+        case "wizards": return "WAS"
+        default: return ""
+        }
+    }
+
+    var triCodeToNickName: String {
+        switch self {
+        case "PHI": return "76ers"
+        case "POR": return "trail blazers"
+        case "MIL": return "bucks"
+        case "CHI": return "bulls"
+        case "CLE": return "cavaliers"
+        case "BOS": return "celtics"
+        case "LAC": return "clippers"
+        case "MEM": return "grizzlies"
+        case "ATL": return "hawks"
+        case "MIA": return "heat"
+        case "CHA": return "hornets"
+        case "UTA": return "jazz"
+        case "SAC": return "kings"
+        case "NYK": return "knicks"
+        case "LAL": return "lakers"
+        case "ORL": return "magic"
+        case "DAL": return "mavericks"
+        case "BKN": return "nets"
+        case "DEN": return "nnuggets"
+        case "IND": return "pacers"
+        case "NOP": return "pelicans"
+        case "DET": return "pistons"
+        case "TOR": return "raptors"
+        case "HOU": return "rockets"
+        case "SAS": return "spurs"
+        case "PHX": return "suns"
+        case "OKC": return "thunder"
+        case "MIN": return "timberwolves"
+        case "GSW": return "warriors"
+        case "WAS": return "wizards"
+        default: return ""
+        }
+    }
+
+    var teamIdToNickName: String {
+        switch self {
+        case "1610612752": return "knicks" // east
+        case "1610612741": return "bulls"
+        case "1610612764": return "wizards"
+        case "1610612748": return "heat"
+        case "1610612766": return "hornets"
+        case "1610612755": return "sixers"
+        case "1610612761": return "raptors"
+        case "1610612749": return "bucks"
+        case "1610612751": return "nets"
+        case "1610612737": return "hawks"
+        case "1610612739": return "cavaliers"
+        case "1610612738": return "celtics"
+        case "1610612765": return "pistons"
+        case "1610612753": return "magic"
+        case "1610612754": return "pacers" // west
+        case "1610612744": return "warriors"
+        case "1610612762": return "jazz"
+        case "1610612743": return "nuggets"
+        case "1610612742": return "mavericks"
+        case "1610612758": return "kings"
+        case "1610612757": return "blazers"
+        case "1610612750": return "timberwolves"
+        case "1610612747": return "lakers"
+        case "1610612763": return "grizzlies"
+        case "1610612756": return "suns"
+        case "1610612759": return "spurs"
+        case "1610612746": return "clippers"
+        case "1610612745": return "rockets"
+        case "1610612760": return "thunder"
+        case "1610612740": return "pelicans"
+        default: return ""
+        }
+    }
+    
+    var teamIdToTriCode: String {
+        switch self {
+        case "1610612752": return "NYK" // east
+        case "1610612741": return "CHI"
+        case "1610612764": return "WAS"
+        case "1610612748": return "MIA"
+        case "1610612766": return "CHA"
+        case "1610612755": return "PHI"
+        case "1610612761": return "TOR"
+        case "1610612749": return "MIL"
+        case "1610612751": return "BKN"
+        case "1610612737": return "ATL"
+        case "1610612739": return "CLE"
+        case "1610612738": return "BOS"
+        case "1610612765": return "DET"
+        case "1610612753": return "ORL"
+        case "1610612754": return "IND"
+        case "1610612744": return "GSW" // west
+        case "1610612762": return "UTA"
+        case "1610612743": return "DEN"
+        case "1610612742": return "DAL"
+        case "1610612758": return "SAC"
+        case "1610612757": return "POR"
+        case "1610612750": return "MIN"
+        case "1610612747": return "LAL"
+        case "1610612763": return "MEM"
+        case "1610612756": return "PHX"
+        case "1610612759": return "SAS"
+        case "1610612746": return "LAC"
+        case "1610612745": return "HOU"
+        case "1610612760": return "OKC"
+        case "1610612740": return "NOP"
+        default: return ""
+        }
+    }
+}
