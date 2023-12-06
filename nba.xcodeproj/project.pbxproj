@@ -19,11 +19,17 @@
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
+		C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B7E0F52B1F04B200988259 /* PlayerView.swift */; };
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
 		C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C7950C2B02389300D72531 /* StandingsView.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
+		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
+		C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B42B19C29D00E2B3D7 /* String+.swift */; };
+		C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */; };
+		C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */; };
+		C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,11 +65,17 @@
 		C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		C2B7E0F52B1F04B200988259 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		C2C794F82AFE140D00D72531 /* StandingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C2C7950C2B02389300D72531 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
+		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
+		C2FDA6B42B19C29D00E2B3D7 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeadersModel.swift; sourceTree = "<group>"; };
+		C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeaderViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +128,7 @@
 		C21E6A002AFA421900307366 /* nba */ = {
 			isa = PBXGroup;
 			children = (
+				C2FDA6B32B19C28D00E2B3D7 /* common */,
 				C2C795032AFF9EF100D72531 /* view */,
 				C2C794FE2AFE146200D72531 /* viewModel */,
 				C2C794F72AFE140D00D72531 /* model */,
@@ -160,6 +173,7 @@
 			children = (
 				C2C794F82AFE140D00D72531 /* StandingsModel.swift */,
 				C2F034A82B175DD4009B372F /* GamesModel.swift */,
+				C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -169,6 +183,8 @@
 			children = (
 				C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */,
 				C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */,
+				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
+				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
 			);
 			path = viewModel;
 			sourceTree = "<group>";
@@ -177,10 +193,20 @@
 			isa = PBXGroup;
 			children = (
 				C2C7950C2B02389300D72531 /* StandingsView.swift */,
+				C2B7E0F52B1F04B200988259 /* PlayerView.swift */,
 				C21EF4702B099989005D87D2 /* LineView.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		C2FDA6B32B19C28D00E2B3D7 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
+				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
+			);
+			path = common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,10 +377,16 @@
 			files = (
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
+				C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */,
+				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
 				C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */,
+				C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */,
+				C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */,
+				C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */,
 				C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */,
+				C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */,
 				C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */,
 				C21EF4732B0A3286005D87D2 /* TeamViewModel.swift in Sources */,
 			);
@@ -520,7 +552,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = nba/nba.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"nba/Preview Content\"";
 				DEVELOPMENT_TEAM = B9SDD9KWUJ;
@@ -543,7 +575,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.01;
+				MARKETING_VERSION = 2.02;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -564,7 +596,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = nba/nba.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"nba/Preview Content\"";
 				DEVELOPMENT_TEAM = B9SDD9KWUJ;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -586,7 +618,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.01;
+				MARKETING_VERSION = 2.02;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
