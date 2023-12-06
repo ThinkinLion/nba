@@ -14,65 +14,82 @@ final class StandingsViewModel: ObservableObject {
     @Published var newItem = StandingsModel.sample
     @Published var east: ([Team], [Team], [Team]) = ([], [], [])
     @Published var west: ([Team], [Team], [Team]) = ([], [], [])
-    @Published var errorMessage: String?
-
+    
+    @Published var games: [HomeAway] = []
+    @Published var hasGames: Bool = false
+    
+    @Published var pointsPerGame: SeasonLeaders = .empty
+    @Published var assistsPerGame: SeasonLeaders = .empty
+    
+    var errorMessage: String?
+    
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
-      
+    
     func fetchStandings() {
-//        Task {
-//            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
-//        }
-        fetchStandings(documentId: "2023")
+        //        Task {
+        //            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
+        //        }
+        fetchStandings(documentId: seasonYear())
+        fetchGames(documentId: today())
+        fetchSeasonLeaders(documentId: seasonYear())
     }
-
+    
     @MainActor
     private func asyncFetch(documentId: String) async {
         let docRef = db.collection("standings").document(documentId)
         do {
             self.standings = try await docRef.getDocument(as: StandingsModel.self)
         } catch {
-            switch error {
-            case DecodingError.typeMismatch(_, let context):
-                self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-            case DecodingError.valueNotFound(_, let context):
-                self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-            case DecodingError.keyNotFound(_, let context):
-                self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-            case DecodingError.dataCorrupted(let key):
-                self.errorMessage = "\(error.localizedDescription): \(key)"
-            default:
+            self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+        }
+    }
+}
+
+extension StandingsViewModel {
+    private func fetchStandings(documentId: String) {
+        db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in
+            switch result {
+            case .success(let standings):
+                //                self.standings = standings
+                //                print("fetchStandings: \(standings)")
+                self.east = self.divideConferenceStandings(conference: standings.east)
+                self.west = self.divideConferenceStandings(conference: standings.west)
+                self.errorMessage = nil
+            case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
         }
     }
     
-    private func fetchStandings(documentId: String) {
-        db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in
+    private func fetchGames(documentId: String) {
+        db.collection("games").document(documentId).getDocument(as: GamesModel.self) { result in
             switch result {
-            case .success(let standings):
-//                self.standings = standings
-//                print("fetchStandings: \(standings)")
-                self.east = self.divideConferenceStandings(conference: standings.east)
-                self.west = self.divideConferenceStandings(conference: standings.west)
-                self.errorMessage = nil
+            case .success(let games):
+                //                print("fetchGames: \(games)")
+                self.games = games.items
+                self.hasGames = games.items.count > 0
             case .failure(let error):
-                switch error {
-                case DecodingError.typeMismatch(_, let context):
-                    self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-                case DecodingError.valueNotFound(_, let context):
-                    self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-                case DecodingError.keyNotFound(_, let context):
-                    self.errorMessage = "\(error.localizedDescription): \(context.debugDescription)"
-                case DecodingError.dataCorrupted(let key):
-                    self.errorMessage = "\(error.localizedDescription): \(key)"
-                default:
-                    self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-                }
+                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
         }
     }
     
+    private func fetchSeasonLeaders(documentId: String) {
+        db.collection("seasonLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
+            switch result {
+            case .success(let seasonLeaders):
+                print("fetchSeasonLeaders: \(seasonLeaders)")
+                self.pointsPerGame = seasonLeaders.pointsPerGame ?? .empty
+                self.assistsPerGame = seasonLeaders.assistsPerGame ?? .empty
+            case .failure(let error):
+                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+            }
+        }
+    }
+}
+
+extension StandingsViewModel {
     func addSampleItem() {
 //        db.collection("nba").document("aa").setData(from: newItem)
         let collectionRef = db.collection("standings")
@@ -123,13 +140,36 @@ final class StandingsViewModel: ObservableObject {
         
         return dividedSections
     }
-    
-    func getCurrentDayOfWeek() -> String {
+}
+
+extension StandingsViewModel {
+    func todayOfWeek() -> String {
         let currentDate = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US")
         dateFormatter.dateFormat = "EEEE"
         return dateFormatter.string(from: currentDate)
     }
-}
+    
+    private func today() -> String {
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: currentDate)
+    }
+    
+    private func seasonYear() -> String {
+        let currentDate = Date()
+        let calendar = Calendar.current
 
+        // 현재 년도
+        let currentYear = calendar.component(.year, from: currentDate)
+
+        // NBA 시즌이 10월에 시작하므로, 10월 이전이면 이전 년도를 반환
+        if calendar.component(.month, from: currentDate) < 10 {
+            return "\(currentYear - 1)"
+        } else {
+            return "\(currentYear)"
+        }
+    }
+}
