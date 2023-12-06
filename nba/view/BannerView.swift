@@ -28,8 +28,8 @@ enum BannerUnitID: String {
 
 struct BannerView: View {
     var adUnitId: BannerUnitID = .teamView
-    var paddingTop: CGFloat = 20
-    var paddingHorizontal: CGFloat = 15
+    var paddingTop: CGFloat = 0
+    var paddingHorizontal: CGFloat = 0
     var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     var body: some View{
         HStack{
