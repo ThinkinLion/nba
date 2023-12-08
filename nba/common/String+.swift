@@ -8,6 +8,14 @@
 import Foundation
 
 extension String {
+    var toLightColor: String {
+        self.lowercased() + ".light"
+    }
+    
+    var toDarkColor: String {
+        self.lowercased() + ".dark"
+    }
+    
     var nickNameToTriCode: String {
         switch self.lowercased() {
         case "76ers", "sixers": return "PHI"
