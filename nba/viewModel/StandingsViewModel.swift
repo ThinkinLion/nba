@@ -18,8 +18,18 @@ final class StandingsViewModel: ObservableObject {
     @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
     
+    //Season Leaders
     @Published var pointsPerGame: SeasonLeaders = .empty
     @Published var assistsPerGame: SeasonLeaders = .empty
+    @Published var reboundsPerGame: SeasonLeaders = .empty
+    
+    @Published var blocksPerGame: SeasonLeaders = .empty
+    @Published var stealsPerGame: SeasonLeaders = .empty
+    @Published var fieldGoalPercentage: SeasonLeaders = .empty
+    
+    @Published var threePointersMade: SeasonLeaders = .empty
+    @Published var threePointPercentage: SeasonLeaders = .empty
+    @Published var fantasyPointsPerGame: SeasonLeaders = .empty
     
     var errorMessage: String?
     
@@ -82,6 +92,15 @@ extension StandingsViewModel {
                 print("fetchSeasonLeaders: \(seasonLeaders)")
                 self.pointsPerGame = seasonLeaders.pointsPerGame ?? .empty
                 self.assistsPerGame = seasonLeaders.assistsPerGame ?? .empty
+                self.reboundsPerGame = seasonLeaders.reboundsPerGame ?? .empty
+                
+                self.blocksPerGame = seasonLeaders.blocksPerGame ?? .empty
+                self.stealsPerGame = seasonLeaders.stealsPerGame ?? .empty
+                self.fieldGoalPercentage = seasonLeaders.fieldGoalPercentage ?? .empty
+                
+                self.threePointersMade = seasonLeaders.threePointersMade ?? .empty
+                self.threePointPercentage = seasonLeaders.threePointPercentage ?? .empty
+                self.fantasyPointsPerGame = seasonLeaders.fantasyPointsPerGame ?? .empty
             case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
