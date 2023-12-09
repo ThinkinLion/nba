@@ -19,6 +19,7 @@
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
+		C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C32262B220DD00054B189 /* CustomCorner.swift */; };
 		C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B7E0F52B1F04B200988259 /* PlayerView.swift */; };
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
@@ -65,6 +66,7 @@
 		C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C2B7E0F52B1F04B200988259 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		C2C794F82AFE140D00D72531 /* StandingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 			children = (
 				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
 				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
+				C28C32262B220DD00054B189 /* CustomCorner.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
+				C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */,
 				C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */,
 				C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */,
 				C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */,

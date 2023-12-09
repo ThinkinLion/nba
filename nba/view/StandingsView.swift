@@ -42,6 +42,9 @@ struct StandingsView: View {
                            title: "EASTERN CONFERENCE",
                            backgroundColor: Color("#101D46"))
             
+            seasonLeadersView(leaders: viewModel.pointsPerGame)
+            .padding(.top, 15)
+            
             conferenceView(playoffs: viewModel.west.0,
                            playInTournament: viewModel.west.1,
                            nonPlayoff: viewModel.west.2,
@@ -51,10 +54,28 @@ struct StandingsView: View {
             
             BannerView(paddingTop: 15)
             
-            seasonLeadersView(leaders: viewModel.pointsPerGame)
+            seasonLeadersView(leaders: viewModel.assistsPerGame)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.assistsPerGame)
+            seasonLeadersView(leaders: viewModel.reboundsPerGame)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.blocksPerGame)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.stealsPerGame)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.fieldGoalPercentage)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.threePointersMade)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.threePointPercentage)
+            .padding(.top, 15)
+            
+            seasonLeadersView(leaders: viewModel.fantasyPointsPerGame)
             .padding(.top, 15)
             
 //            Button("Crash") {

@@ -72,7 +72,7 @@ extension String {
         case "ORL": return "magic"
         case "DAL": return "mavericks"
         case "BKN": return "nets"
-        case "DEN": return "nnuggets"
+        case "DEN": return "nuggets"
         case "IND": return "pacers"
         case "NOP": return "pelicans"
         case "DET": return "pistons"
