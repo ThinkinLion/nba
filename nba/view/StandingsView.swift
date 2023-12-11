@@ -10,6 +10,7 @@ import SwiftUI
 struct StandingsView: View {
     @StateObject var viewModel = StandingsViewModel()
     @State private var bannerVisible = false
+    @State private var hasAppeared = false
     
     @State private var isShowingPopover = false
     @State private var selectedPlayer: SeasonLeaderViewModel?
@@ -60,23 +61,23 @@ struct StandingsView: View {
             seasonLeadersView(leaders: viewModel.reboundsPerGame)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.blocksPerGame)
+            seasonLeadersVStackView(leaders: viewModel.blocksPerGame)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.stealsPerGame)
+            seasonLeadersVStackView(leaders: viewModel.stealsPerGame)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.fieldGoalPercentage)
+            seasonLeadersVStackView(leaders: viewModel.fieldGoalPercentage)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.threePointersMade)
-            .padding(.top, 15)
-            
-            seasonLeadersView(leaders: viewModel.threePointPercentage)
-            .padding(.top, 15)
-            
-            seasonLeadersView(leaders: viewModel.fantasyPointsPerGame)
-            .padding(.top, 15)
+//            seasonLeadersView(leaders: viewModel.threePointersMade)
+//            .padding(.top, 15)
+//            
+//            seasonLeadersView(leaders: viewModel.threePointPercentage)
+//            .padding(.top, 15)
+//            
+//            seasonLeadersView(leaders: viewModel.fantasyPointsPerGame)
+//            .padding(.top, 15)
             
 //            Button("Crash") {
 //              fatalError("Crash was triggered")
@@ -88,31 +89,91 @@ struct StandingsView: View {
         .navigationBarTitle("", displayMode: .inline)
         .preferredColorScheme(.dark)
         .onAppear() {
+            guard !hasAppeared else { return }
             viewModel.fetchStandings()
             bannerVisible = true
+            hasAppeared = true
         }
         .onDisappear() {
         }
-//        .popover(isPresented: $isShowingPopover, content: {
-//            if let selectedPlayer {
-//                PlayerView(player: selectedPlayer)
-//            }
-//        })
-//        .overlay {
-//            if let selectedPlayer, isShowingPopover {
-//                PlayerView(player: selectedPlayer)
-//            }
-//        }
     }
 }
 
 extension StandingsView {
     @ViewBuilder
+    func seasonLeadersVStackView(leaders: SeasonLeaders) -> some View {
+        VStack(alignment: .leading) {
+            VStack(alignment: .leading) {
+                Text("SEASON LEADERS")
+                    .font(.caption)
+                    .foregroundColor(Color("#5C5B60"))
+                    .padding(.leading, 10)
+                Text(leaders.title)
+                    .font(.system(size: 20, weight: .bold))
+                    .padding(.leading, 10)
+            }
+            
+            ForEach(leaders.items, id: \.self) { item in
+                let viewModel = SeasonLeaderViewModel(seasonLeader: item)
+                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+                    playerStackItemView(viewModel: viewModel)
+                }
+            }
+            
+        }
+//        .frame(height: 360)
+        .frame(maxWidth: .infinity)
+        .padding(7)
+        .background(Color("#1C1B1D"))
+        .cornerRadius(10)
+        .padding(.horizontal, 10)
+    }
+    
+    @ViewBuilder
+    func playerStackItemView(viewModel: SeasonLeaderViewModel) -> some View {
+        HStack(spacing: 0) {
+            AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
+                image.resizable()
+            } placeholder: {}
+                .aspectRatio(contentMode: .fill)
+                .background(Color(viewModel.teamTriCode.triCodeToNickName))
+                .frame(width: 50, height: 50)
+                .cornerRadius(25)
+                .padding(5)
+            
+            VStack(alignment: .leading) {
+                Text(viewModel.teamTriCode)
+                    .font(.callout)
+                    .foregroundColor(Color("#5C5B60"))
+                
+                Text(viewModel.name)
+                    .foregroundColor(.white)
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .minimumScaleFactor(0.8)
+            }
+            Spacer()
+            Text(viewModel.points)
+                .foregroundColor(.white)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .padding(.trailing, 10)
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
     func seasonLeadersView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
-            Text(leaders.title)
-                .font(.system(size: 20, weight: .bold))
-                .padding(10)
+            VStack(alignment: .leading) {
+                Text("SEASON LEADERS")
+                    .font(.caption)
+                    .foregroundColor(Color("#5C5B60"))
+                    .padding(.leading, 10)
+                Text(leaders.title)
+                    .font(.system(size: 20, weight: .bold))
+                    .padding(.leading, 10)
+            }
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
@@ -121,13 +182,6 @@ extension StandingsView {
                         NavigationLink(destination: PlayerView(viewModel: viewModel)) {
                             playerCardView(viewModel: viewModel)
                         }
-//                        .overlay(NavigationLink(destination: PlayerView(player: viewModel), label: {
-//                            EmptyView()
-//                        }))
-//                        .onTapGesture {
-//                            selectedPlayer = viewModel
-//                            isShowingPopover.toggle()
-//                        }
                     }
                 }
                 .frame(height: 150)
@@ -135,10 +189,8 @@ extension StandingsView {
             }
             
         }
-//        .frame(height: 200)
         .frame(maxWidth: .infinity)
         .padding(7)
-//        .background(Color("celtics"))
     }
     
     @ViewBuilder
@@ -150,34 +202,36 @@ extension StandingsView {
             AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
                 image.resizable()
             } placeholder: {}
-            .aspectRatio(contentMode: .fill)
-//                .background(Color(viewModel.teamTriCode.triCodeToNickName))
-            .frame(width: 150, height: 150, alignment: .bottom)
-            .padding(.trailing, 20)
-            .zIndex(0)
+                .aspectRatio(contentMode: .fill)
+            //                .background(Color(viewModel.teamTriCode.triCodeToNickName))
+                .frame(width: 150, height: 150, alignment: .bottom)
+                .padding(.trailing, 20)
+                .zIndex(0)
             
             Text(viewModel.points)
-            .frame(width: 120)
-            .padding(.trailing, 160)
-            .padding(.bottom, 90)
-            .foregroundColor(.white)
-            .font(.title)
-            .fontWeight(.bold)
-            .zIndex(1)
-        
+                .frame(width: 120)
+                .padding(.trailing, 160)
+                .padding(.bottom, 90)
+                .foregroundColor(.white)
+                .font(.title)
+                .fontWeight(.bold)
+                .zIndex(1)
+            
             Text(viewModel.name)
-            .frame(width: 120)
-            .padding(.trailing, 160)
-            .foregroundColor(.white)
-            .font(.callout)
-            .fontWeight(.bold)
-            .lineLimit(2)
-            .minimumScaleFactor(0.8)
-            .zIndex(2)
+                .frame(width: 120)
+                .padding(.trailing, 160)
+                .foregroundColor(.white)
+                .font(.callout)
+                .fontWeight(.bold)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .zIndex(2)
         }
         .frame(width: 300)
     }
-    
+}
+
+extension StandingsView {
     @ViewBuilder
     func gamesView(games: [HomeAway]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -211,7 +265,9 @@ extension StandingsView {
             .padding(.top, 10)
         }
     }
-    
+}
+
+extension StandingsView {
     @ViewBuilder
     func conferenceView(playoffs: [Team],
                         playInTournament: [Team],
