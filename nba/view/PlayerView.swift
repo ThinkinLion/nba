@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct PlayerView: View {
+    @StateObject var playerViewModel = PlayerViewModel()
+    //TODO: common한 player viwemodel이 와야
     var viewModel: SeasonLeaderViewModel
     
     var body: some View {
-        
         ScrollView(.vertical) {
-//            HStack (spacing: 0) {
+            let player = PlayerSummaryViewModel(player: playerViewModel.player)
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
                 AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
                     image.resizable()
@@ -28,34 +29,40 @@ struct PlayerView: View {
                     Image(viewModel.teamTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
+                        .frame(width: 50, height: 50)
+                        .scaleEffect(1.2)
                         .clipped()
                     
-                    Text(viewModel.name)
+                    Text(viewModel.upperCasedName)
                     .foregroundColor(.white)
                     .font(.title)
                     .fontWeight(.bold)
                     .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                    .zIndex(1)
+                    .minimumScaleFactor(0.5)
+                    
+                    Text(player.jerseyAndPosition)
+                        .foregroundColor(.gray)
+                        .font(.caption)
                 }
                 .frame(width: 160)
                 .padding(.trailing, 200)
+                .zIndex(1)
             }
             .frame(height: 250)
             .frame(maxWidth: .infinity)
             .padding(.top, 15)
             .padding(.horizontal, 15)
-            .background(Color(viewModel.teamTriCode.triCodeToNickName.toLightColor))
+            .background(Color(viewModel.light))
         
-            Divider()
-                .frame(height: 15)
+            Text("")
+                .frame(maxWidth: .infinity)
+                .frame(height: 20)
                 .background {
-                    CustomCorner(corners: [.topLeft, .topRight], radius: 15)
-                        .fill(Color(viewModel.teamTriCode.triCodeToNickName.toDarkColor))
+                    CustomCorner(corners: [.topLeft, .topRight], radius: 20)
+                        .fill(Color(viewModel.dark))
                         .ignoresSafeArea()
                 }
-                .padding(.top, -20)
+                .padding(.top, -19)
             
             VStack {
 //                Text(viewModel.name)
@@ -75,9 +82,11 @@ struct PlayerView: View {
             .padding(15)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
-        .background(Color(viewModel.teamTriCode.triCodeToNickName.toDarkColor))
+        .background(Color(viewModel.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-//        .background(Color(viewModel.teamTriCode.triCodeToNickName))
+        .onAppear() {
+            playerViewModel.fetchPlayer(documentId: viewModel.playerId)
+        }
         .ignoresSafeArea()
     }
 }
