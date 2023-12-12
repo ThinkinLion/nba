@@ -112,20 +112,100 @@ struct PlayerSummaryViewModel {
         return jersey + " • " + position
     }
     
+    var pieTitle: String {
+        "PIE"
+    }
+    
     var pie: String {
         player.pie ?? ""
+    }
+    
+    var ppgTitle: String {
+        "PPG"
     }
     
     var ppg: String {
         player.ppg ?? ""
     }
     
+    var rpgTitle: String {
+        "RPG"
+    }
+    
     var rpg: String {
         player.rpg ?? ""
     }
     
+    var apgTitle: String {
+        "APG"
+    }
+    
     var apg: String {
         player.apg ?? ""
+    }
+    
+    var heightTitle: String {
+        "HEIGHT"
+    }
+    
+    var height: String {
+        player.height ?? ""
+    }
+    
+    var weightTitle: String {
+        "WEIGHT"
+    }
+    
+    var weight: String {
+        player.weight ?? ""
+    }
+    
+    var ageTitle: String {
+        "AGE"
+    }
+    
+    var age: String {
+        player.age ?? ""
+    }
+    
+    var birthdateTitle: String {
+        "BIRTHDATE"
+    }
+    
+    var birthdate: String {
+        player.brithdate ?? ""
+    }
+    
+    var experienceTitle: String {
+        "EXPERIENCE"
+    }
+    
+    var experience: String {
+        player.experience ?? ""
+    }
+    
+    var draftTitle: String {
+        "DRAFT"
+    }
+    
+    var draft: String {
+        player.draft ?? ""
+    }
+    
+    var countryTitle: String {
+        "COUNTRY"
+    }
+    
+    var country: String {
+        player.country ?? ""
+    }
+    
+    var lastAttendedTitle: String {
+        "LAST ATTENDED"
+    }
+    
+    var lastAttended: String {
+        player.lastAttended ?? ""
     }
     
 }
