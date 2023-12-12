@@ -64,23 +64,39 @@ struct PlayerView: View {
                 }
                 .padding(.top, -19)
             
-            VStack {
-//                Text(viewModel.name)
-//                    .font(.title)
-//                    .fontWeight(.bold)
-//                    .padding(.top, 15)
-//                Spacer()
-                Text("Luka Doncic's 41 points help Dallas edge Brooklyn despite Kyrie Irving's 39 points.")
-                    .font(.callout)
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                
-            }
-            .padding(.bottom, 15)
-            .padding(15)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            statsSummaryView(player: player)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.heightTitle, value: player.height)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.weightTitle, value: player.weight)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.ageTitle, value: player.age)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.birthdateTitle, value: player.birthdate)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.experienceTitle, value: player.experience)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.draftTitle, value: player.draft)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.countryTitle, value: player.country)
+            
+            dividerWithBackground()
+            
+            bioSummaryView(title: player.lastAttendedTitle, value: player.lastAttended)
         }
         .background(Color(viewModel.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -88,6 +104,102 @@ struct PlayerView: View {
             playerViewModel.fetchPlayer(documentId: viewModel.playerId)
         }
         .ignoresSafeArea()
+    }
+}
+
+extension PlayerView {
+    func dividerWithBackground() -> some View {
+        Divider()
+            .background(Color("#272628"))
+            .opacity(0.9)
+            .frame(height: 1.5)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 15)
+    }
+    
+    @ViewBuilder
+    func bioSummaryView(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .font(.callout)
+                .foregroundColor(Color("#5C5B60"))
+                .padding(.leading, 20)
+            Spacer()
+            Text(value)
+                .foregroundColor(.white)
+                .font(.callout)
+                .fontWeight(.semibold)
+                .padding(.trailing, 20)
+        }
+        .frame(height: 35)
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
+    func statsSummaryView(player: PlayerSummaryViewModel) -> some View {
+        HStack {
+            VStack(alignment: .center) {
+                Text(player.pieTitle)
+                    .padding(.horizontal, 5)
+                    .font(.callout)
+                    .foregroundColor(.white)
+                    .background(Color("#5C5B60"))
+                
+                Text(player.pie)
+                    .padding(2)
+                    .foregroundColor(Color("#db4c30"))
+                    .font(.title)
+                    .fontWeight(.bold)
+            }
+            .padding(.leading, 20)
+            Spacer()
+            
+            VStack(alignment: .center) {
+                Text(player.ppgTitle)
+                    .padding(.horizontal, 5)
+                    .font(.callout)
+                    .foregroundColor(.white)
+                    .background(Color("#5C5B60"))
+                
+                Text(player.ppg)
+                    .padding(2)
+                    .foregroundColor(.white)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
+            Spacer()
+            
+            VStack(alignment: .center) {
+                Text(player.rpgTitle)
+                    .padding(.horizontal, 5)
+                    .font(.callout)
+                    .foregroundColor(.white)
+                    .background(Color("#5C5B60"))
+                
+                Text(player.rpg)
+                    .padding(2)
+                    .foregroundColor(.white)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
+            Spacer()
+            
+            VStack(alignment: .center) {
+                Text(player.apgTitle)
+                    .padding(.horizontal, 5)
+                    .font(.callout)
+                    .foregroundColor(.white)
+                    .background(Color("#5C5B60"))
+                
+                Text(player.apg)
+                    .padding(2)
+                    .foregroundColor(.white)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+            }
+            .padding(.trailing, 20)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
