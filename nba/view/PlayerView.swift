@@ -58,45 +58,13 @@ struct PlayerView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 20)
                 .background {
-                    CustomCorner(corners: [.topLeft, .topRight], radius: 20)
+                    CustomCorner(corners: [.topLeft, ], radius: 20)
                         .fill(Color(viewModel.dark))
                         .ignoresSafeArea()
                 }
                 .padding(.top, -19)
             
-            statsSummaryView(player: player)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.heightTitle, value: player.height)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.weightTitle, value: player.weight)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.ageTitle, value: player.age)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.birthdateTitle, value: player.birthdate)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.experienceTitle, value: player.experience)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.draftTitle, value: player.draft)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.countryTitle, value: player.country)
-            
-            dividerWithBackground()
-            
-            bioSummaryView(title: player.lastAttendedTitle, value: player.lastAttended)
+            summaryView(player: player)
         }
         .background(Color(viewModel.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -108,6 +76,43 @@ struct PlayerView: View {
 }
 
 extension PlayerView {
+    @ViewBuilder
+    func summaryView(player: PlayerSummaryViewModel) -> some View {
+        statsSummaryView(player: player)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.heightTitle, value: player.height)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.weightTitle, value: player.weight)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.ageTitle, value: player.age)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.birthdateTitle, value: player.birthdate)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.experienceTitle, value: player.experience)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.draftTitle, value: player.draft)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.countryTitle, value: player.country)
+        
+        dividerWithBackground()
+        
+        bioSummaryView(title: player.lastAttendedTitle, value: player.lastAttended)
+    }
+    
     func dividerWithBackground() -> some View {
         Divider()
             .background(Color("#272628"))
@@ -122,7 +127,7 @@ extension PlayerView {
         HStack {
             Text(title)
                 .font(.callout)
-                .foregroundColor(Color("#5C5B60"))
+                .foregroundColor(.white.opacity(0.9))
                 .padding(.leading, 20)
             Spacer()
             Text(value)
