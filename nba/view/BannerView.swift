@@ -50,7 +50,7 @@ struct AdView : UIViewRepresentable {
     var paddingHorizontal: CGFloat = 15
     
     func makeUIView(context: UIViewRepresentableContext<AdView>) -> GADBannerView {
-//        let banner = GADBannerView(adSize: GADAdSizeBanner)
+//        let banner = GADBannerView(adSize: GADAdSizeLargeBanner)
         let banner = GADBannerView(adSize: GADPortraitAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
         
         guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
