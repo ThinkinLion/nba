@@ -159,4 +159,40 @@ extension String {
         default: return ""
         }
     }
+    
+    var triCodeToTeamId: String {
+            switch self {
+            case "NYK": return "1610612752" // east
+            case "CHI": return "1610612741"
+            case "WAS": return "1610612764"
+            case "MIA": return "1610612748"
+            case "CHA": return "1610612766"
+            case "PHI": return "1610612755"
+            case "TOR": return "1610612761"
+            case "MIL": return "1610612749"
+            case "BKN": return "1610612751"
+            case "ATL": return "1610612737"
+            case "CLE": return "1610612739"
+            case "BOS": return "1610612738"
+            case "DET": return "1610612765"
+            case "ORL": return "1610612753"
+            case "IND": return "1610612754"
+            case "GSW": return "1610612744" // west
+            case "UTA": return "1610612762"
+            case "DEN": return "1610612743"
+            case "DAL": return "1610612742"
+            case "SAC": return "1610612758"
+            case "POR": return "1610612757"
+            case "MIN": return "1610612750"
+            case "LAL": return "1610612747"
+            case "MEM": return "1610612763"
+            case "PHX": return "1610612756"
+            case "SAS": return "1610612759"
+            case "LAC": return "1610612746"
+            case "HOU": return "1610612745"
+            case "OKC": return "1610612760"
+            case "NOP": return "1610612740"
+            default: return ""
+            }
+        }
 }
