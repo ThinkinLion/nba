@@ -70,14 +70,14 @@ struct StandingsView: View {
             seasonLeadersVStackView(leaders: viewModel.fieldGoalPercentage)
             .padding(.top, 15)
             
-//            seasonLeadersView(leaders: viewModel.threePointersMade)
-//            .padding(.top, 15)
-//            
-//            seasonLeadersView(leaders: viewModel.threePointPercentage)
-//            .padding(.top, 15)
-//            
-//            seasonLeadersView(leaders: viewModel.fantasyPointsPerGame)
-//            .padding(.top, 15)
+            seasonLeadersVStackView(leaders: viewModel.threePointersMade)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.threePointPercentage)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.fantasyPointsPerGame)
+            .padding(.top, 15)
             
 //            Button("Crash") {
 //              fatalError("Crash was triggered")
@@ -112,6 +112,7 @@ extension StandingsView {
                     .font(.system(size: 20, weight: .bold))
                     .padding(.leading, 10)
             }
+            .padding(.top, 7)
             
             ForEach(leaders.items, id: \.self) { item in
                 let viewModel = SeasonLeaderViewModel(seasonLeader: item)
@@ -119,11 +120,8 @@ extension StandingsView {
                     playerStackItemView(viewModel: viewModel)
                 }
             }
-            
         }
-//        .frame(height: 360)
         .frame(maxWidth: .infinity)
-        .padding(7)
         .background(Color("#1C1B1D"))
         .cornerRadius(10)
         .padding(.horizontal, 10)
@@ -137,8 +135,8 @@ extension StandingsView {
             } placeholder: {}
                 .aspectRatio(contentMode: .fill)
                 .background(Color(viewModel.teamTriCode.triCodeToNickName))
-                .frame(width: 50, height: 50)
-                .cornerRadius(25)
+                .frame(width: 48, height: 48)
+                .cornerRadius(24)
                 .padding(5)
             
             VStack(alignment: .leading) {
@@ -159,6 +157,9 @@ extension StandingsView {
                 .fontWeight(.semibold)
                 .padding(.trailing, 10)
         }
+        .padding(.bottom, 5)
+        .padding(.horizontal, 5)
+        .frame(height: 50)
         .frame(maxWidth: .infinity)
     }
     
