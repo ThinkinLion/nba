@@ -33,7 +33,7 @@ import FirebaseFirestoreSwift
      "retired": False
  }
  */
-struct PlayerModel: Codable {
+struct PlayerModel: Codable, Hashable {
     @DocumentID var id: String?
     let playerId: String?
     let teamId: String?
@@ -58,6 +58,16 @@ struct PlayerModel: Codable {
     let draft: String?
     let experience: String?
     let retired: Bool?
+}
+
+extension PlayerModel {
+    static func ==(lhs: PlayerModel, rhs: PlayerModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 extension PlayerModel {
