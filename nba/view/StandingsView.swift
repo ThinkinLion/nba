@@ -70,6 +70,17 @@ struct StandingsView: View {
             seasonLeadersVStackView(leaders: viewModel.fieldGoalPercentage)
             .padding(.top, 15)
             
+            //rookies
+//            seasonLeadersView(leaders: viewModel.rookiesMinutesPerGame)
+//            .padding(.top, 15)
+//            
+//            seasonLeadersView(leaders: viewModel.rookiesPointsPerGame)
+//            .padding(.top, 15)
+//            
+//            seasonLeadersView(leaders: viewModel.rookiesDoubleDoubles)
+//            .padding(.top, 15)
+            
+            //seasonLeaders
             seasonLeadersVStackView(leaders: viewModel.threePointersMade)
             .padding(.top, 15)
             
@@ -79,6 +90,8 @@ struct StandingsView: View {
             seasonLeadersVStackView(leaders: viewModel.fantasyPointsPerGame)
             .padding(.top, 15)
             
+            //스텟을 카테고리 별로
+            //advanced, miscellaneous, player tracking passing, scoring, centers, forwards, guards, rookies, season leaders etc
 //            Button("Crash") {
 //              fatalError("Crash was triggered")
 //            }
@@ -116,7 +129,8 @@ extension StandingsView {
             
             ForEach(leaders.items, id: \.self) { item in
                 let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+//                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
                     playerStackItemView(viewModel: viewModel)
                 }
             }
@@ -167,7 +181,7 @@ extension StandingsView {
     func seasonLeadersView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                Text("SEASON LEADERS")
+                Text(leaders.category.uppercased())
                     .font(.caption)
                     .foregroundColor(Color("#5C5B60"))
                     .padding(.leading, 10)
@@ -180,7 +194,8 @@ extension StandingsView {
                 HStack {
                     ForEach(leaders.items, id: \.self) { item in
                         let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-                        NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+//                        NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+                        NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
                             playerCardView(viewModel: viewModel)
                         }
                     }
