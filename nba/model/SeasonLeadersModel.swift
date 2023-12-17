@@ -10,36 +10,76 @@ import FirebaseFirestoreSwift
 
 struct SeasonLeadersModel: Codable {
     @DocumentID var id: String?
-    let pointsPerGame: SeasonLeaders?
-    let reboundsPerGame: SeasonLeaders?
-    let assistsPerGame: SeasonLeaders?
-    let blocksPerGame: SeasonLeaders?
-    let stealsPerGame: SeasonLeaders?
-    let fieldGoalPercentage: SeasonLeaders?
-    let threePointersMade: SeasonLeaders?
-    let threePointPercentage: SeasonLeaders?
-    let fantasyPointsPerGame: SeasonLeaders?
+    let seasonLeadersPointsPerGame: SeasonLeaders?
+    let seasonLeadersReboundsPerGame: SeasonLeaders?
+    let seasonLeadersAssistsPerGame: SeasonLeaders?
+    let seasonLeadersBlocksPerGame: SeasonLeaders?
+    let seasonLeadersStealsPerGame: SeasonLeaders?
+    let seasonLeadersFieldGoalPercentage: SeasonLeaders?
+    let seasonLeadersThreePointersMade: SeasonLeaders?
+    let seasonLeadersThreePointPercentage: SeasonLeaders?
+    let seasonLeadersFantasyPointsPerGame: SeasonLeaders?
     
-    enum CodingKeys: String, CodingKey {
-        case pointsPerGame = "PointsPerGame"
-        case reboundsPerGame = "ReboundsPerGame"
-        case assistsPerGame = "AssistsPerGame"
-        case blocksPerGame = "BlocksPerGame"
-        case stealsPerGame = "StealsPerGame"
-        case fieldGoalPercentage = "FieldGoalPercentage"
-        case threePointersMade = "ThreePointersMade"
-        case threePointPercentage = "ThreePointPercentage"
-        case fantasyPointsPerGame = "FantasyPointsPerGame"
-    }
+    //advanced
+    let advancedTrueShootingPercentage: SeasonLeaders?
+    let advancedUsagePercentage: SeasonLeaders?
+    let advancedOffensiveReboundPercentage: SeasonLeaders?
+    
+    //miscellaneous
+    let miscellaneousFastBreakPointsPerGame: SeasonLeaders?
+    let miscellaneous2ndChancePointsPerGame: SeasonLeaders?
+    let miscellaneousPointsInThePaintPerGame: SeasonLeaders?
+    
+    //playerTrackingPassing
+    let playerTrackingPassingPassesPerGame: SeasonLeaders?
+    let playerTrackingPassingPointsFromAssistsPerGame: SeasonLeaders?
+    let playerTrackingPassingPotentialAssistsPerGame: SeasonLeaders?
+    
+    //scoring
+    let scoringPercentageofPoints3PT: SeasonLeaders?
+    let scoringPercentageofPointsinthePaint: SeasonLeaders?
+    let scoringPercentageofPointsMidRange: SeasonLeaders?
+    
+    //centers
+    let centersPointsPerGame: SeasonLeaders?
+    let centersReboundsPerGame: SeasonLeaders?
+    let centersAssistsPerGame: SeasonLeaders?
+    
+    //forwards
+    let forwardsPointsPerGame: SeasonLeaders?
+    let forwardsReboundsPerGame: SeasonLeaders?
+    let forwardsAssistsPerGame: SeasonLeaders?
+    
+    //guards
+    let guardsPointsPerGame: SeasonLeaders?
+    let guardsReboundsPerGame: SeasonLeaders?
+    let guardsAssistsPerGame: SeasonLeaders?
+    
+    //rookies
+    let rookiesMinutesPerGame: SeasonLeaders?
+    let rookiesPointsPerGame: SeasonLeaders?
+    let rookiesDoubleDoubles: SeasonLeaders?
+    
+    //seasonLeaders more
+    let seasonLeadersMostTotalPoints: SeasonLeaders?
+    let seasonLeadersMostPointsinaGame: SeasonLeaders?
+    let seasonLeadersMostReboundsinaGame: SeasonLeaders?
+    let seasonLeadersMostAssistsinaGame: SeasonLeaders?
+    let seasonLeadersMostStealsinaGame: SeasonLeaders?
+    let seasonLeadersMostBlocksinaGame: SeasonLeaders?
+    let seasonLeadersHighestPercentageofPTS3PT: SeasonLeaders?
+    let seasonLeadersHighestPercentageofPTS2PT: SeasonLeaders?
+    let seasonLeadersHighestPercentageofPTSMidRange: SeasonLeaders?
 }
 
 struct SeasonLeaders: Codable {
     let title: String
+    let category: String
     let items: [SeasonLeader]
 }
 
 extension SeasonLeaders {
-    static var empty = SeasonLeaders(title: "", items: [])
+    static var empty = SeasonLeaders(title: "", category: "", items: [])
 }
 
 struct SeasonLeader: Identifiable, Codable, Hashable {
