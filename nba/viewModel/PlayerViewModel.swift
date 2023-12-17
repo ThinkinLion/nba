@@ -11,6 +11,7 @@ import Firebase
 
 final class PlayerViewModel: ObservableObject {
     @Published var player = PlayerModel.empty
+    var roster = [PlayerModel]()
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -38,6 +39,26 @@ extension PlayerViewModel {
             case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
+        }
+    }
+    
+    func fetchRoster(teamId: String) {
+        db.collection("players").whereField("teamId", isEqualTo: teamId)
+//            .whereField("pie", isGreaterThanOrEqualTo: 5)
+//            .whereField("position", isEqualTo: "Guard")
+            .getDocuments() { (snapshot, error) in
+            self.roster = snapshot?.documents.compactMap { documentSnapshot in
+                let result = Result { try documentSnapshot.data(as: PlayerModel.self) }
+                switch result {
+                case .success(let playerModel):
+                    self.errorMessage = nil
+                    print("player: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
+                    return playerModel
+                case .failure(let error):
+                    self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+                    return nil
+                }
+            } ?? []
         }
     }
 }
@@ -80,8 +101,26 @@ struct PlayerSummaryViewModel {
     
     var imageUrl: String {
         //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
-        "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+        let imageUrl = "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+        print("\(fullName)'s imageUrl: \(imageUrl)")
+        return imageUrl
     }
+    
+    var teamTriCode: String {
+        player.teamId?.teamIdToTriCode ?? ""
+    }
+    
+    var teamId: String {
+        teamTriCode.triCodeToTeamId
+    }
+    
+//    var dark: String {
+//        teamTriCode.triCodeToNickName.toDarkColor
+//    }
+//    
+//    var light: String {
+//        teamTriCode.triCodeToNickName.toLightColor
+//    }
     
     var firstName: String {
         player.firstName ?? ""
