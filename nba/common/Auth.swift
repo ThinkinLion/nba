@@ -14,6 +14,7 @@ class Auth {
         if "504E4735-9B0E-4C2A-BF5E-A0C3C17477FE" == uuid ||
             "00E3BBC9-58CE-425B-8E0E-D2B48278936A" == uuid ||
             "CC857344-35A5-4C63-B5E5-03868B9797CF" == uuid || //iPhone 14 Pro max
+            "F527E50F-C470-4C48-B72A-FF632C1995BA" == uuid || //iPhone 15 Pro
             Platform.isSimulator {
             return true
         } else {
