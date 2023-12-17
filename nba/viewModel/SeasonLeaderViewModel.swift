@@ -43,11 +43,11 @@ struct SeasonLeaderViewModel {
         seasonLeader.points ?? ""
     }
     
-    var dark: String {
-        teamTriCode.triCodeToNickName.toDarkColor
-    }
-    
-    var light: String {
-        teamTriCode.triCodeToNickName.toLightColor
-    }
+//    var dark: String {
+//        teamTriCode.triCodeToNickName.toDarkColor
+//    }
+//    
+//    var light: String {
+//        teamTriCode.triCodeToNickName.toLightColor
+//    }
 }

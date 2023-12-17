@@ -31,6 +31,10 @@ final class StandingsViewModel: ObservableObject {
     @Published var threePointPercentage: SeasonLeaders = .empty
     @Published var fantasyPointsPerGame: SeasonLeaders = .empty
     
+    @Published var rookiesMinutesPerGame: SeasonLeaders = .empty
+    @Published var rookiesPointsPerGame: SeasonLeaders = .empty
+    @Published var rookiesDoubleDoubles: SeasonLeaders = .empty
+    
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -42,7 +46,7 @@ final class StandingsViewModel: ObservableObject {
         //        }
         fetchStandings(documentId: seasonYear())
         fetchGames(documentId: today())
-        fetchSeasonLeaders(documentId: seasonYear())
+        fetchStatsLeaders(documentId: seasonYear())
     }
     
     @MainActor
@@ -85,22 +89,26 @@ extension StandingsViewModel {
         }
     }
     
-    private func fetchSeasonLeaders(documentId: String) {
-        db.collection("seasonLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
+    private func fetchStatsLeaders(documentId: String) {
+        db.collection("statsLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
             switch result {
             case .success(let seasonLeaders):
-                print("fetchSeasonLeaders: \(seasonLeaders)")
-                self.pointsPerGame = seasonLeaders.pointsPerGame ?? .empty
-                self.assistsPerGame = seasonLeaders.assistsPerGame ?? .empty
-                self.reboundsPerGame = seasonLeaders.reboundsPerGame ?? .empty
+                print("fetchStatsLeaders: \(seasonLeaders)")
+                self.pointsPerGame = seasonLeaders.seasonLeadersPointsPerGame ?? .empty
+                self.assistsPerGame = seasonLeaders.seasonLeadersAssistsPerGame ?? .empty
+                self.reboundsPerGame = seasonLeaders.seasonLeadersReboundsPerGame ?? .empty
                 
-                self.blocksPerGame = seasonLeaders.blocksPerGame ?? .empty
-                self.stealsPerGame = seasonLeaders.stealsPerGame ?? .empty
-                self.fieldGoalPercentage = seasonLeaders.fieldGoalPercentage ?? .empty
+                self.blocksPerGame = seasonLeaders.seasonLeadersBlocksPerGame ?? .empty
+                self.stealsPerGame = seasonLeaders.seasonLeadersStealsPerGame ?? .empty
+                self.fieldGoalPercentage = seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty
                 
-                self.threePointersMade = seasonLeaders.threePointersMade ?? .empty
-                self.threePointPercentage = seasonLeaders.threePointPercentage ?? .empty
-                self.fantasyPointsPerGame = seasonLeaders.fantasyPointsPerGame ?? .empty
+                self.threePointersMade = seasonLeaders.seasonLeadersThreePointersMade ?? .empty
+                self.threePointPercentage = seasonLeaders.seasonLeadersThreePointPercentage ?? .empty
+                self.fantasyPointsPerGame = seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty
+                
+                self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
+                self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
+                self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
             case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
