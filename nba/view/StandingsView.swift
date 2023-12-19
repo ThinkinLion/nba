@@ -25,7 +25,7 @@ struct StandingsView: View {
                     .frame(width: 35, height: 35)
                     .clipShape(Circle())
                 Text("The NBA's East & West standings following \(viewModel.todayOfWeek())'s games!")
-                    .font(.callout)
+                    .font(.system(size: 14))
                 Spacer()
             }
 //            .frame(maxWidth: .infinity)
@@ -53,7 +53,7 @@ struct StandingsView: View {
                            backgroundColor: Color("#821E26"))
             .padding(.top, 15)
             
-            BannerView(paddingTop: 15)
+            BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
             
             seasonLeadersView(leaders: viewModel.assistsPerGame)
             .padding(.top, 15)
@@ -70,15 +70,19 @@ struct StandingsView: View {
             seasonLeadersVStackView(leaders: viewModel.fieldGoalPercentage)
             .padding(.top, 15)
             
-            //rookies
-//            seasonLeadersView(leaders: viewModel.rookiesMinutesPerGame)
-//            .padding(.top, 15)
-//            
-//            seasonLeadersView(leaders: viewModel.rookiesPointsPerGame)
-//            .padding(.top, 15)
-//            
-//            seasonLeadersView(leaders: viewModel.rookiesDoubleDoubles)
-//            .padding(.top, 15)
+            //advanced
+            horizontalScrollView(leaders: viewModel.advanced)
+            .padding(.top, 25)
+            
+            //miscellaneous
+            horizontalScrollView(leaders: viewModel.miscellaneous)
+            .padding(.top, 25)
+            
+            //player tracking passing
+            horizontalScrollView(leaders: viewModel.playerTrackingPassing)
+            .padding(.top, 25)
+            
+            BannerView(adUnitId: .standingsView2, paddingTop: 15, paddingHorizontal: 10, height: 100)
             
             //seasonLeaders
             seasonLeadersVStackView(leaders: viewModel.threePointersMade)
@@ -89,6 +93,58 @@ struct StandingsView: View {
             
             seasonLeadersVStackView(leaders: viewModel.fantasyPointsPerGame)
             .padding(.top, 15)
+            
+            //scoring
+            horizontalScrollView(leaders: viewModel.scoring)
+            .padding(.top, 25)
+            
+            //center
+            horizontalScrollView(leaders: viewModel.centers)
+            .padding(.top, 25)
+            
+            //forwards
+            horizontalScrollView(leaders: viewModel.forwards)
+            .padding(.top, 25)
+            
+            //guards
+            horizontalScrollView(leaders: viewModel.guards)
+            .padding(.top, 25)
+            
+            //rookies
+            seasonLeadersView(leaders: viewModel.rookiesMinutesPerGame)
+            .padding(.top, 15)
+
+            seasonLeadersView(leaders: viewModel.rookiesPointsPerGame)
+            .padding(.top, 15)
+
+            seasonLeadersView(leaders: viewModel.rookiesDoubleDoubles)
+            .padding(.top, 15)
+            
+            //seasonLeaders etc
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostTotalPoints)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostPointsinaGame)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostReboundsinaGame)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostAssistsinaGame)
+            .padding(.top, 15)
+            
+            BannerView(adUnitId: .standingsView2, paddingTop: 15, paddingHorizontal: 10, height: 100)
+            
+            //seasonLeaderEtc
+            horizontalScrollView(leaders: viewModel.seasonLeaderEtc)
+            .padding(.top, 25)
+            
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostBlocksinaGame)
+            .padding(.top, 15)
+            
+            seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostStealsinaGame)
+            .padding(.top, 15)
+            
             
             //스텟을 카테고리 별로
             //advanced, miscellaneous, player tracking passing, scoring, centers, forwards, guards, rookies, season leaders etc
@@ -112,12 +168,80 @@ struct StandingsView: View {
     }
 }
 
+//MARK: leadersScrollView
+extension StandingsView {
+    @ViewBuilder
+    func horizontalItemView(viewModel: SeasonLeaderViewModel) -> some View {
+        HStack(spacing: 0) {
+            AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
+                image.resizable()
+            } placeholder: {}
+                .aspectRatio(contentMode: .fill)
+                .background(Color(viewModel.teamTriCode.triCodeToNickName))
+                .frame(width: 36, height: 36)
+                .cornerRadius(18)
+                .padding(5)
+            
+            VStack(alignment: .leading) {
+                Text(viewModel.teamTriCode)
+                    .font(.system(size: 14))
+                    .foregroundColor(Color("#5C5B60"))
+                
+                Text(viewModel.name)
+                    .foregroundColor(.white.opacity(0.9))
+                    .font(.system(size: 14, weight: .semibold))
+                    .minimumScaleFactor(0.8)
+            }
+            Spacer()
+            Text(viewModel.points)
+                .foregroundColor(.white.opacity(0.9))
+                .font(.system(size: 16, weight: .semibold))
+                .padding(.trailing, 10)
+        }
+        .padding([.bottom, .horizontal], 5)
+        .frame(height: 42)
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
+    func horizontalScrollView(leaders: [SeasonLeaders]) -> some View {
+        let item = leaders.first
+        VStack(alignment: .leading, spacing: 0) {
+            Text(item?.category.uppercased() ?? "")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.white)
+                .padding([.leading, .bottom], 10)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(leaders, id: \.self) { item in
+                        VStack(alignment: .leading) {
+                            Text(item.title)
+                                .foregroundColor(.white.opacity(0.8))
+                                .font(.system(size: 14, weight: .bold))
+                            
+                            ForEach(item.items, id: \.self) { item in
+                                let viewModel = SeasonLeaderViewModel(seasonLeader: item)
+                                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
+                                    horizontalItemView(viewModel: viewModel)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.leading, 10)
+            }
+        }
+    }
+}
+
+//MARK: seasonLeadersVStackView
 extension StandingsView {
     @ViewBuilder
     func seasonLeadersVStackView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                Text("SEASON LEADERS")
+                Text(leaders.category.uppercased())
                     .font(.caption)
                     .foregroundColor(Color("#5C5B60"))
                     .padding(.leading, 10)
@@ -129,7 +253,7 @@ extension StandingsView {
             
             ForEach(leaders.items, id: \.self) { item in
                 let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-//                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
+                //                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
                 NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
                     playerStackItemView(viewModel: viewModel)
                 }
@@ -155,20 +279,18 @@ extension StandingsView {
             
             VStack(alignment: .leading) {
                 Text(viewModel.teamTriCode)
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .foregroundColor(Color("#5C5B60"))
                 
                 Text(viewModel.name)
                     .foregroundColor(.white)
-                    .font(.callout)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 14, weight: .semibold))
                     .minimumScaleFactor(0.8)
             }
             Spacer()
             Text(viewModel.points)
                 .foregroundColor(.white)
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.system(size: 18, weight: .semibold))
                 .padding(.trailing, 10)
         }
         .padding(.bottom, 5)
@@ -176,7 +298,10 @@ extension StandingsView {
         .frame(height: 50)
         .frame(maxWidth: .infinity)
     }
-    
+}
+
+//MARK: seasonLeadersView
+extension StandingsView {
     @ViewBuilder
     func seasonLeadersView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
@@ -247,6 +372,7 @@ extension StandingsView {
     }
 }
 
+//MARK: gamesView
 extension StandingsView {
     @ViewBuilder
     func gamesView(games: [HomeAway]) -> some View {
@@ -283,6 +409,7 @@ extension StandingsView {
     }
 }
 
+//MARK: conferenceView
 extension StandingsView {
     @ViewBuilder
     func conferenceView(playoffs: [Team],
