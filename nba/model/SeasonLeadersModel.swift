@@ -72,7 +72,7 @@ struct SeasonLeadersModel: Codable {
     let seasonLeadersHighestPercentageofPTSMidRange: SeasonLeaders?
 }
 
-struct SeasonLeaders: Codable {
+struct SeasonLeaders: Codable, Hashable {
     let title: String
     let category: String
     let items: [SeasonLeader]
@@ -80,6 +80,16 @@ struct SeasonLeaders: Codable {
 
 extension SeasonLeaders {
     static var empty = SeasonLeaders(title: "", category: "", items: [])
+}
+
+extension SeasonLeaders {
+    static func ==(lhs: SeasonLeaders, rhs: SeasonLeaders) -> Bool {
+        return lhs.title == rhs.title && lhs.category == rhs.category
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+    }
 }
 
 struct SeasonLeader: Identifiable, Codable, Hashable {
