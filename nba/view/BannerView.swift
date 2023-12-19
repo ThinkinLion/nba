@@ -21,22 +21,25 @@ import UIKit
  */
 
 enum BannerUnitID: String {
-    case teamView = "ca-app-pub-3499543148696658/6384435245" //NBA-Teamview banner
+    case standingsView = "ca-app-pub-3499543148696658/6384435245" //NBA-Teamview banner
+    case standingsView2 = "ca-app-pub-3499543148696658/8586673667" //NBA-Teamview banner2
     case playerView = "ca-app-pub-3499543148696658/9594728923" //NBA-Playerview banner
     case boxscoreView = "ca-app-pub-3499543148696658/9569476486" //NBA-Boxscoreview banner
 }
 
 struct BannerView: View {
-    var adUnitId: BannerUnitID = .teamView
+    var adUnitId: BannerUnitID = .standingsView
     var paddingTop: CGFloat = 0
     var paddingHorizontal: CGFloat = 0
+    var height: CGFloat = 50
     var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
     var body: some View{
         HStack{
             Spacer()
 //            if idiom == .phone {
                 AdView(adUnitId: adUnitId, paddingHorizontal: paddingHorizontal)
-                    .frame(width: 320, height: 50, alignment: .center)
+                .frame(height: height)
+//                    .frame(width: 320, height: 50, alignment: .center)
 //            }
             Spacer()
         }
@@ -46,7 +49,7 @@ struct BannerView: View {
 }
 
 struct AdView : UIViewRepresentable {
-    var adUnitId: BannerUnitID = .teamView
+    var adUnitId: BannerUnitID = .standingsView
     var paddingHorizontal: CGFloat = 15
     
     func makeUIView(context: UIViewRepresentableContext<AdView>) -> GADBannerView {
