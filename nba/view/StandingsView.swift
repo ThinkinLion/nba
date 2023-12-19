@@ -319,7 +319,6 @@ extension StandingsView {
                 HStack {
                     ForEach(leaders.items, id: \.self) { item in
                         let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-//                        NavigationLink(destination: PlayerView(viewModel: viewModel)) {
                         NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
                             playerCardView(viewModel: viewModel)
                         }
@@ -328,7 +327,6 @@ extension StandingsView {
                 .frame(height: 150)
                 .padding(.leading, 10)
             }
-            
         }
         .frame(maxWidth: .infinity)
         .padding(7)
@@ -344,7 +342,6 @@ extension StandingsView {
                 image.resizable()
             } placeholder: {}
                 .aspectRatio(contentMode: .fill)
-            //                .background(Color(viewModel.teamTriCode.triCodeToNickName))
                 .frame(width: 150, height: 150, alignment: .bottom)
                 .padding(.trailing, 20)
                 .zIndex(0)
@@ -358,14 +355,14 @@ extension StandingsView {
                 .fontWeight(.bold)
                 .zIndex(1)
             
-            Text(viewModel.name)
+            Text(viewModel.upperCasedName)
                 .frame(width: 120)
                 .padding(.trailing, 160)
                 .foregroundColor(.white)
                 .font(.callout)
                 .fontWeight(.bold)
                 .lineLimit(2)
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(0.6)
                 .zIndex(2)
         }
         .frame(width: 300)

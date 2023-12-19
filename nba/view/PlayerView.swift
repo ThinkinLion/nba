@@ -42,8 +42,8 @@ struct PlayerView: View {
                     .minimumScaleFactor(0.5)
                     
                     Text(player.jerseyAndPosition)
-                        .foregroundColor(.gray)
-                        .font(.callout)
+                        .foregroundColor(.white.opacity(0.8))
+                        .font(.system(size: 14))
                 }
                 .frame(width: 160)
                 .padding(.trailing, 200)
@@ -99,16 +99,15 @@ extension PlayerView {
                     .padding(.trailing, 90)
                     .padding(.bottom, 30)
                     .foregroundColor(.white.opacity(0.8))
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .lineLimit(1)
-                    .fontWeight(.semibold)
+                    .minimumScaleFactor(0.5)
                     .zIndex(0)
             }
             
             Text(viewModel.lastName)
                 .foregroundColor(.white.opacity(0.8))
-                .font(.callout)
-                .fontWeight(.bold)
+                .font(.system(size: 14))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
         }
@@ -188,14 +187,13 @@ extension PlayerView {
     func bioSummaryView(title: String, value: String) -> some View {
         HStack {
             Text(title)
-                .font(.callout)
+                .font(.system(size: 14))
                 .foregroundColor(.white.opacity(0.9))
                 .padding(.leading, 20)
             Spacer()
             Text(value)
-                .foregroundColor(.white)
-                .font(.callout)
-                .fontWeight(.semibold)
+                .foregroundColor(.white.opacity(0.9))
+                .font(.system(size: 14, weight: .semibold))
                 .padding(.trailing, 20)
         }
         .frame(height: 30)
@@ -208,7 +206,7 @@ extension PlayerView {
             VStack(alignment: .center) {
                 Text(player.pieTitle)
                     .padding(.horizontal, 5)
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .foregroundColor(.white)
                     .background(Color("#5C5B60"))
                 
@@ -224,7 +222,7 @@ extension PlayerView {
             VStack(alignment: .center) {
                 Text(player.ppgTitle)
                     .padding(.horizontal, 5)
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .foregroundColor(.white)
                     .background(Color("#5C5B60"))
                 
@@ -239,7 +237,7 @@ extension PlayerView {
             VStack(alignment: .center) {
                 Text(player.rpgTitle)
                     .padding(.horizontal, 5)
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .foregroundColor(.white)
                     .background(Color("#5C5B60"))
                 
@@ -254,7 +252,7 @@ extension PlayerView {
             VStack(alignment: .center) {
                 Text(player.apgTitle)
                     .padding(.horizontal, 5)
-                    .font(.callout)
+                    .font(.system(size: 14))
                     .foregroundColor(.white)
                     .background(Color("#5C5B60"))
                 
