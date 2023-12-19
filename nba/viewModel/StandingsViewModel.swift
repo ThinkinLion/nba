@@ -35,6 +35,28 @@ final class StandingsViewModel: ObservableObject {
     @Published var rookiesPointsPerGame: SeasonLeaders = .empty
     @Published var rookiesDoubleDoubles: SeasonLeaders = .empty
     
+    //advanced, miscellaneous, player tracking passing, scoring, centers, forwards, guards, rookies, season leaders etc
+    @Published var advanced: [SeasonLeaders] = []
+    @Published var miscellaneous: [SeasonLeaders] = []
+    @Published var playerTrackingPassing: [SeasonLeaders] = []
+    @Published var scoring: [SeasonLeaders] = []
+    @Published var centers: [SeasonLeaders] = []
+    @Published var forwards: [SeasonLeaders] = []
+    @Published var guards: [SeasonLeaders] = []
+    @Published var rookies: [SeasonLeaders] = []
+    @Published var seasonLeaderEtc: [SeasonLeaders] = []
+    
+    //season leaders etc
+    @Published var seasonLeadersMostTotalPoints: SeasonLeaders = .empty
+    @Published var seasonLeadersMostPointsinaGame: SeasonLeaders = .empty
+    @Published var seasonLeadersMostReboundsinaGame: SeasonLeaders = .empty
+    @Published var seasonLeadersMostAssistsinaGame: SeasonLeaders = .empty
+    @Published var seasonLeadersMostStealsinaGame: SeasonLeaders = .empty
+    @Published var seasonLeadersMostBlocksinaGame: SeasonLeaders = .empty
+    @Published var seasonLeadersHighestPercentageofPTS3PT: SeasonLeaders = .empty
+    @Published var seasonLeadersHighestPercentageofPTS2PT: SeasonLeaders = .empty
+    @Published var seasonLeadersHighestPercentageofPTSMidRange: SeasonLeaders = .empty
+    
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -109,6 +131,70 @@ extension StandingsViewModel {
                 self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
                 self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
                 self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
+                
+                //season leaders etc
+                self.seasonLeadersMostTotalPoints = seasonLeaders.seasonLeadersMostTotalPoints ?? .empty
+                self.seasonLeadersMostPointsinaGame = seasonLeaders.seasonLeadersMostPointsinaGame ?? .empty
+                self.seasonLeadersMostReboundsinaGame = seasonLeaders.seasonLeadersMostReboundsinaGame ?? .empty
+                self.seasonLeadersMostAssistsinaGame = seasonLeaders.seasonLeadersMostAssistsinaGame ?? .empty
+                self.seasonLeadersMostStealsinaGame = seasonLeaders.seasonLeadersMostStealsinaGame ?? .empty
+                self.seasonLeadersMostBlocksinaGame = seasonLeaders.seasonLeadersMostBlocksinaGame ?? .empty
+//                self.seasonLeadersHighestPercentageofPTS3PT = seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty
+//                self.seasonLeadersHighestPercentageofPTS2PT = seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty
+//                self.seasonLeadersHighestPercentageofPTSMidRange = seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty
+                self.seasonLeaderEtc = [
+                    seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty,
+                    seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty,
+                    seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty,
+                ]
+                
+                self.advanced = [
+                    seasonLeaders.advancedUsagePercentage ?? .empty,
+                    seasonLeaders.advancedTrueShootingPercentage ?? .empty,
+                    seasonLeaders.advancedOffensiveReboundPercentage ?? .empty
+                ]
+                
+                self.miscellaneous = [
+                    seasonLeaders.miscellaneous2ndChancePointsPerGame ?? .empty,
+                    seasonLeaders.miscellaneousFastBreakPointsPerGame ?? .empty,
+                    seasonLeaders.miscellaneousPointsInThePaintPerGame ?? .empty,
+                ]
+                
+                self.playerTrackingPassing = [
+                    seasonLeaders.playerTrackingPassingPassesPerGame ?? .empty,
+                    seasonLeaders.playerTrackingPassingPotentialAssistsPerGame ?? .empty,
+                    seasonLeaders.playerTrackingPassingPointsFromAssistsPerGame ?? .empty,
+                ]
+                
+                self.scoring = [
+                    seasonLeaders.scoringPercentageofPoints3PT ?? .empty,
+                    seasonLeaders.scoringPercentageofPointsinthePaint ?? .empty,
+                    seasonLeaders.scoringPercentageofPointsMidRange ?? .empty,
+                ]
+                
+                self.centers = [
+                    seasonLeaders.centersPointsPerGame ?? .empty,
+                    seasonLeaders.centersAssistsPerGame ?? .empty,
+                    seasonLeaders.centersReboundsPerGame ?? .empty,
+                ]
+                
+                self.forwards = [
+                    seasonLeaders.forwardsPointsPerGame ?? .empty,
+                    seasonLeaders.forwardsAssistsPerGame ?? .empty,
+                    seasonLeaders.forwardsReboundsPerGame ?? .empty
+                ]
+                
+                self.guards = [
+                    seasonLeaders.guardsPointsPerGame ?? .empty,
+                    seasonLeaders.guardsAssistsPerGame ?? .empty,
+                    seasonLeaders.guardsReboundsPerGame ?? .empty,
+                ]
+                
+                self.rookies = [
+                    seasonLeaders.rookiesDoubleDoubles ?? .empty,
+                    seasonLeaders.rookiesPointsPerGame ?? .empty,
+                    seasonLeaders.rookiesMinutesPerGame ?? .empty,
+                ]
             case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
