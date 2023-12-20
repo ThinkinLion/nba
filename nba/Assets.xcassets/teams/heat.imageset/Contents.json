@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "logo (5).png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -9,7 +10,6 @@
       "scale" : "2x"
     },
     {
-      "filename" : "nba-miami-heat-logo-480x480.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

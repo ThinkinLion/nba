@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "logo (33).png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -9,7 +10,6 @@
       "scale" : "2x"
     },
     {
-      "filename" : "nba-boston-celtics-logo-480x480.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
