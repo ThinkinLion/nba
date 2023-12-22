@@ -1,5 +1,5 @@
 //
-//  TeamViewModel.swift
+//  TeamSummaryViewModel.swift
 //  nba
 //
 //  Created by 1100690 on 2023/11/19.
@@ -7,51 +7,47 @@
 
 import Foundation
 
-struct TeamViewModel {
+struct TeamSummaryViewModel {
     private let team: Team
     
     init(team: Team) {
         self.team = team
     }
     
-    var teamName: String {
-        return team.teamName
+    var teamId: String {
+        team.teamCode.nickNameToTriCode.triCodeToTeamId
     }
     
-//    var teamNickname: String {
-//        return team.teamSitesOnly.teamNickname
-//    }
+    var teamName: String {
+        team.teamName
+    }
+    
+    var upperCasedName: String {
+        teamName.uppercased() + " " + teamCode.uppercased()
+    }
     
     var teamCode: String {
-        return team.teamCode.lowercased()
+        team.teamCode.lowercased()
     }
     
     var win: String {
-        return team.win
+        team.win
     }
     
     var loss: String {
-        return team.loss
+        team.loss
     }
     
     var winLoss: String {
-        return team.win + "-" + team.loss
+        team.win + "-" + team.loss
     }
     
-//    var winLossInConference: String {
-//        return team.confWin + " - " + team.confLoss
-//    }
-//
-//    var winLossInDivision: String {
-//        return team.divWin + " - " + team.divLoss
-//    }
-    
     var winPct: String {
-        return team.winPct
+        team.winPct
     }
     
     var gamesBehind: String {
-        return (team.gamesBehind == "0.0") ? "-" : team.gamesBehind
+        (team.gamesBehind == "0.0") ? "-" : team.gamesBehind
     }
         
 //    var conferenceRankFullName: String {
@@ -59,7 +55,7 @@ struct TeamViewModel {
 //    }
 //
     var conferenceRank: String {
-        return team.confRank
+        team.confRank
     }
 //
 //    var conferenceRankSuffix: String {

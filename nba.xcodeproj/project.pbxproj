@@ -15,8 +15,9 @@
 		C21E6A1E2AFA421B00307366 /* nbaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E6A1D2AFA421B00307366 /* nbaUITests.swift */; };
 		C21E6A202AFA421B00307366 /* nbaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E6A1F2AFA421B00307366 /* nbaUITestsLaunchTests.swift */; };
 		C21EF4712B099989005D87D2 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4702B099989005D87D2 /* LineView.swift */; };
-		C21EF4732B0A3286005D87D2 /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */; };
+		C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */; };
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
+		C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B99992B33EF9400A1152E /* TeamView.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
 		C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C32262B220DD00054B189 /* CustomCorner.swift */; };
@@ -65,9 +66,10 @@
 		C21E6A1D2AFA421B00307366 /* nbaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nbaUITests.swift; sourceTree = "<group>"; };
 		C21E6A1F2AFA421B00307366 /* nbaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nbaUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C21EF4702B099989005D87D2 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
-		C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSummaryViewModel.swift; sourceTree = "<group>"; };
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		C28C322E2B26F4690054B189 /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
@@ -190,7 +192,7 @@
 			children = (
 				C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */,
 				C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */,
-				C21EF4722B0A3286005D87D2 /* TeamViewModel.swift */,
+				C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */,
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
 			);
@@ -202,6 +204,7 @@
 			children = (
 				C2C7950C2B02389300D72531 /* StandingsView.swift */,
 				C2B7E0F52B1F04B200988259 /* PlayerView.swift */,
+				C22B99992B33EF9400A1152E /* TeamView.swift */,
 				C21EF4702B099989005D87D2 /* LineView.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 			);
@@ -400,7 +403,8 @@
 				C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */,
 				C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */,
 				C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */,
-				C21EF4732B0A3286005D87D2 /* TeamViewModel.swift in Sources */,
+				C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */,
+				C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,7 +591,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.04;
+				MARKETING_VERSION = 2.05;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -630,7 +634,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.04;
+				MARKETING_VERSION = 2.05;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
