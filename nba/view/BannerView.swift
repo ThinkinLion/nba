@@ -9,22 +9,12 @@ import SwiftUI
 import GoogleMobileAds
 import UIKit
 
-/*
- static let brawler1AdUnitID = "ca-app-pub-3499543148696658/1040546944" //브롤러1
- static let brawler2AdUnitID = "ca-app-pub-3499543148696658/4126541875" //브롤러2
- static let brawler3AdUnitID = "ca-app-pub-3499543148696658/8995725174" //브롤러3
- 
- static let gamemodeAdUnitID = "ca-app-pub-3499543148696658/3247907886" //게임모드탭
- static let brawltalkAdUnitID = "ca-app-pub-3499543148696658/2137921444" //브롤토크탭
- static let interstitialID = "ca-app-pub-3499543148696658/5091309269" //전면
- static let donateID = "ca-app-pub-3499543148696658/3882681093" //기부
- */
-
 enum BannerUnitID: String {
-    case standingsView = "ca-app-pub-3499543148696658/6384435245" //NBA-Teamview banner
-    case standingsView2 = "ca-app-pub-3499543148696658/8586673667" //NBA-Teamview banner2
-    case playerView = "ca-app-pub-3499543148696658/9594728923" //NBA-Playerview banner
-    case boxscoreView = "ca-app-pub-3499543148696658/9569476486" //NBA-Boxscoreview banner
+    case standingsView = "ca-app-pub-3499543148696658/6384435245" //NBA-StandingsView banner
+    case standingsView2 = "ca-app-pub-3499543148696658/8586673667" //NBA-StandingsView banner2
+    case playerView = "ca-app-pub-3499543148696658/9594728923" //NBA-PlayerView banner
+    case teamView = "ca-app-pub-3499543148696658/9569476486" //NBA-TeamView banner
+    
 }
 
 struct BannerView: View {
