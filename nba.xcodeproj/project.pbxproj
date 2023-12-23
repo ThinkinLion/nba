@@ -18,8 +18,10 @@
 		C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */; };
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
 		C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B99992B33EF9400A1152E /* TeamView.swift */; };
+		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
+		C26B8F492B37120100BE185E /* TeamModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8F482B37120100BE185E /* TeamModel.swift */; };
 		C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C32262B220DD00054B189 /* CustomCorner.swift */; };
 		C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */; };
 		C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322E2B26F4690054B189 /* PlayerModel.swift */; };
@@ -70,6 +72,8 @@
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
+		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		C26B8F482B37120100BE185E /* TeamModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamModel.swift; sourceTree = "<group>"; };
 		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		C28C322E2B26F4690054B189 /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
@@ -180,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				C2C794F82AFE140D00D72531 /* StandingsModel.swift */,
+				C26B8F482B37120100BE185E /* TeamModel.swift */,
 				C2F034A82B175DD4009B372F /* GamesModel.swift */,
 				C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */,
 				C28C322E2B26F4690054B189 /* PlayerModel.swift */,
@@ -192,6 +197,7 @@
 			children = (
 				C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */,
 				C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */,
+				C22B999D2B358AF300A1152E /* TeamViewModel.swift */,
 				C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */,
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
@@ -393,10 +399,12 @@
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
+				C26B8F492B37120100BE185E /* TeamModel.swift in Sources */,
 				C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */,
 				C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */,
 				C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */,
 				C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */,
+				C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */,
 				C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */,
 				C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */,
 				C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */,
