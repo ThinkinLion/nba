@@ -409,9 +409,9 @@ extension StandingsView {
 //MARK: conferenceView
 extension StandingsView {
     @ViewBuilder
-    func conferenceView(playoffs: [Team],
-                        playInTournament: [Team],
-                        nonPlayoff: [Team],
+    func conferenceView(playoffs: [StandingsTeam],
+                        playInTournament: [StandingsTeam],
+                        nonPlayoff: [StandingsTeam],
                         title: String,
                         backgroundColor: Color) -> some View {
         VStack {
@@ -449,38 +449,39 @@ extension StandingsView {
     }
     
     @ViewBuilder
-    func standingRowView(items: [Team]) -> some View {
+    func standingRowView(items: [StandingsTeam]) -> some View {
 
         //.font(.system(size: 25, weight: .bold, design: .serif))
         //.font(.system(size: 25, weight: .bold, design: .rounded))
         //.font(.system(size: 25, weight: .bold, design: .monospaced))
         VStack {
             ForEach(Array(items.enumerated()), id: \.element) { index, model in
-                let viewModel = TeamViewModel(team: model)
-                HStack(spacing: 0) {
-                    Text(viewModel.conferenceRank)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .frame(width: 25, height: 40)
-                        .foregroundColor(.white)
-                        .background(.black)
-                    
-                    Image(viewModel.teamCode.nickNameToTriCode)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
-                        .scaleEffect(1.5)
-                        .clipped()
-                    
-                    Text(" ")
-                    
-                    Text(viewModel.winLoss)
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .frame(width: 50, height: 25)
-                        .frame(alignment: .leading)
-                        .foregroundColor(.white)
-                        .minimumScaleFactor(0.5)
+                let viewModel = TeamSummaryViewModel(team: model)
+                NavigationLink(destination: TeamView(summary: viewModel)) {
+                    HStack(spacing: 0) {
+                        Text(viewModel.conferenceRank)
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .frame(width: 25, height: 40)
+                            .foregroundColor(.white)
+                            .background(.black)
+                        
+                        Image(viewModel.teamCode.nickNameToTriCode)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .scaleEffect(1.5)
+                            .clipped()
+                        
+                        Text(viewModel.winLoss)
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .frame(width: 50, height: 25)
+                            .frame(alignment: .leading)
+                            .foregroundColor(.white)
+                            .minimumScaleFactor(0.5)
+                            .padding(.horizontal, 2)
+                    }
+                    .background(Color(viewModel.teamCode).opacity(0.9))
                 }
-                .background(Color(viewModel.teamCode).opacity(0.9))
             }
         }
     }

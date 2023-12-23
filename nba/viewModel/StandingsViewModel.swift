@@ -12,8 +12,8 @@ import Firebase
 final class StandingsViewModel: ObservableObject {
     @Published var standings = StandingsModel.empty
     @Published var newItem = StandingsModel.sample
-    @Published var east: ([Team], [Team], [Team]) = ([], [], [])
-    @Published var west: ([Team], [Team], [Team]) = ([], [], [])
+    @Published var east: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
+    @Published var west: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
     
     @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
@@ -226,14 +226,14 @@ extension StandingsViewModel {
         }
     }
     
-    func divideConferenceStandings(conference: [Team]) -> ([Team], [Team], [Team]) {
+    func divideConferenceStandings(conference: [StandingsTeam]) -> ([StandingsTeam], [StandingsTeam], [StandingsTeam]) {
         guard conference.count == 15 else { return ([], [], []) }
         
         // 배열을 나누고자 하는 각 섹션의 길이
         let sectionLengths = [6, 4, 5]
         
         // 배열을 나누어서 튜플로 반환
-        let dividedSections = sectionLengths.reduce(into: ([Team](), [Team](), [Team]())) { result, length in
+        let dividedSections = sectionLengths.reduce(into: ([StandingsTeam](), [StandingsTeam](), [StandingsTeam]())) { result, length in
             var startIndex = result.0.count
             if !result.0.isEmpty && !result.1.isEmpty {
                 startIndex = result.0.count + result.1.count

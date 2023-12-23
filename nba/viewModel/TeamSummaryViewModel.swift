@@ -8,9 +8,9 @@
 import Foundation
 
 struct TeamSummaryViewModel {
-    private let team: Team
+    private let team: StandingsTeam
     
-    init(team: Team) {
+    init(team: StandingsTeam) {
         self.team = team
     }
     
@@ -50,25 +50,20 @@ struct TeamSummaryViewModel {
         (team.gamesBehind == "0.0") ? "-" : team.gamesBehind
     }
         
-//    var conferenceRankFullName: String {
-//        return self.conferenceRank + self.conferenceRankSuffix
-//    }
-//
+    var conferenceRankFullName: String {
+        guard !conference.isEmpty else { return "" }
+        return conferenceRank.ordinal + " in " + conference
+    }
+    
     var conferenceRank: String {
         team.confRank
     }
-//
-//    var conferenceRankSuffix: String {
-//        var suffix = "th"
-//        if team.confRank == "1" {
-//            suffix = "st"
-//        } else if team.confRank == "2" {
-//            suffix = "nd"
-//        } else if team.confRank == "3" {
-//            suffix = "rd"
-//        }
-//        return suffix
-//    }
+    
+    var conference: String {
+        team.conference ?? ""
+    }
+
+    
 //
 //    var homeWinLoss: String {
 //        return self.homeWin + "-" + self.homeLoss
