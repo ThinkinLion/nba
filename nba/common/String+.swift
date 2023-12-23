@@ -31,6 +31,25 @@ extension String {
         self.lowercased() + ".dark"
     }
     
+    var ordinal: String {
+        guard let number = Int(self) else { return self }
+        switch number % 100 {
+        case 11, 12, 13:
+            return "\(number)th"
+        default:
+            switch number % 10 {
+            case 1:
+                return "\(number)st"
+            case 2:
+                return "\(number)nd"
+            case 3:
+                return "\(number)rd"
+            default:
+                return "\(number)th"
+            }
+        }
+    }
+    
     var nickNameToTriCode: String {
         switch self.lowercased() {
         case "76ers", "sixers": return "PHI"
