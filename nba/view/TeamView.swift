@@ -10,6 +10,7 @@ import SwiftUI
 struct TeamView: View {
     let summary: TeamSummaryViewModel
     @StateObject var viewModel = TeamViewModel()
+    @State private var hasAppeared = false
     
     var body: some View {
         ScrollView(.vertical) {
@@ -59,17 +60,76 @@ struct TeamView: View {
             
             dividerWithBackground()
             
-            BannerView(adUnitId: .teamView, paddingTop: 10)
+            rosterView(roster: viewModel.roster)
+                .padding(.top, 20)
             
-            
+            if !viewModel.roster.isEmpty {
+                BannerView(adUnitId: .teamView, paddingTop: 10, height: 100)
+                    .padding(.bottom, 30)
+            }
         }
         .background(Color(summary.teamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
+            guard !hasAppeared else { return }
             viewModel.fetchTeam(documentId: summary.teamId)
-//            viewModel.fetchRoster(teamId: teamId)
+            viewModel.fetchRoster(teamId: summary.teamId)
+            hasAppeared = true
         }
         .ignoresSafeArea()
+    }
+}
+
+extension TeamView {
+    @ViewBuilder
+    func rosterView(roster: [PlayerModel]) -> some View {
+        VStack(alignment: .leading) {
+            ForEach(roster, id: \.self) { player in
+                let viewModel = PlayerSummaryViewModel(player: player)
+                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
+                    rosterItemView(viewModel: viewModel)
+                    
+//                    dividerWithBackground()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 10)
+    }
+    
+    @ViewBuilder
+    func rosterItemView(viewModel: PlayerSummaryViewModel) -> some View {
+        HStack(spacing: 0) {
+            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
+                image.resizable()
+            } placeholder: {}
+                .aspectRatio(contentMode: .fill)
+                .background(Color(viewModel.teamNickName))
+                .frame(width: 48, height: 48)
+                .cornerRadius(24)
+                .padding(5)
+            
+            VStack(alignment: .leading) {
+                Text(viewModel.jerseyAndShortenPosition)
+                    .foregroundColor(.white.opacity(0.8))
+                    .font(.system(size: 14))
+                
+                Text(viewModel.fullName)
+                    .foregroundColor(.white.opacity(0.9))
+                    .font(.system(size: 14, weight: .semibold))
+                    .minimumScaleFactor(0.8)
+            }
+            Spacer()
+            
+//            Text(viewModel.points)
+//                .foregroundColor(.white)
+//                .font(.system(size: 18, weight: .semibold))
+//                .padding(.trailing, 10)
+        }
+        .padding(.bottom, 10)
+        .padding(.horizontal, 5)
+        .frame(height: 50)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -84,92 +144,43 @@ extension TeamView {
     }
     
     @ViewBuilder
+    func statItemView(title: String, value: String, rank: String) -> some View {
+        VStack(alignment: .center) {
+            Text(title)
+                .padding(.horizontal, 5)
+                .font(.system(size: 14))
+                .foregroundColor(.white)
+                .background(Color("#5C5B60"))
+            
+            Text(value)
+                .padding(2)
+                .foregroundColor(.white.opacity(0.9))
+                .font(.title3)
+                .fontWeight(.semibold)
+            
+            Text(rank)
+                .padding(2)
+                .foregroundColor(.white.opacity(0.8))
+                .font(.caption)
+                .fontWeight(.semibold)
+        }
+    }
+
+    @ViewBuilder
     func statsSummaryView(stats: TeamStatsViewModel) -> some View {
         HStack {
-            VStack(alignment: .center) {
-                Text(stats.ppgTitle)
-                    .padding(.horizontal, 5)
-                    .font(.system(size: 14))
-                    .foregroundColor(.white)
-                    .background(Color("#5C5B60"))
-                
-                Text(stats.ppg)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.9))
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                
-                Text(stats.ppgRank)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.8))
-                    .font(.caption)
-                    .fontWeight(.semibold)
-            }
-            .padding(.leading, 20)
+            statItemView(title: stats.ppgTitle, value: stats.ppg, rank: stats.ppgRank)
+                .padding(.leading, 20)
             Spacer()
             
-            VStack(alignment: .center) {
-                Text(stats.oppgTitle)
-                    .padding(.horizontal, 5)
-                    .font(.system(size: 14))
-                    .foregroundColor(.white)
-                    .background(Color("#5C5B60"))
-                
-                Text(stats.oppg)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.9))
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                
-                Text(stats.oppgRank)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.8))
-                    .font(.caption)
-                    .fontWeight(.semibold)
-            }
+            statItemView(title: stats.oppgTitle, value: stats.oppg, rank: stats.oppgRank)
             Spacer()
             
-            VStack(alignment: .center) {
-                Text(stats.rpgTitle)
-                    .padding(.horizontal, 5)
-                    .font(.system(size: 14))
-                    .foregroundColor(.white)
-                    .background(Color("#5C5B60"))
-                
-                Text(stats.rpg)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.9))
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                
-                Text(stats.rpgRank)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.8))
-                    .font(.caption)
-                    .fontWeight(.semibold)
-            }
+            statItemView(title: stats.rpgTitle, value: stats.rpg, rank: stats.rpgRank)
             Spacer()
             
-            VStack(alignment: .center) {
-                Text(stats.apgTitle)
-                    .padding(.horizontal, 5)
-                    .font(.system(size: 14))
-                    .foregroundColor(.white)
-                    .background(Color("#5C5B60"))
-                
-                Text(stats.apg)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.9))
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                
-                Text(stats.apgRank)
-                    .padding(2)
-                    .foregroundColor(.white.opacity(0.8))
-                    .font(.caption)
-                    .fontWeight(.semibold)
-            }
-            .padding(.trailing, 20)
+            statItemView(title: stats.apgTitle, value: stats.apg, rank: stats.apgRank)
+                .padding(.trailing, 20)
         }
         .frame(maxWidth: .infinity)
     }

@@ -11,7 +11,7 @@ import Firebase
 
 final class TeamViewModel: ObservableObject {
     @Published var team = TeamModel.empty
-    var roster = [PlayerModel]()
+    @Published var roster = [PlayerModel]()
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -41,7 +41,7 @@ extension TeamViewModel {
                 switch result {
                 case .success(let playerModel):
                     self.errorMessage = nil
-                    print("player: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
+                    print("roster: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
                     return playerModel
                 case .failure(let error):
                     self.errorMessage = "Error decoding document: \(error.localizedDescription)"
