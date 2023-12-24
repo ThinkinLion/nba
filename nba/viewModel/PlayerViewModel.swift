@@ -11,7 +11,7 @@ import Firebase
 
 final class PlayerViewModel: ObservableObject {
     @Published var player = PlayerModel.empty
-    var roster = [PlayerModel]()
+    @Published var roster = [PlayerModel]()
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -99,6 +99,11 @@ struct PlayerSummaryViewModel {
         player.playerId ?? ""
     }
     
+    var smallImageUrl: String {
+        let imageUrl = "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+        return imageUrl
+    }
+    
     var imageUrl: String {
         //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
         let imageUrl = "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
@@ -112,6 +117,10 @@ struct PlayerSummaryViewModel {
     
     var teamId: String {
         teamTriCode.triCodeToTeamId
+    }
+    
+    var teamNickName: String {
+        teamTriCode.triCodeToNickName
     }
     
 //    var dark: String {
@@ -149,6 +158,11 @@ struct PlayerSummaryViewModel {
     var jerseyAndPosition: String {
         guard !jersey.isEmpty && !position.isEmpty else { return "" }
         return jersey + " • " + position
+    }
+    
+    var jerseyAndShortenPosition: String {
+        guard !jersey.isEmpty && !position.isEmpty else { return "" }
+        return jersey + " • " + position.abbreviation
     }
     
     var pieTitle: String {
