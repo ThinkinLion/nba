@@ -30,6 +30,7 @@ extension PlayerViewModel {
     }
     
     func fetchPlayer(documentId: String) {
+        guard !documentId.isEmpty else { return }
         db.collection("players").document(documentId).getDocument(as: PlayerModel.self) { result in
             switch result {
             case .success(let player):
@@ -43,6 +44,7 @@ extension PlayerViewModel {
     }
     
     func fetchRoster(teamId: String) {
+        guard !teamId.isEmpty else { return }
         db.collection("players").whereField("teamId", isEqualTo: teamId)
 //            .whereField("pie", isGreaterThanOrEqualTo: 5)
 //            .whereField("position", isEqualTo: "Guard")
@@ -52,7 +54,7 @@ extension PlayerViewModel {
                 switch result {
                 case .success(let playerModel):
                     self.errorMessage = nil
-                    print("player: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
+                    print("roster: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
                     return playerModel
                 case .failure(let error):
                     self.errorMessage = "Error decoding document: \(error.localizedDescription)"

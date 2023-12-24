@@ -19,6 +19,7 @@ final class TeamViewModel: ObservableObject {
 
 extension TeamViewModel {
     func fetchTeam(documentId: String) {
+        guard !documentId.isEmpty else { return }
         db.collection("teams").document(documentId).getDocument(as: TeamModel.self) { result in
             switch result {
             case .success(let team):
@@ -32,6 +33,7 @@ extension TeamViewModel {
     }
     
     func fetchRoster(teamId: String) {
+        guard !teamId.isEmpty else { return }
         db.collection("players").whereField("teamId", isEqualTo: teamId)
 //            .whereField("pie", isGreaterThanOrEqualTo: 5)
 //            .whereField("position", isEqualTo: "Guard")

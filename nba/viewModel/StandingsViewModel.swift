@@ -84,6 +84,7 @@ final class StandingsViewModel: ObservableObject {
 
 extension StandingsViewModel {
     private func fetchStandings(documentId: String) {
+        guard !documentId.isEmpty else { return }
         db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in
             switch result {
             case .success(let standings):
@@ -99,6 +100,7 @@ extension StandingsViewModel {
     }
     
     private func fetchGames(documentId: String) {
+        guard !documentId.isEmpty else { return }
         db.collection("games").document(documentId).getDocument(as: GamesModel.self) { result in
             switch result {
             case .success(let games):
@@ -112,6 +114,7 @@ extension StandingsViewModel {
     }
     
     private func fetchStatsLeaders(documentId: String) {
+        guard !documentId.isEmpty else { return }
         db.collection("statsLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
             switch result {
             case .success(let seasonLeaders):
