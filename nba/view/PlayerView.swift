@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PlayerView: View {
     @StateObject var viewModel = PlayerViewModel()
+    @State private var hasAppeared = false
     let playerId: String
     let teamId: String
     
@@ -74,8 +75,10 @@ struct PlayerView: View {
         .background(Color(teamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
+            guard !hasAppeared else { return }
             viewModel.fetchPlayer(documentId: playerId)
             viewModel.fetchRoster(teamId: teamId)
+            hasAppeared = true
         }
         .ignoresSafeArea()
     }
@@ -86,7 +89,7 @@ extension PlayerView {
     func rosterItemView(viewModel: PlayerSummaryViewModel) -> some View {
         VStack {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
-                AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
+                AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
                     image.resizable()
                 } placeholder: {}
                     .aspectRatio(contentMode: .fill)

@@ -173,7 +173,7 @@ extension StandingsView {
     @ViewBuilder
     func horizontalItemView(viewModel: SeasonLeaderViewModel) -> some View {
         HStack(spacing: 0) {
-            AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
+            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
                 image.resizable()
             } placeholder: {}
                 .aspectRatio(contentMode: .fill)
@@ -253,8 +253,7 @@ extension StandingsView {
             
             ForEach(leaders.items, id: \.self) { item in
                 let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-                //                NavigationLink(destination: PlayerView(viewModel: viewModel)) {
-                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
+                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
                     playerStackItemView(viewModel: viewModel)
                 }
             }
@@ -268,7 +267,7 @@ extension StandingsView {
     @ViewBuilder
     func playerStackItemView(viewModel: SeasonLeaderViewModel) -> some View {
         HStack(spacing: 0) {
-            AsyncImage(url: URL(string: viewModel.imageUrl)) { image in
+            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
                 image.resizable()
             } placeholder: {}
                 .aspectRatio(contentMode: .fill)

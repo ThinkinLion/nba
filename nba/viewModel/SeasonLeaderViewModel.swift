@@ -18,6 +18,10 @@ struct SeasonLeaderViewModel {
         seasonLeader.playerId ?? ""
     }
     
+    var smallImageUrl: String {
+        "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+    }
+    
     var imageUrl: String {
         //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
         "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
@@ -29,6 +33,10 @@ struct SeasonLeaderViewModel {
     
     var upperCasedName: String {
         name.uppercased()
+    }
+    
+    var teamId: String {
+        teamTriCode.triCodeToTeamId
     }
     
     var teamTriCode: String {
