@@ -18,7 +18,7 @@ extension String {
     var dark: String {
         self.teamIdToNickName.toDarkColor
     }
-
+    
     var light: String {
         self.teamIdToNickName.toLightColor
     }
@@ -50,6 +50,22 @@ extension String {
         }
     }
     
+    var abbreviation: String {
+        var abbreviation = self.lowercased()
+        if abbreviation.contains("guard") {
+            abbreviation = abbreviation.replacingOccurrences(of: "guard", with: "G")
+        }
+        if abbreviation.contains("forward") {
+            abbreviation = abbreviation.replacingOccurrences(of: "forward", with: "F")
+        }
+        if abbreviation.contains("center") {
+            abbreviation = abbreviation.replacingOccurrences(of: "center", with: "C")
+        }
+        return abbreviation
+    }
+}
+
+extension String {
     var nickNameToTriCode: String {
         switch self.lowercased() {
         case "76ers", "sixers": return "PHI"
