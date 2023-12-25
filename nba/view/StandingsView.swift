@@ -198,7 +198,7 @@ extension StandingsView {
                 .font(.system(size: 16, weight: .semibold))
                 .padding(.trailing, 10)
         }
-        .padding([.bottom, .horizontal], 5)
+        .padding([.bottom, .trailing], 5)
         .frame(height: 42)
         .frame(maxWidth: .infinity)
     }
@@ -210,7 +210,7 @@ extension StandingsView {
             Text(item?.category.uppercased() ?? "")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.white)
-                .padding([.leading, .bottom], 10)
+                .padding([.leading, .bottom], 15)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
@@ -229,7 +229,7 @@ extension StandingsView {
                         }
                     }
                 }
-                .padding(.leading, 10)
+                .padding(.leading, 15)
             }
         }
     }
@@ -439,7 +439,7 @@ extension StandingsView {
                 standingRowView(items: nonPlayoff)
             }
         }
-        .frame(height: 360)
+        .frame(height: 340)
         .frame(maxWidth: .infinity)
         .padding(7)
         .background(backgroundColor)
@@ -460,19 +460,19 @@ extension StandingsView {
                     HStack(spacing: 0) {
                         Text(viewModel.conferenceRank)
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .frame(width: 25, height: 40)
+                            .frame(width: 25, height: 38)
                             .foregroundColor(.white)
                             .background(.black)
                         
                         Image(viewModel.teamCode.nickNameToTriCode)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 38, height: 38)
                             .scaleEffect(1.5)
                             .clipped()
                         
                         Text(viewModel.winLoss)
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
                             .frame(width: 50, height: 25)
                             .frame(alignment: .leading)
                             .foregroundColor(.white)

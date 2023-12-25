@@ -102,6 +102,7 @@ struct PlayerSummaryViewModel {
     }
     
     var smallImageUrl: String {
+        print("\(fullName)'s smallImageUrl: \(imageUrl)")
         let imageUrl = "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
         return imageUrl
     }
@@ -124,14 +125,6 @@ struct PlayerSummaryViewModel {
     var teamNickName: String {
         teamTriCode.triCodeToNickName
     }
-    
-//    var dark: String {
-//        teamTriCode.triCodeToNickName.toDarkColor
-//    }
-//    
-//    var light: String {
-//        teamTriCode.triCodeToNickName.toLightColor
-//    }
     
     var firstName: String {
         player.firstName ?? ""

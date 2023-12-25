@@ -91,11 +91,12 @@ extension PlayerView {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
                 AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
                     image.resizable()
-                } placeholder: {}
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 80, height: 80, alignment: .bottom)
-                    .padding(.trailing, 20)
-                    .zIndex(1)
+                } placeholder: {
+                }
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 80, height: 80, alignment: .bottom)
+                .padding(.trailing, 20)
+                .zIndex(1)
                 
                 Text(viewModel.jersey)
                     .frame(width: 30)

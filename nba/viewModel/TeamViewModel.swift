@@ -43,7 +43,7 @@ extension TeamViewModel {
                 switch result {
                 case .success(let playerModel):
                     self.errorMessage = nil
-                    print("roster: \(playerModel.firstName ?? ""), \(playerModel.lastName ?? "")")
+                    print("roster: \(playerModel.lastName ?? ""), \(playerModel)")
                     return playerModel
                 case .failure(let error):
                     self.errorMessage = "Error decoding document: \(error.localizedDescription)"
