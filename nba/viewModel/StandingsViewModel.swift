@@ -104,7 +104,7 @@ extension StandingsViewModel {
         db.collection("games").document(documentId).getDocument(as: GamesModel.self) { result in
             switch result {
             case .success(let games):
-                //                print("fetchGames: \(games)")
+//                print("fetchGames: \(games)")
                 self.games = games.items
                 self.hasGames = games.items.count > 0
             case .failure(let error):
@@ -118,7 +118,7 @@ extension StandingsViewModel {
         db.collection("statsLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
             switch result {
             case .success(let seasonLeaders):
-                print("fetchStatsLeaders: \(seasonLeaders)")
+//                print("fetchStatsLeaders: \(seasonLeaders)")
                 self.pointsPerGame = seasonLeaders.seasonLeadersPointsPerGame ?? .empty
                 self.assistsPerGame = seasonLeaders.seasonLeadersAssistsPerGame ?? .empty
                 self.reboundsPerGame = seasonLeaders.seasonLeadersReboundsPerGame ?? .empty
