@@ -49,9 +49,10 @@ extension Game {
     }
 }
 
-struct BoxScore: Codable {
+struct BoxScore: Codable, Hashable {
     var id = UUID()
     let playerId: String?
+    let teamId: String?
     let firstName: String?
     let lastName: String?
     let teamTriCode: String?
@@ -115,4 +116,14 @@ struct BoxScore: Codable {
     let to: String?
     let pf: String?
     let pm: String?
+}
+
+extension BoxScore {
+    static func ==(lhs: BoxScore, rhs: BoxScore) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

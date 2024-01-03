@@ -1,5 +1,5 @@
 //
-//  ViewModifier.swift
+//  ViewModifiers.swift
 //  nba
 //
 //  Created by 1100690 on 1/3/24.
@@ -7,12 +7,21 @@
 
 import SwiftUI
 
-struct ViewModifier: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct TextViewModifier: ViewModifier {
+    let color: Color
+    let font: Font
+    let weight: Font.Weight
+
+    func body(content: Content) -> some View {
+        content
+            .foregroundColor(color)
+            .font(font)
+            .fontWeight(weight)
     }
 }
 
-#Preview {
-    ViewModifier()
+extension View {
+    func textStyle(color: Color = .black, font: Font = .body, weight: Font.Weight = .regular) -> some View {
+        modifier(TextViewModifier(color: color, font: font, weight: weight))
+    }
 }
