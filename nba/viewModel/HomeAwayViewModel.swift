@@ -14,30 +14,42 @@ struct HomeAwayViewModel {
         self.homeAway = homeAway
     }
     
+    var awayTeamCode: String {
+        homeAway.away.teamCode.lowercased()
+    }
+    
     var homeTeamCode: String {
         homeAway.home.teamCode.lowercased()
     }
     
-    var awayTeamCode: String {
-        homeAway.away.teamCode.lowercased()
+    //team id
+    var awayTeamId: String {
+        homeAway.away.teamCode.nickNameToTriCode.triCodeToTeamId
+    }
+    
+    var homeTeamId: String {
+        homeAway.home.teamCode.nickNameToTriCode.triCodeToTeamId
+    }
+    
+    //record
+    var awayRecord: String {
+        homeAway.away.record ?? ""
     }
     
     var homeRecord: String {
         homeAway.home.record ?? ""
     }
     
-    var awayRecord: String {
-        homeAway.away.record ?? ""
+    //score
+    var awayScore: String {
+        homeAway.away.score ?? "0"
     }
     
     var homeScore: String {
         homeAway.home.score ?? "0"
     }
     
-    var awayScore: String {
-        homeAway.away.score ?? "0"
-    }
-    
+    //leader id
     var awayLeaderId: String {
         homeAway.away.leader?.playerId ?? ""
     }
@@ -47,41 +59,62 @@ struct HomeAwayViewModel {
     }
     
     //pts
+    var ptsTitie: String {
+        "PTS"
+    }
+    
     var awayLeaderPts: String {
         guard let pts = homeAway.away.leader?.pts else { return ""}
         guard !pts.isEmpty else { return "" }
-        return pts + "PTS"
+        return pts
     }
     
     var homeLeaderPts: String {
         guard let pts = homeAway.home.leader?.pts else { return ""}
         guard !pts.isEmpty else { return "" }
-        return pts + "PTS"
+        return pts
     }
     
     //reb
+    var rebTitie: String {
+        "REB"
+    }
+    
     var awayLeaderReb: String {
         guard let reb = homeAway.away.leader?.reb else { return ""}
         guard !reb.isEmpty else { return "" }
-        return reb + "REB"
+        return reb
     }
     
     var homeLeaderReb: String {
         guard let reb = homeAway.home.leader?.reb else { return ""}
         guard !reb.isEmpty else { return "" }
-        return reb + "REB"
+        return reb
     }
     
     //ast
+    var astTitie: String {
+        "AST"
+    }
+    
     var awayLeaderAst: String {
         guard let ast = homeAway.away.leader?.ast else { return ""}
         guard !ast.isEmpty else { return "" }
-        return ast + "AST"
+        return ast
     }
     
     var homeLeaderAst: String {
         guard let ast = homeAway.home.leader?.ast else { return ""}
         guard !ast.isEmpty else { return "" }
-        return ast + "AST"
+        return ast
+    }
+    
+    //boxscore
+    var awayBoxscore: [BoxScore] {
+        homeAway.away.boxscore ?? []
+    }
+    
+    var homeBoxscore: [BoxScore] {
+        homeAway.home.boxscore ?? []
     }
 }
