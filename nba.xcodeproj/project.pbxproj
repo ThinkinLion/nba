@@ -21,6 +21,9 @@
 		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
+		C2628F1A2B401B7B005E044B /* GameRecapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F192B401B7B005E044B /* GameRecapView.swift */; };
+		C2628F1D2B452C5A005E044B /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F1C2B452C5A005E044B /* ViewModifiers.swift */; };
+		C2628F212B4576B3005E044B /* BoxScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */; };
 		C26B8F492B37120100BE185E /* TeamModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8F482B37120100BE185E /* TeamModel.swift */; };
 		C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C32262B220DD00054B189 /* CustomCorner.swift */; };
 		C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */; };
@@ -73,6 +76,9 @@
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		C2628F192B401B7B005E044B /* GameRecapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecapView.swift; sourceTree = "<group>"; };
+		C2628F1C2B452C5A005E044B /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
+		C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreViewModel.swift; sourceTree = "<group>"; };
 		C26B8F482B37120100BE185E /* TeamModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamModel.swift; sourceTree = "<group>"; };
 		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
@@ -180,6 +186,14 @@
 			path = nbaUITests;
 			sourceTree = "<group>";
 		};
+		C2628F1B2B401B80005E044B /* common */ = {
+			isa = PBXGroup;
+			children = (
+				C21EF4702B099989005D87D2 /* LineView.swift */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
 		C2C794F72AFE140D00D72531 /* model */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,6 +215,7 @@
 				C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */,
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
+				C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */,
 			);
 			path = viewModel;
 			sourceTree = "<group>";
@@ -208,10 +223,11 @@
 		C2C795032AFF9EF100D72531 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				C2628F1B2B401B80005E044B /* common */,
 				C2C7950C2B02389300D72531 /* StandingsView.swift */,
 				C2B7E0F52B1F04B200988259 /* PlayerView.swift */,
 				C22B99992B33EF9400A1152E /* TeamView.swift */,
-				C21EF4702B099989005D87D2 /* LineView.swift */,
+				C2628F192B401B7B005E044B /* GameRecapView.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 			);
 			path = view;
@@ -223,6 +239,7 @@
 				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
 				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
 				C28C32262B220DD00054B189 /* CustomCorner.swift */,
+				C2628F1C2B452C5A005E044B /* ViewModifiers.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -400,11 +417,14 @@
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
 				C26B8F492B37120100BE185E /* TeamModel.swift in Sources */,
+				C2628F1A2B401B7B005E044B /* GameRecapView.swift in Sources */,
 				C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */,
+				C2628F1D2B452C5A005E044B /* ViewModifiers.swift in Sources */,
 				C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */,
 				C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */,
 				C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */,
 				C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */,
+				C2628F212B4576B3005E044B /* BoxScoreViewModel.swift in Sources */,
 				C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */,
 				C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */,
 				C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */,
@@ -599,7 +619,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.07;
+				MARKETING_VERSION = 2.08;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -642,7 +662,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.07;
+				MARKETING_VERSION = 2.08;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
