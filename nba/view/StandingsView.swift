@@ -174,107 +174,77 @@ struct StandingsView: View {
 //MARK: gamesView
 extension StandingsView {
     @ViewBuilder
+    func gameRecapItemView(viewModel: HomeAwayViewModel) -> some View {
+        ZStack {
+            VStack {
+                Image(viewModel.awayTeamCode)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+                    .clipped()
+                    .padding(.trailing, 50)
+//                                .padding(.top, 15)
+                Text(viewModel.awayRecord)
+                    .foregroundColor(.white.opacity(0.8))
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .padding(.trailing, 50)
+//                                .padding(.bottom, 10)
+            }
+            .frame(width: 150, height: 160)
+            .background(Color(viewModel.awayTeamCode))
+            .padding(.trailing, 150)
+            .zIndex(0)
+            
+            Text(viewModel.awayScore)
+                .foregroundColor(.white.opacity(0.9))
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .padding(.trailing, 70)
+                .zIndex(3)
+            
+            Text("vs")
+                .foregroundColor(.white.opacity(0.7))
+                .font(.system(size: 18, weight: .light, design: .rounded))
+                .zIndex(2)
+            
+            Text(viewModel.homeScore)
+                .foregroundColor(.white.opacity(0.9))
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                .padding(.leading, 70)
+                .zIndex(3)
+            
+            VStack {
+                Image(viewModel.homeTeamCode)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+                    .clipped()
+                    .padding(.leading, 50)
+//                                .padding(.top, 15)
+                Text(viewModel.homeRecord)
+                    .foregroundColor(.white.opacity(0.8))
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .padding(.leading, 50)
+//                                .padding(.bottom, 10)
+            }
+            .frame(width: 150, height: 160)
+            .background(Color(viewModel.homeTeamCode))
+            .padding(.leading, 150)
+            .zIndex(1)
+        }
+        .padding(3)
+        .frame(width: 300, height: 160)
+        .cornerRadius(8)
+    }
+    
+    @ViewBuilder
     func gameRecapView(games: [HomeAway]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(games, id: \.self) { item in
                     let viewModel = HomeAwayViewModel(homeAway: item)
-                    ZStack {
-                        VStack {
-                            Image(viewModel.awayTeamCode)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 100, height: 100)
-                                .clipped()
-//                                .padding(.top, 15)
-//                            Text(viewModel.awayRecord)
-//                                .foregroundColor(.white.opacity(0.6))
-//                                .font(.system(size: 12, weight: .semibold, design: .rounded))
-//                                .padding(.bottom, 10)
-                            Text(viewModel.awayScore)
-                                .foregroundColor(.white.opacity(0.9))
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                            Spacer()
-//                            HStack {
-//                                AsyncImage(url: URL(string: viewModel.awayLeaderId.smallImageUrl)) { image in
-//                                    image.resizable()
-//                                } placeholder: {}
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .background(Color(viewModel.awayTeamCode.light))
-//                                    .frame(width: 30, height: 30)
-//                                    .cornerRadius(15)
-//                                    .padding(2)
-////                                Spacer()
-//                                Text(viewModel.awayLeaderPts)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                                Text(viewModel.awayLeaderReb)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                                Text(viewModel.awayLeaderAst)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                            }
-//                            .frame(width: 150)
-//                            .background(.black.opacity(0.1))
-                        }
-                        .frame(width: 150, height: 180)
-                        .background(Color(viewModel.awayTeamCode))
-                        .padding(.trailing, 150)
-                        .zIndex(0)
-                        
-                        Text("vs")
-                            .foregroundColor(.white.opacity(0.7))
-                            .font(.system(size: 18, weight: .light, design: .rounded))
-                            .zIndex(2)
-                        
-                        VStack {
-                            Image(viewModel.homeTeamCode)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 100, height: 100)
-                                .clipped()
-//                                .padding(.top, 15)
-//                            Text(viewModel.homeRecord)
-//                                .foregroundColor(.white.opacity(0.6))
-//                                .font(.system(size: 12, weight: .semibold, design: .rounded))
-//                                .padding(.bottom, 10)
-                            Text(viewModel.homeScore)
-                                .foregroundColor(.white.opacity(0.9))
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                            Spacer()
-//                            HStack {
-//                                AsyncImage(url: URL(string: viewModel.homeLeaderId.smallImageUrl)) { image in
-//                                    image.resizable()
-//                                } placeholder: {}
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .background(Color(viewModel.homeTeamCode.light))
-//                                    .frame(width: 30, height: 30)
-//                                    .cornerRadius(15)
-//                                    .padding(2)
-////                                Spacer()
-//                                Text(viewModel.homeLeaderPts)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                                Text(viewModel.homeLeaderReb)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                                Text(viewModel.homeLeaderAst)
-//                                    .foregroundColor(.white.opacity(0.9))
-//                                    .font(.system(size: 10))
-//                            }
-//                            .frame(width: 150)
-//                            .background(.black.opacity(0.1))
-                        }
-                        .frame(width: 150, height: 180)
-                        .background(Color(viewModel.homeTeamCode))
-                        .padding(.leading, 150)
-                        .zIndex(1)
+                    NavigationLink(destination: GameRecapView(viewModel: viewModel)) {
+                        gameRecapItemView(viewModel: viewModel)
                     }
-                    .padding(3)
-                    .frame(width: 300, height: 180)
-                    .background(Color("#202123"))
-                    .cornerRadius(8)
                 }
             }
             .padding(.top, 10)
@@ -370,7 +340,7 @@ extension StandingsView {
                             
                             ForEach(item.items, id: \.self) { item in
                                 let viewModel = SeasonLeaderViewModel(seasonLeader: item)
-                                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamTriCode.triCodeToTeamId)) {
+                                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
                                     horizontalItemView(viewModel: viewModel)
                                 }
                             }
