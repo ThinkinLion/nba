@@ -22,6 +22,14 @@ struct HomeAwayViewModel {
         homeAway.home.teamCode.lowercased()
     }
     
+    var awayTeamName: String {
+        homeAway.away.teamCode
+    }
+    
+    var homeTeamName: String {
+        homeAway.home.teamCode
+    }
+    
     //team id
     var awayTeamId: String {
         homeAway.away.teamCode.nickNameToTriCode.triCodeToTeamId

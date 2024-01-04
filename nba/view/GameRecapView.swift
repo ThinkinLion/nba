@@ -121,10 +121,10 @@ struct GameRecapView: View {
             leaderSummaryView(viewModel: viewModel)
                 .padding(.top, -15) //default spcing이 있어서
             
-            boxScoreView(boxScores: viewModel.awayBoxscore)
+            boxScoreView(boxScores: viewModel.awayBoxscore, teamName: viewModel.awayTeamName)
                 .padding(.top, 20)
             
-            boxScoreView(boxScores: viewModel.homeBoxscore)
+            boxScoreView(boxScores: viewModel.homeBoxscore, teamName: viewModel.homeTeamName)
                 .padding(.top, 20)
         }
         .background(Color(viewModel.awayTeamId.dark))
@@ -336,11 +336,20 @@ extension GameRecapView {
     }
     
     @ViewBuilder
-    func boxScoreView(boxScores: [BoxScore]) -> some View {
+    func boxScoreView(boxScores: [BoxScore], teamName: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("DETROIT PISTONS")
-                .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
-                .padding(.leading, 15)
+            HStack(spacing: 0) {
+                Image(teamName.nickNameToTriCode)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 40, height: 40)
+                    .clipped()
+                Text(teamName)
+                    .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+                    .padding(.leading, 2)
+                Spacer()
+            }
+            .padding(.leading, 15)
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading) {
