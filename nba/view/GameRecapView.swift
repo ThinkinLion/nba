@@ -126,76 +126,250 @@ struct GameRecapView: View {
             
             boxScoreView(boxScores: viewModel.homeBoxscore)
                 .padding(.top, 20)
-            
-//            let statsViewModel = TeamStatsViewModel(team: viewModel.team)
-//            statsSummaryView(stats: statsViewModel)
-//            
-//            dividerWithBackground()
-//            
-//            rosterView(roster: viewModel.roster)
-//                .padding(.top, 20)
-//            
-//            if !viewModel.roster.isEmpty {
-//                BannerView(adUnitId: .teamView, paddingTop: 10, height: 100)
-//                    .padding(.bottom, 30)
-//            }
         }
         .background(Color(viewModel.awayTeamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             guard !hasAppeared else { return }
-//            viewModel.fetchTeam(documentId: summary.teamId)
-//            viewModel.fetchRoster(teamId: summary.teamId)
             hasAppeared = true
         }
         .ignoresSafeArea()
     }
 }
 
+//MARK: horizontalScrollView
 extension GameRecapView {
     @ViewBuilder
-    func boxScoreItemView(viewModel: BoxScoreViewModel) -> some View {
+    func boxScoreHeaderTitleView() -> some View {
         HStack(spacing: 0) {
-//            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
-//                image.resizable()
-//            } placeholder: {}
-//                .aspectRatio(contentMode: .fill)
-//                .background(Color(viewModel.teamNickName))
-//                .frame(width: 48, height: 48)
-//                .cornerRadius(24)
-//                .padding(5)
-            
-            Text(viewModel.fullName)
-                .foregroundColor(.white.opacity(0.9))
-                .font(.system(size: 14, weight: .semibold))
-                .minimumScaleFactor(0.8)
-            
-            Spacer()
+            Text("PLAYER")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
         }
-        .padding(.bottom, 10)
-        .padding(.horizontal, 5)
-        .frame(height: 50)
+        .frame(height: 20)
+    }
+    
+    @ViewBuilder
+    func boxScoreHeaderItemView(viewModel: BoxScoreViewModel) -> some View {
+        HStack(spacing: 0) {
+            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
+                image.resizable()
+            } placeholder: {}
+                .aspectRatio(contentMode: .fill)
+                .background(Color(viewModel.teamNickName))
+                .frame(width: 36, height: 36)
+                .cornerRadius(18)
+                .padding(4)
+            
+            Text(viewModel.lastName)
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
+                .minimumScaleFactor(0.8)
+        }
+        .frame(height: 40)
+    }
+    
+    @ViewBuilder
+    func boxScoreTitleView() -> some View {
+        HStack {
+            Text("MIN")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 55)
+            
+            Text("PTS")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+            
+            //fg
+            Text("FG")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 50)
+            
+            Text("FG%")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 40)
+            
+            //tp
+            Text("3P")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 40)
+            
+            Text("3P%")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 40)
+            
+            //ft
+            Text("FT")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 50)
+            
+            Text("FT%")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 40)
+            
+            //reb
+            Text("OREB")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+                .minimumScaleFactor(0.5)
+            
+            Text("DREB")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+                .minimumScaleFactor(0.5)
+            
+            Text("REB")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+            
+            //ast
+            Text("AST")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+            
+            Text("STL")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+            
+            Text("BLK")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+            
+            //to
+            Text("TO")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 20)
+            
+            Text("PF")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 20)
+            
+            Text("+/-")
+                .textStyle(color: .white.opacity(0.6), font: .system(size: 14))
+                .frame(width: 30)
+                .padding(.trailing, 10)
+        }
+        .frame(height: 20)
+        .frame(maxWidth: .infinity)
+    }
+    
+    @ViewBuilder
+    func boxScoreItemView(viewModel: BoxScoreViewModel) -> some View {
+        HStack {
+            Text(viewModel.min)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 55)
+                .padding(.leading, 5)
+            
+            Text(viewModel.pts)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            //fg
+            Text(viewModel.fg)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 50)
+                .minimumScaleFactor(0.5)
+            
+            Text(viewModel.fgp)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 40)
+            
+            //tp
+            Text(viewModel.tp)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 40)
+            
+            Text(viewModel.tpp)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 40)
+            
+            //ft
+            Text(viewModel.ft)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 50)
+            
+            Text(viewModel.ftp)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 40)
+            
+            //reb
+            Text(viewModel.oreb)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            Text(viewModel.dreb)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            Text(viewModel.reb)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            //ast
+            Text(viewModel.ast)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            Text(viewModel.stl)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            Text(viewModel.blk)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+            
+            //to
+            Text(viewModel.to)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 20)
+            
+            Text(viewModel.pf)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 20)
+            
+            Text(viewModel.pm)
+                .textStyle(color: .white.opacity(0.8), font: .system(size: 14), weight: .bold)
+                .frame(width: 30)
+                .padding(.trailing, 10)
+        }
+        .frame(height: 40)
         .frame(maxWidth: .infinity)
     }
     
     @ViewBuilder
     func boxScoreView(boxScores: [BoxScore]) -> some View {
-        HStack {
+        VStack(alignment: .leading, spacing: 0) {
             Text("DETROIT PISTONS")
-                .textStyle(color: .white.opacity(0.9), font: .title2, weight: .bold)
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
                 .padding(.leading, 15)
-            Spacer()
-        }
-        VStack(alignment: .leading) {
-            ForEach(boxScores, id: \.self) { boxScore in
-                let viewModel = BoxScoreViewModel(boxScore: boxScore)
-                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
-                    boxScoreItemView(viewModel: viewModel)
+            
+            HStack(spacing: 0) {
+                VStack(alignment: .leading) {
+                    boxScoreHeaderTitleView()
+                    ForEach(boxScores, id: \.self) { boxScore in
+                        let viewModel = BoxScoreViewModel(boxScore: boxScore)
+                        NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
+                            boxScoreHeaderItemView(viewModel: viewModel)
+                        }
+                        dividerWithBackground()
+                    }
+                }
+//                .frame(width: 100)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            boxScoreTitleView()
+                            ForEach(boxScores, id: \.self) { boxScore in
+                                let viewModel = BoxScoreViewModel(boxScore: boxScore)
+                                boxScoreItemView(viewModel: viewModel)
+                                dividerWithBackground()
+                            }
+                        }
+                    }
                 }
             }
+            .padding([.leading, .top], 15)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 10)
     }
 }
 
@@ -281,108 +455,12 @@ extension GameRecapView {
 }
 
 extension GameRecapView {
-    @ViewBuilder
-    func rosterView(roster: [PlayerModel]) -> some View {
-        VStack(alignment: .leading) {
-            ForEach(roster, id: \.self) { player in
-                let viewModel = PlayerSummaryViewModel(player: player)
-                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
-                    rosterItemView(viewModel: viewModel)
-                    
-//                    dividerWithBackground()
-                }
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 10)
-    }
-    
-    @ViewBuilder
-    func rosterItemView(viewModel: PlayerSummaryViewModel) -> some View {
-        HStack(spacing: 0) {
-            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
-                image.resizable()
-            } placeholder: {}
-                .aspectRatio(contentMode: .fill)
-                .background(Color(viewModel.teamNickName))
-                .frame(width: 48, height: 48)
-                .cornerRadius(24)
-                .padding(5)
-            
-            VStack(alignment: .leading) {
-                Text(viewModel.jerseyAndShortenPosition)
-                    .foregroundColor(.white.opacity(0.8))
-                    .font(.system(size: 14))
-                
-                Text(viewModel.fullName)
-                    .foregroundColor(.white.opacity(0.9))
-                    .font(.system(size: 14, weight: .semibold))
-                    .minimumScaleFactor(0.8)
-            }
-            Spacer()
-            
-//            Text(viewModel.points)
-//                .foregroundColor(.white)
-//                .font(.system(size: 18, weight: .semibold))
-//                .padding(.trailing, 10)
-        }
-        .padding(.bottom, 10)
-        .padding(.horizontal, 5)
-        .frame(height: 50)
-        .frame(maxWidth: .infinity)
-    }
-}
-
-extension GameRecapView {
     func dividerWithBackground() -> some View {
         Divider()
             .background(Color("#272628"))
             .opacity(0.9)
             .frame(height: 1.5)
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 15)
-    }
-    
-    @ViewBuilder
-    func statItemView(title: String, value: String, rank: String) -> some View {
-        VStack(alignment: .center) {
-            Text(title)
-                .padding(.horizontal, 5)
-                .font(.system(size: 14))
-                .foregroundColor(.white)
-                .background(Color("#5C5B60"))
-            
-            Text(value)
-                .padding(2)
-                .foregroundColor(.white.opacity(0.9))
-                .font(.title3)
-                .fontWeight(.semibold)
-            
-            Text(rank)
-                .padding(2)
-                .foregroundColor(.white.opacity(0.8))
-                .font(.caption)
-                .fontWeight(.semibold)
-        }
-    }
-
-    @ViewBuilder
-    func statsSummaryView(stats: TeamStatsViewModel) -> some View {
-        HStack {
-            statItemView(title: stats.ppgTitle, value: stats.ppg, rank: stats.ppgRank)
-                .padding(.leading, 20)
-            Spacer()
-            
-            statItemView(title: stats.oppgTitle, value: stats.oppg, rank: stats.oppgRank)
-            Spacer()
-            
-            statItemView(title: stats.rpgTitle, value: stats.rpg, rank: stats.rpgRank)
-            Spacer()
-            
-            statItemView(title: stats.apgTitle, value: stats.apg, rank: stats.apgRank)
-                .padding(.trailing, 20)
-        }
-        .frame(maxWidth: .infinity)
+//            .frame(maxWidth: .infinity)
     }
 }
 
