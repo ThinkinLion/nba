@@ -102,16 +102,11 @@ struct PlayerSummaryViewModel {
     }
     
     var smallImageUrl: String {
-        let imageUrl = "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
-        print("\(fullName)'s smallImageUrl: \(imageUrl)")
-        return imageUrl
+        playerId.smallImageUrl
     }
     
     var imageUrl: String {
-        //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
-        let imageUrl = "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
-        print("\(fullName)'s imageUrl: \(imageUrl)")
-        return imageUrl
+        playerId.imageUrl
     }
     
     var teamTriCode: String {

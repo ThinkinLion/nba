@@ -19,12 +19,11 @@ struct SeasonLeaderViewModel {
     }
     
     var smallImageUrl: String {
-        "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+        playerId.smallImageUrl
     }
     
     var imageUrl: String {
-        //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
-        "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: playerId)
+        playerId.imageUrl
     }
     
     var name: String {

@@ -286,7 +286,7 @@ extension StandingsView {
     }
 }
 
-//MARK: leadersScrollView
+//MARK: horizontalScrollView
 extension StandingsView {
     @ViewBuilder
     func horizontalItemView(viewModel: SeasonLeaderViewModel) -> some View {
