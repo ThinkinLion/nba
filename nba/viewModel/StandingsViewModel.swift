@@ -15,7 +15,10 @@ final class StandingsViewModel: ObservableObject {
     @Published var east: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
     @Published var west: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
     
-    @Published var games: [HomeAway] = []
+    @Published var roster = [PlayerModel]()
+//    @Published var gameRecap: [GamesModel] = []
+    @Published var gameRecap: [GamesModel] = []
+//    @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
     
     //Season Leaders
@@ -67,7 +70,10 @@ final class StandingsViewModel: ObservableObject {
         //            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
         //        }
         fetchStandings(documentId: seasonYear())
-        fetchGames(documentId: today())
+//        fetchGames(documentId: today())
+//        fetchGames(documentId: "2024-01-03")
+        fetchGameRecap()
+        
         fetchStatsLeaders(documentId: seasonYear())
     }
     
@@ -99,19 +105,42 @@ extension StandingsViewModel {
         }
     }
     
+    func fetchGameRecap() {
+        db.collection("games").order(by: "date", descending: true).limit(to: 10)
+            .getDocuments() { (snapshot, error) in
+                self.gameRecap = snapshot?.documents.compactMap { documentSnapshot in
+                    let result = Result { try documentSnapshot.data(as: GamesModel.self) }
+                    switch result {
+                    case .success(let game):
+                        self.errorMessage = nil
+                        print("game recap: \(game.date ?? ""), \(game.items.count) game played")
+                        return game
+                    case .failure(let error):
+                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+                        return nil
+                    }
+                } ?? []
+                
+                let lastGameRecap = self.gameRecap.first
+//                self.games = lastGameRecap?.items ?? []
+                self.hasGames = lastGameRecap?.items.count ?? 0 > 0
+        }
+    }
+    
+    /*
+     나중에 지우자
     private func fetchGames(documentId: String) {
         guard !documentId.isEmpty else { return }
         db.collection("games").document(documentId).getDocument(as: GamesModel.self) { result in
             switch result {
             case .success(let games):
-//                print("fetchGames: \(games)")
                 self.games = games.items
                 self.hasGames = games.items.count > 0
             case .failure(let error):
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
         }
-    }
+    } */
     
     private func fetchStatsLeaders(documentId: String) {
         guard !documentId.isEmpty else { return }

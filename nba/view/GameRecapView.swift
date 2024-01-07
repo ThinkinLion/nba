@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GameRecapView: View {
     let viewModel: HomeAwayViewModel
+    let gameRecap: [GamesModel]
     @State private var hasAppeared = false
     
     enum Constants {
@@ -124,8 +125,13 @@ struct GameRecapView: View {
             boxScoreView(boxScores: viewModel.awayBoxscore, teamName: viewModel.awayTeamName)
                 .padding(.top, 20)
             
+            BannerView(adUnitId: .gameView)
+            
             boxScoreView(boxScores: viewModel.homeBoxscore, teamName: viewModel.homeTeamName)
                 .padding(.top, 20)
+            
+            //more
+            
         }
         .background(Color(viewModel.awayTeamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -137,7 +143,15 @@ struct GameRecapView: View {
     }
 }
 
-//MARK: horizontalScrollView
+extension GameRecapView {
+//    @ViewBuilder
+//    func moreGameRecapView(gameRecap: [GamesModel]) -> some View {
+//        VStack {
+//            
+//        }
+//    }
+}
+
 extension GameRecapView {
     @ViewBuilder
     func boxScoreHeaderTitleView() -> some View {
@@ -151,18 +165,25 @@ extension GameRecapView {
     @ViewBuilder
     func boxScoreHeaderItemView(viewModel: BoxScoreViewModel) -> some View {
         HStack(spacing: 0) {
-            AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
-                image.resizable()
-            } placeholder: {}
-                .aspectRatio(contentMode: .fill)
-                .background(Color(viewModel.teamNickName))
-                .frame(width: 36, height: 36)
-                .cornerRadius(18)
-                .padding(4)
-            
-            Text(viewModel.lastName)
-                .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
-                .minimumScaleFactor(0.8)
+            VStack(alignment: .leading) {
+                HStack {
+                    AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
+                        image.resizable()
+                    } placeholder: {}
+                        .aspectRatio(contentMode: .fill)
+                        .background(Color(viewModel.teamNickName))
+                        .frame(width: 28, height: 28)
+                        .cornerRadius(14)
+                    
+                    Text(viewModel.position)
+                        .textStyle(color: .white.opacity(0.9), font: .system(size: 14), weight: .semibold)
+                }
+                
+                Text(viewModel.lastName)
+                    .textStyle(color: .white.opacity(0.9), font: .system(size: 13))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
         }
         .frame(height: 40)
     }
@@ -339,6 +360,7 @@ extension GameRecapView {
     func boxScoreView(boxScores: [BoxScore], teamName: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
+                //TODO: navi는 teamView refactor 이후로..
                 Image(teamName.nickNameToTriCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -362,7 +384,7 @@ extension GameRecapView {
                         dividerWithBackground()
                     }
                 }
-//                .frame(width: 100)
+                .frame(width: 100)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {

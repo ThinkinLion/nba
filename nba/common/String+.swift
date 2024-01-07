@@ -11,15 +11,14 @@ extension String {
     var smallImageUrl: String {
         guard !self.isEmpty else { return "" }
         let imageUrl = "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: self)
-        print("\(self)'s smallImageUrl: \(imageUrl)")
+//        print("\(self)'s smallImageUrl: \(imageUrl)")
         return imageUrl
     }
     
     var imageUrl: String {
         guard !self.isEmpty else { return "" }
-        //260x190: https://cdn.nba.com/headshots/nba/latest/260x190/1631260.png
         let imageUrl = "https://cdn.nba.com/headshots/nba/latest/1040x760/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: self)
-        print("\(self)'s imageUrl: \(imageUrl)")
+//        print("\(self)'s imageUrl: \(imageUrl)")
         return imageUrl
     }
     

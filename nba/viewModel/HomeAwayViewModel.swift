@@ -30,6 +30,29 @@ struct HomeAwayViewModel {
         homeAway.home.teamCode
     }
     
+    //date
+    var dayOfWeek: String {
+        let dateString = homeAway.date ?? ""
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
+        dateFormatter.dateFormat = "EEE"
+        return dateFormatter.string(from: currentDate)
+    }
+    
+    var day: String {
+        let dateString = homeAway.date ?? ""
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
+        dateFormatter.dateFormat = "dd"
+        return dateFormatter.string(from: currentDate)
+    }
+    
     //team id
     var awayTeamId: String {
         homeAway.away.teamCode.nickNameToTriCode.triCodeToTeamId
@@ -124,5 +147,22 @@ struct HomeAwayViewModel {
     
     var homeBoxscore: [BoxScore] {
         homeAway.home.boxscore ?? []
+    }
+}
+
+extension HomeAwayViewModel {
+    func todayOfWeek() -> String {
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "EEE"
+        return dateFormatter.string(from: currentDate)
+    }
+    
+    private func today() -> String {
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: currentDate)
     }
 }

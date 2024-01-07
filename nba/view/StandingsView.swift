@@ -33,7 +33,8 @@ struct StandingsView: View {
             .padding(.horizontal, 15)
             
             if viewModel.hasGames {
-                gameRecapView(games: viewModel.games)
+//                gameRecapView(games: viewModel.games)
+                gameRecapView(gameRecap: viewModel.gameRecap)
                 .padding(.horizontal, 15)
                 
 //                gamesView(games: viewModel.games)
@@ -45,6 +46,7 @@ struct StandingsView: View {
                            nonPlayoff: viewModel.east.2,
                            title: "EASTERN CONFERENCE",
                            backgroundColor: Color("#101D46"))
+            .padding(.top, 15)
             
             seasonLeadersView(leaders: viewModel.pointsPerGame)
             .padding(.top, 15)
@@ -206,6 +208,17 @@ extension StandingsView {
                 .font(.system(size: 18, weight: .light, design: .rounded))
                 .zIndex(2)
             
+            VStack {
+                Text(viewModel.dayOfWeek)
+                    .textStyle(color: .black.opacity(0.9), font: .system(size: 14, design: .rounded))
+                Text(viewModel.day)
+                    .textStyle(color: .black.opacity(0.9), font: .system(size: 20, design: .rounded), weight: .bold)
+            }
+            .frame(width: 30, height: 40)
+            .background(.white.opacity(0.7))
+            .padding(.bottom, 120)
+            .zIndex(3)
+            
             Text(viewModel.homeScore)
                 .foregroundColor(.white.opacity(0.9))
                 .font(.system(size: 20, weight: .semibold, design: .rounded))
@@ -236,13 +249,29 @@ extension StandingsView {
         .cornerRadius(8)
     }
     
+//    @ViewBuilder
+//    func gameRecapView2(games: [HomeAway]) -> some View {
+//        ScrollView(.horizontal, showsIndicators: false) {
+//            HStack {
+//                ForEach(games, id: \.self) { item in
+//                    let viewModel = HomeAwayViewModel(homeAway: item)
+//                    NavigationLink(destination: GameRecapView(viewModel: viewModel)) {
+//                        gameRecapItemView(viewModel: viewModel)
+//                    }
+//                }
+//            }
+//            .padding(.top, 10)
+//        }
+//    }
+    
     @ViewBuilder
-    func gameRecapView(games: [HomeAway]) -> some View {
+    func gameRecapView(gameRecap: [GamesModel]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                ForEach(games, id: \.self) { item in
+                let lastGameRecap = gameRecap.first
+                ForEach(lastGameRecap?.items ?? [], id: \.self) { item in
                     let viewModel = HomeAwayViewModel(homeAway: item)
-                    NavigationLink(destination: GameRecapView(viewModel: viewModel)) {
+                    NavigationLink(destination: GameRecapView(viewModel: viewModel, gameRecap: gameRecap)) {
                         gameRecapItemView(viewModel: viewModel)
                     }
                 }

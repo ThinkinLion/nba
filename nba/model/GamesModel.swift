@@ -11,11 +11,13 @@ import FirebaseFirestoreSwift
 struct GamesModel: Codable {
     @DocumentID var id: String?
     let items: [HomeAway]
+    let date: String? //firestore oder by
 }
 
 struct HomeAway: Codable, Hashable {
     let home: Game
     let away: Game
+    let date: String? //cardview 날짜 노출
     let leaders: [BoxScore]? //여기에도 모아봤음, 어떤게 쓰일지 몰라서
 }
 

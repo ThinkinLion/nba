@@ -42,6 +42,11 @@ struct BoxScoreViewModel {
         boxScore.lastName ?? ""
     }
     
+    var position: String {
+        print("\(lastName) position: \(String(describing: boxScore.position))")
+        return boxScore.position ?? ""
+    }
+    
     var min: String {
         boxScore.min ?? ""
     }
