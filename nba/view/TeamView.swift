@@ -107,6 +107,14 @@ struct TeamView: View {
     }
 }
 
+///https://stackoverflow.com/questions/62142773/hide-navigation-bar-on-scroll-in-swiftui
+///Note 1: Assume that the height of the navigation title is 50. (This will change depending on the style.) When the nav bar dissapears, scroll offset drops by that height instantly. To keep the offset consistant add the height of the nav bar to the offset if it's hidden.
+///Note 1: 제목 표시줄의 높이가 50이라고 가정합니다. (이는 스타일에 따라 변경될 수 있습니다.) 네비게이션 바가 사라질 때 스크롤 오프셋은 즉시 해당 높이만큼 감소합니다. 오프셋을 일관되게 유지하려면 네비게이션 바가 숨겨져 있다면 오프셋에 네비게이션 바의 높이를 추가하십시오.
+
+///Note 2: I intentionally let a small difference between two thresholds for hiding and showing instead of using the same value, Because if the user scrolls and keep it in the threshold it won't flicker.
+///Note 2: 나는 나타나고 숨기는 두 임계값 간에 작은 차이를 남겨두었는데, 동일한 값을 사용하는 대신 의도적으로 그렇게 했습니다. 사용자가 스크롤하고 그것을 임계값에서 유지하면 깜빡이지 않도록하기 위해서입니다.
+
+
 extension TeamView {
     @ViewBuilder
     func rosterView(roster: [PlayerModel]) -> some View {
