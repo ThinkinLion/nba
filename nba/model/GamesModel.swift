@@ -8,10 +8,20 @@
 import Foundation
 import FirebaseFirestoreSwift
 
-struct GamesModel: Codable {
-    @DocumentID var id: String?
+struct GamesModel: Codable, Hashable {
+    let id: String?
     let items: [HomeAway]
     let date: String? //firestore oder by
+}
+
+extension GamesModel {
+    static func ==(lhs: GamesModel, rhs: GamesModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct HomeAway: Codable, Hashable {

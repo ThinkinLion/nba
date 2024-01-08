@@ -80,6 +80,10 @@ struct HomeAwayViewModel {
         homeAway.home.score ?? "0"
     }
     
+    var score: String {
+        awayScore + "-" + homeScore
+    }
+    
     //leader id
     var awayLeaderId: String {
         homeAway.away.leader?.playerId ?? ""

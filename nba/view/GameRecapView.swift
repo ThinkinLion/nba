@@ -27,7 +27,8 @@ struct GameRecapView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 80, height: 80)
-                        .opacity(0.8)
+                        .opacity(0.1)
+                        .scaleEffect(1.5)
                         .clipped()
                         .padding(.trailing, Constants.screenWidthQuarter)
                         .padding(.bottom, Constants.headerZStackHeightHalf)
@@ -42,43 +43,19 @@ struct GameRecapView: View {
                             .padding(.top, 90)
                             .zIndex(1)
                     }
-                    
-                    
-//                    Text(viewModel.awayRecord)
-//                        .foregroundColor(.white.opacity(0.8))
-//                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-//                        .padding(.trailing, 50)
-    //                                .padding(.bottom, 10)
                 }
                 .frame(width: Constants.screenWidthHalf, height: 250)
                 .background(Color(viewModel.awayTeamCode))
                 .padding(.trailing, Constants.screenWidthHalf)
                 .zIndex(0)
                 
-//                Text(viewModel.awayScore)
-//                    .foregroundColor(.white.opacity(0.9))
-//                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                    .padding(.trailing, 70)
-//                    .zIndex(3)
-//                
-//                Text("vs")
-//                    .foregroundColor(.white.opacity(0.7))
-//                    .font(.system(size: 18, weight: .light, design: .rounded))
-//                    .zIndex(2)
-//                
-//                Text(viewModel.homeScore)
-//                    .foregroundColor(.white.opacity(0.9))
-//                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-//                    .padding(.leading, 70)
-//                    .zIndex(3)
-                
-                
                 ZStack {
                     Image(viewModel.homeTeamCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 80, height: 80)
-                        .opacity(0.8)
+                        .opacity(0.1)
+                        .scaleEffect(1.5)
                         .clipped()
                         .padding(.leading, Constants.screenWidthQuarter)
                         .padding(.bottom, Constants.headerZStackHeightHalf)
@@ -93,12 +70,6 @@ struct GameRecapView: View {
                             .padding(.top, 90)
                             .zIndex(1)
                     }
-                    
-//                    Text(viewModel.homeRecord)
-//                        .foregroundColor(.white.opacity(0.8))
-//                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-//                        .padding(.leading, 50)
-    //                                .padding(.bottom, 10)
                 }
                 .frame(width: Constants.screenWidthHalf, height: 250)
                 .background(Color(viewModel.homeTeamCode))
@@ -131,6 +102,8 @@ struct GameRecapView: View {
                 .padding(.top, 20)
             
             //more
+//            moreGameRecapView(gameRecap: gameRecap)
+//                .padding(.top, 20)
             
         }
         .background(Color(viewModel.awayTeamId.dark))
@@ -139,17 +112,43 @@ struct GameRecapView: View {
             guard !hasAppeared else { return }
             hasAppeared = true
         }
+        .navigationBarTitle("", displayMode: .inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 2) {
+                    Image(viewModel.awayTeamCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 30, height: 30)
+                        .clipped()
+                    Text(viewModel.score)
+                    Image(viewModel.homeTeamCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 30, height: 30)
+                        .clipped()
+                }
+            }
+        }
         .ignoresSafeArea()
     }
 }
 
 extension GameRecapView {
-//    @ViewBuilder
-//    func moreGameRecapView(gameRecap: [GamesModel]) -> some View {
-//        VStack {
-//            
-//        }
-//    }
+    @ViewBuilder
+    func moreGameRecapView(gameRecap: [GamesModel]) -> some View {
+        VStack {
+            ForEach(gameRecap, id: \.self) { game in
+//                let viewModel = BoxScoreViewModel(boxScore: boxScore)
+//                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
+//                    boxScoreHeaderItemView(viewModel: viewModel)
+//                }
+                Text(game.date ?? "")
+                    .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+                dividerWithBackground()
+            }
+        }
+    }
 }
 
 extension GameRecapView {

@@ -113,7 +113,7 @@ extension StandingsViewModel {
                     switch result {
                     case .success(let game):
                         self.errorMessage = nil
-                        print("game recap: \(game.date ?? ""), \(game.items.count) game played")
+                        print("game recap: \(game.date ?? ""), \(game.items.count) game played..(\(String(describing: game.id))")
                         return game
                     case .failure(let error):
                         self.errorMessage = "Error decoding document: \(error.localizedDescription)"
