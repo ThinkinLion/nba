@@ -30,6 +30,10 @@ struct TeamSummaryViewModel {
         team.teamCode.lowercased()
     }
     
+    var teamTriCode: String {
+        team.teamCode.nickNameToTriCode
+    }
+    
     var win: String {
         team.win
     }

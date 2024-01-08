@@ -12,11 +12,13 @@ struct PlayerView: View {
     @State private var hasAppeared = false
     let playerId: String
     let teamId: String
+    @State var scrollOffset: CGFloat = CGFloat.zero
+    @State var hideNavigationBar: Bool = true
     
     var body: some View {
         let player = PlayerSummaryViewModel(player: viewModel.player)
         
-        ScrollView(.vertical) {
+        ObservableScrollView(scrollOffset: $scrollOffset) {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
                 AsyncImage(url: URL(string: playerId.imageUrl)) { image in
                     image.resizable()
@@ -80,6 +82,31 @@ struct PlayerView: View {
             viewModel.fetchRoster(teamId: teamId)
             hasAppeared = true
         }
+        .navigationBarTitle("", displayMode: .inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 2) {
+                    Image(teamId.teamIdToTriCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 40, height: 40)
+                }
+                .opacity(hideNavigationBar ? 0.0 : 1.0)
+            }
+        }
+        .onChange(of: scrollOffset, perform: { scrollOfset in
+            let offset = scrollOfset + (self.hideNavigationBar ? 50 : 0) // note 1
+            if offset > 60 { // note 2
+                withAnimation(.easeIn(duration: 1), {
+                    self.hideNavigationBar = false
+                })
+            }
+            if offset < 50 {
+                withAnimation(.easeIn(duration: 1), {
+                    self.hideNavigationBar = true
+                })
+            }
+        })
         .ignoresSafeArea()
     }
 }

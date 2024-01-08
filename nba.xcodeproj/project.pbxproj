@@ -19,6 +19,7 @@
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
 		C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B99992B33EF9400A1152E /* TeamView.swift */; };
 		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
+		C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */; };
 		C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
 		C2628F1A2B401B7B005E044B /* GameRecapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F192B401B7B005E044B /* GameRecapView.swift */; };
@@ -76,6 +77,7 @@
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
+		C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
 		C2628F192B401B7B005E044B /* GameRecapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecapView.swift; sourceTree = "<group>"; };
 		C2628F1C2B452C5A005E044B /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreViewModel.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				C21EF4702B099989005D87D2 /* LineView.swift */,
+				C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 				C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */,
 				C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */,
 				C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */,
+				C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */,
 				C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */,
 				C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */,
 				C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */,
@@ -596,7 +600,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = nba/nba.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"nba/Preview Content\"";
 				DEVELOPMENT_TEAM = B9SDD9KWUJ;
@@ -640,7 +644,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = nba/nba.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"nba/Preview Content\"";
 				DEVELOPMENT_TEAM = B9SDD9KWUJ;
 				ENABLE_HARDENED_RUNTIME = YES;
