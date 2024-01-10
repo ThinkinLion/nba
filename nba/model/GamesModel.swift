@@ -44,7 +44,7 @@ extension HomeAway {
 struct Game: Identifiable, Codable, Hashable {
     var id = UUID()
     let teamId: String
-    let teamCode: String
+    let teamCode: String //nickname
     let record: String?
     let score: String?
     let leader: BoxScore?

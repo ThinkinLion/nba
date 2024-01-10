@@ -93,17 +93,23 @@ struct GameRecapView: View {
             leaderSummaryView(viewModel: viewModel)
                 .padding(.top, -15) //default spcing이 있어서
             
-            boxScoreView(boxScores: viewModel.awayBoxscore, teamName: viewModel.awayTeamName)
+            boxScoreView(boxScores: viewModel.awayBoxscore, teamName: viewModel.awayTeamNickName)
                 .padding(.top, 20)
             
-            BannerView(adUnitId: .gameView)
+            if viewModel.hasAwayBoxscore {
+                BannerView(adUnitId: .gameView)
+            }
             
-            boxScoreView(boxScores: viewModel.homeBoxscore, teamName: viewModel.homeTeamName)
+            boxScoreView(boxScores: viewModel.homeBoxscore, teamName: viewModel.homeTeamNickName)
                 .padding(.top, 20)
+            
+            if viewModel.hasHomeBoxscore {
+                BannerView(adUnitId: .gameView)
+            }
             
             //more
-//            moreGameRecapView(gameRecap: gameRecap)
-//                .padding(.top, 20)
+            moreGameRecapView(gameRecap: gameRecap)
+                .padding(.top, 20)
             
         }
         .background(Color(viewModel.awayTeamId.dark))
@@ -116,13 +122,13 @@ struct GameRecapView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 2) {
-                    Image(viewModel.awayTeamCode)
+                    Image(viewModel.awayTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 30, height: 30)
                         .clipped()
                     Text(viewModel.score)
-                    Image(viewModel.homeTeamCode)
+                    Image(viewModel.homeTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 30, height: 30)
@@ -138,16 +144,55 @@ extension GameRecapView {
     @ViewBuilder
     func moreGameRecapView(gameRecap: [GamesModel]) -> some View {
         VStack {
-            ForEach(gameRecap, id: \.self) { game in
-//                let viewModel = BoxScoreViewModel(boxScore: boxScore)
-//                NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
-//                    boxScoreHeaderItemView(viewModel: viewModel)
-//                }
-                Text(game.date ?? "")
-                    .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+            ForEach(gameRecap, id: \.self) { gamesOfDay in
+                VStack {
+                    Text(gamesOfDay.date?.dayOfWeek ?? "")
+                        .textStyle(color: .black.opacity(0.9), font: .system(size: 14, design: .rounded))
+                    Text(gamesOfDay.date?.day ?? "")
+                        .textStyle(color: .black.opacity(0.9), font: .system(size: 20, design: .rounded), weight: .bold)
+                }
+                .frame(width: 30, height: 40)
+                .background(.white.opacity(0.7))
+                
+                ForEach(gamesOfDay.items, id: \.self) { item in
+                    let viewModel = HomeAwayViewModel(homeAway: item)
+                    NavigationLink(destination: GameRecapView(viewModel: viewModel, gameRecap: gameRecap)) {
+                        HStack(spacing: 0) {
+                            Text(viewModel.awayTeamName)
+                                .textStyle(color: .white.opacity(0.9), font: .system(size: 14, design: .rounded))
+                                .frame(width: 100, alignment: .trailing)
+                            Image(viewModel.awayTriCode)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                                .clipped()
+                                .padding(.horizontal, 2)
+                            Text(viewModel.score)
+                                .textStyle(color: .white.opacity(0.9), font: .system(size: 16, design: .rounded))
+                                .frame(width: 80, height: 30)
+                                .background(.gray.opacity(0.5))
+                                .cornerRadius(5)
+                                .padding(.horizontal, 2)
+                            Image(viewModel.homeTriCode)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                                .clipped()
+                                .padding(.horizontal, 2)
+                            Text(viewModel.homeTeamName)
+                                .textStyle(color: .white.opacity(0.9), font: .system(size: 14, design: .rounded))
+                                .frame(width: 100, alignment: .leading)
+                        }
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                
                 dividerWithBackground()
             }
         }
+        .padding(.horizontal, 15)
+        .padding(.bottom, 20)
     }
 }
 

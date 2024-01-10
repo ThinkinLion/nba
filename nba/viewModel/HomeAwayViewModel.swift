@@ -22,35 +22,48 @@ struct HomeAwayViewModel {
         homeAway.home.teamCode.lowercased()
     }
     
-    var awayTeamName: String {
+    //tri code
+    var awayTriCode: String {
+        homeAway.away.teamCode.nickNameToTriCode
+    }
+    
+    var homeTriCode: String {
+        homeAway.home.teamCode.nickNameToTriCode
+    }
+    
+    //team name
+    var awayTeamNickName: String {
         homeAway.away.teamCode
     }
     
-    var homeTeamName: String {
+    var homeTeamNickName: String {
         homeAway.home.teamCode
+    }
+    
+    var awayTeamName: String {
+        homeAway.away.teamId.teamIdToName
+    }
+    
+    var homeTeamName: String {
+        homeAway.home.teamId.teamIdToName
+    }
+    
+    //team full name
+    var awayTeamFullName: String {
+        awayTeamName + " " + awayTeamNickName
+    }
+    
+    var homeTeamFullName: String {
+        homeTeamName + " " + homeTeamNickName
     }
     
     //date
     var dayOfWeek: String {
-        let dateString = homeAway.date ?? ""
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
-        dateFormatter.dateFormat = "EEE"
-        return dateFormatter.string(from: currentDate)
+        homeAway.date?.dayOfWeek ?? ""
     }
     
     var day: String {
-        let dateString = homeAway.date ?? ""
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
-        dateFormatter.dateFormat = "dd"
-        return dateFormatter.string(from: currentDate)
+        homeAway.date?.day ?? ""
     }
     
     //team id
@@ -81,7 +94,7 @@ struct HomeAwayViewModel {
     }
     
     var score: String {
-        awayScore + "-" + homeScore
+        awayScore + " - " + homeScore
     }
     
     //leader id
@@ -149,8 +162,16 @@ struct HomeAwayViewModel {
         homeAway.away.boxscore ?? []
     }
     
+    var hasAwayBoxscore: Bool {
+        !awayBoxscore.isEmpty
+    }
+    
     var homeBoxscore: [BoxScore] {
         homeAway.home.boxscore ?? []
+    }
+    
+    var hasHomeBoxscore: Bool {
+        !homeBoxscore.isEmpty
     }
 }
 
