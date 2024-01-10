@@ -73,6 +73,33 @@ extension String {
 }
 
 extension String {
+    //date
+    var dayOfWeek: String {
+        guard !self.isEmpty else { return "" }
+        let dateString = self
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
+        dateFormatter.dateFormat = "EEE"
+        return dateFormatter.string(from: currentDate)
+    }
+    
+    var day: String {
+        guard !self.isEmpty else { return "" }
+        let dateString = self
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
+        dateFormatter.dateFormat = "dd"
+        return dateFormatter.string(from: currentDate)
+    }
+}
+
+extension String {
     var nickNameToTriCode: String {
         switch self.lowercased() {
         case "76ers", "sixers": return "PHI"
@@ -218,38 +245,74 @@ extension String {
     }
     
     var triCodeToTeamId: String {
-            switch self {
-            case "NYK": return "1610612752" // east
-            case "CHI": return "1610612741"
-            case "WAS": return "1610612764"
-            case "MIA": return "1610612748"
-            case "CHA": return "1610612766"
-            case "PHI": return "1610612755"
-            case "TOR": return "1610612761"
-            case "MIL": return "1610612749"
-            case "BKN": return "1610612751"
-            case "ATL": return "1610612737"
-            case "CLE": return "1610612739"
-            case "BOS": return "1610612738"
-            case "DET": return "1610612765"
-            case "ORL": return "1610612753"
-            case "IND": return "1610612754"
-            case "GSW": return "1610612744" // west
-            case "UTA": return "1610612762"
-            case "DEN": return "1610612743"
-            case "DAL": return "1610612742"
-            case "SAC": return "1610612758"
-            case "POR": return "1610612757"
-            case "MIN": return "1610612750"
-            case "LAL": return "1610612747"
-            case "MEM": return "1610612763"
-            case "PHX": return "1610612756"
-            case "SAS": return "1610612759"
-            case "LAC": return "1610612746"
-            case "HOU": return "1610612745"
-            case "OKC": return "1610612760"
-            case "NOP": return "1610612740"
-            default: return ""
-            }
+        switch self {
+        case "NYK": return "1610612752" // east
+        case "CHI": return "1610612741"
+        case "WAS": return "1610612764"
+        case "MIA": return "1610612748"
+        case "CHA": return "1610612766"
+        case "PHI": return "1610612755"
+        case "TOR": return "1610612761"
+        case "MIL": return "1610612749"
+        case "BKN": return "1610612751"
+        case "ATL": return "1610612737"
+        case "CLE": return "1610612739"
+        case "BOS": return "1610612738"
+        case "DET": return "1610612765"
+        case "ORL": return "1610612753"
+        case "IND": return "1610612754"
+        case "GSW": return "1610612744" // west
+        case "UTA": return "1610612762"
+        case "DEN": return "1610612743"
+        case "DAL": return "1610612742"
+        case "SAC": return "1610612758"
+        case "POR": return "1610612757"
+        case "MIN": return "1610612750"
+        case "LAL": return "1610612747"
+        case "MEM": return "1610612763"
+        case "PHX": return "1610612756"
+        case "SAS": return "1610612759"
+        case "LAC": return "1610612746"
+        case "HOU": return "1610612745"
+        case "OKC": return "1610612760"
+        case "NOP": return "1610612740"
+        default: return ""
         }
+    }
+    
+    var teamIdToName: String {
+        switch self {
+        case "1610612752": return "New York" // east
+        case "1610612741": return "Chicago"
+        case "1610612764": return "Washington"
+        case "1610612748": return "Miami"
+        case "1610612766": return "Charlotte"
+        case "1610612755": return "Philadelphia"
+        case "1610612761": return "Toronto"
+        case "1610612749": return "Milwaukee"
+        case "1610612751": return "Brooklyn"
+        case "1610612737": return "Atlanta"
+        case "1610612739": return "Cleveland"
+        case "1610612738": return "Boston"
+        case "1610612765": return "Detroit"
+        case "1610612753": return "Orlando"
+        case "1610612754": return "Indiana" // west
+        case "1610612744": return "Golden State"
+        case "1610612762": return "Utah"
+        case "1610612743": return "Denver"
+        case "1610612742": return "Dallas"
+        case "1610612758": return "Sacramento"
+        case "1610612757": return "Portland"
+        case "1610612750": return "Minnesota"
+        case "1610612747": return "Los Angeles"
+        case "1610612763": return "Memphis"
+        case "1610612756": return "Phoenix"
+        case "1610612759": return "San Antonio"
+        case "1610612746": return "LA"
+        case "1610612745": return "Houston"
+        case "1610612760": return "Oklahoma City"
+        case "1610612740": return "New Orleans"
+        default: return ""
+        }
+    }
 }
