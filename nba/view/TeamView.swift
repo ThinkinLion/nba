@@ -8,17 +8,19 @@
 import SwiftUI
 
 struct TeamView: View {
-    let summary: TeamSummaryViewModel
+    let teamId: String
     @StateObject var viewModel = TeamViewModel()
     @State private var hasAppeared = false
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
     
     var body: some View {
+        let statsViewModel = TeamStatsViewModel(team: viewModel.team)
+        
         ObservableScrollView(scrollOffset: $scrollOffset) {
             ZStack(alignment: .topLeading) {
                 Color.clear
-                Image(summary.teamCode)
+                Image(teamId.teamIdToNickName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .opacity(0.1)
@@ -28,12 +30,12 @@ struct TeamView: View {
                     .zIndex(0)
                 
                 VStack(alignment: .center, spacing: 0) {
-                    Image(summary.teamCode)
+                    Image(teamId.teamIdToNickName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 150, height: 150)
                         .clipped()
-                    Text(summary.conferenceRankFullName)
+                    Text(statsViewModel.conferenceRankFullName)
                         .foregroundColor(.white.opacity(0.9))
                         .font(.title2)
                         .fontWeight(.semibold)
@@ -45,19 +47,19 @@ struct TeamView: View {
             }
             .frame(height: 250)
             .frame(maxWidth: .infinity)
-            .background(Color(summary.teamId.light))
+            .background(Color(teamId.light))
         
             Text("")
                 .frame(maxWidth: .infinity)
                 .frame(height: 20)
                 .background {
                     CustomCorner(corners: [.topLeft, ], radius: 20)
-                        .fill(Color(summary.teamId.dark))
+                        .fill(Color(teamId.dark))
                         .ignoresSafeArea()
                 }
                 .padding(.top, -19)
             
-            let statsViewModel = TeamStatsViewModel(team: viewModel.team)
+//            let statsViewModel = TeamStatsViewModel(team: viewModel.team)
             statsSummaryView(stats: statsViewModel)
             
             dividerWithBackground()
@@ -70,19 +72,19 @@ struct TeamView: View {
                     .padding(.bottom, 30)
             }
         }
-        .background(Color(summary.teamId.dark))
+        .background(Color(teamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             guard !hasAppeared else { return }
-            viewModel.fetchTeam(documentId: summary.teamId)
-            viewModel.fetchRoster(teamId: summary.teamId)
+            viewModel.fetchTeam(documentId: teamId)
+            viewModel.fetchRoster(teamId: teamId)
             hasAppeared = true
         }
         .navigationBarTitle("", displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 2) {
-                    Image(summary.teamTriCode)
+                    Image(teamId.teamIdToTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40)

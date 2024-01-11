@@ -12,6 +12,8 @@ struct TeamModel: Identifiable, Codable, Hashable {
     let teamId: String
     let teamCode: String
     let teamName: String
+    let conference: String?
+    let confRank: String?
     let ppg: String?
     let ppgRank: String?
     let apg: String?
@@ -33,5 +35,5 @@ extension TeamModel {
 }
 
 extension TeamModel {
-    static var empty = TeamModel(id: "", teamId: "", teamCode: "", teamName: "", ppg: "", ppgRank: "", apg: "", apgRank: "", rpg: "", rpgRank: "", oppg: "", oppgRank: "")
+    static var empty = TeamModel(id: "", teamId: "", teamCode: "", teamName: "", conference: "", confRank: "", ppg: "", ppgRank: "", apg: "", apgRank: "", rpg: "", rpgRank: "", oppg: "", oppgRank: "")
 }

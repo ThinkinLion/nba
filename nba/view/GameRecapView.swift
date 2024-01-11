@@ -403,19 +403,20 @@ extension GameRecapView {
     @ViewBuilder
     func boxScoreView(boxScores: [BoxScore], teamName: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
-                //TODO: navi는 teamView refactor 이후로..
-                Image(teamName.nickNameToTriCode)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 40, height: 40)
-                    .clipped()
-                Text(teamName)
-                    .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
-                    .padding(.leading, 2)
-                Spacer()
+            NavigationLink(destination: TeamView(teamId: teamName.nickNameToTriCode.triCodeToTeamId)) {
+                HStack(spacing: 0) {
+                    Image(teamName.nickNameToTriCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 40, height: 40)
+                        .clipped()
+                    Text(teamName)
+                        .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+                        .padding(.leading, 2)
+                    Spacer()
+                }
+                .padding(.leading, 15)
             }
-            .padding(.leading, 15)
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading) {

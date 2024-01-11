@@ -97,6 +97,11 @@ struct HomeAwayViewModel {
         awayScore + " - " + homeScore
     }
     
+    //final
+    var final: String {
+        homeAway.final?.uppercased() ?? "vs"
+    }
+    
     //leader id
     var awayLeaderId: String {
         homeAway.away.leader?.playerId ?? ""

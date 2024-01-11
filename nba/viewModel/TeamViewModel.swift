@@ -61,6 +61,21 @@ struct TeamStatsViewModel {
         self.team = team
     }
     
+    //rank
+    var conferenceRankFullName: String {
+        guard !conference.isEmpty else { return "" }
+        return conferenceRank.ordinal + " in " + conference
+    }
+    
+    var conferenceRank: String {
+        team.confRank ?? ""
+    }
+    
+    var conference: String {
+        team.conference ?? ""
+    }
+    
+    //ppg
     var ppgTitle: String {
         "PPG"
     }
@@ -75,6 +90,7 @@ struct TeamStatsViewModel {
         return ppgRank
     }
     
+    //apg
     var apgTitle: String {
         "APG"
     }
@@ -89,6 +105,7 @@ struct TeamStatsViewModel {
         return apgRank
     }
     
+    //rpg
     var rpgTitle: String {
         "RPG"
     }
@@ -103,6 +120,7 @@ struct TeamStatsViewModel {
         return rpgRank
     }
     
+    //oppg
     var oppgTitle: String {
         "OPPG"
     }

@@ -203,9 +203,9 @@ extension StandingsView {
                 .padding(.trailing, 70)
                 .zIndex(3)
             
-            Text("vs")
+            Text(viewModel.final)
                 .foregroundColor(.white.opacity(0.7))
-                .font(.system(size: 18, weight: .light, design: .rounded))
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
                 .zIndex(2)
             
             VStack {
@@ -566,7 +566,7 @@ extension StandingsView {
         VStack {
             ForEach(Array(items.enumerated()), id: \.element) { index, model in
                 let viewModel = TeamSummaryViewModel(team: model)
-                NavigationLink(destination: TeamView(summary: viewModel)) {
+                NavigationLink(destination: TeamView(teamId: viewModel.teamId)) {
                     HStack(spacing: 0) {
                         Text(viewModel.conferenceRank)
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
