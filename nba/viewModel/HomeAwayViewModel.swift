@@ -99,7 +99,9 @@ struct HomeAwayViewModel {
     
     //final
     var final: String {
-        homeAway.final?.uppercased() ?? "vs"
+        guard let final = homeAway.final else { return "-" }
+        guard !final.isEmpty else { return "-" }
+        return final.uppercased()
     }
     
     //leader id

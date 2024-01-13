@@ -45,6 +45,7 @@ struct StandingsView: View {
                            playInTournament: viewModel.east.1,
                            nonPlayoff: viewModel.east.2,
                            title: "EASTERN CONFERENCE",
+                           lastUpdated: viewModel.lastUpdated,
                            backgroundColor: Color("#101D46"))
             .padding(.top, 15)
             
@@ -55,6 +56,7 @@ struct StandingsView: View {
                            playInTournament: viewModel.west.1,
                            nonPlayoff: viewModel.west.2,
                            title: "WESTERN CONFERENCE",
+                           lastUpdated: viewModel.lastUpdated,
                            backgroundColor: Color("#821E26"))
             .padding(.top, 15)
             
@@ -178,19 +180,17 @@ extension StandingsView {
     @ViewBuilder
     func gameRecapItemView(viewModel: HomeAwayViewModel) -> some View {
         ZStack {
-            VStack {
+            LazyVStack {
                 Image(viewModel.awayTeamCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 100, height: 100)
                     .clipped()
                     .padding(.trailing, 50)
-//                                .padding(.top, 15)
                 Text(viewModel.awayRecord)
                     .foregroundColor(.white.opacity(0.8))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .padding(.trailing, 50)
-//                                .padding(.bottom, 10)
             }
             .frame(width: 150, height: 160)
             .background(Color(viewModel.awayTeamCode))
@@ -208,7 +208,7 @@ extension StandingsView {
                 .font(.system(size: 10, weight: .semibold, design: .rounded))
                 .zIndex(2)
             
-            VStack {
+            LazyVStack {
                 Text(viewModel.dayOfWeek)
                     .textStyle(color: .black.opacity(0.9), font: .system(size: 14, design: .rounded))
                 Text(viewModel.day)
@@ -225,19 +225,17 @@ extension StandingsView {
                 .padding(.leading, 70)
                 .zIndex(3)
             
-            VStack {
+            LazyVStack {
                 Image(viewModel.homeTeamCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 100, height: 100)
                     .clipped()
                     .padding(.leading, 50)
-//                                .padding(.top, 15)
                 Text(viewModel.homeRecord)
                     .foregroundColor(.white.opacity(0.8))
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
                     .padding(.leading, 50)
-//                                .padding(.bottom, 10)
             }
             .frame(width: 150, height: 160)
             .background(Color(viewModel.homeTeamCode))
@@ -249,25 +247,10 @@ extension StandingsView {
         .cornerRadius(8)
     }
     
-//    @ViewBuilder
-//    func gameRecapView2(games: [HomeAway]) -> some View {
-//        ScrollView(.horizontal, showsIndicators: false) {
-//            HStack {
-//                ForEach(games, id: \.self) { item in
-//                    let viewModel = HomeAwayViewModel(homeAway: item)
-//                    NavigationLink(destination: GameRecapView(viewModel: viewModel)) {
-//                        gameRecapItemView(viewModel: viewModel)
-//                    }
-//                }
-//            }
-//            .padding(.top, 10)
-//        }
-//    }
-    
     @ViewBuilder
     func gameRecapView(gameRecap: [GamesModel]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
+            LazyHStack {
                 let lastGameRecap = gameRecap.first
                 ForEach(lastGameRecap?.items ?? [], id: \.self) { item in
                     let viewModel = HomeAwayViewModel(homeAway: item)
@@ -522,12 +505,13 @@ extension StandingsView {
                         playInTournament: [StandingsTeam],
                         nonPlayoff: [StandingsTeam],
                         title: String,
+                        lastUpdated: String,
                         backgroundColor: Color) -> some View {
-        VStack {
+        ZStack(alignment: .top) {
             Text(title)
+                .textStyle(color: .white, font: .system(size: 20, weight: .bold, design: .monospaced))
                 .padding(.top, 10)
-                .foregroundColor(.white)
-                .font(.system(size: 20, weight: .bold, design: .monospaced))
+                .zIndex(0)
             
             HStack(alignment: .top) {
                 standingRowView(items: playoffs)
@@ -548,6 +532,16 @@ extension StandingsView {
                 
                 standingRowView(items: nonPlayoff)
             }
+            .padding(.top, 55)
+            .zIndex(1)
+            
+            Text(lastUpdated)
+                .padding(3)
+                .background(.black.opacity(0.5))
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 12))
+                .padding(.top, 328)
+                .opacity(lastUpdated.isEmpty ? 0.0 : 1.0)
+                .zIndex(2)
         }
         .frame(height: 340)
         .frame(maxWidth: .infinity)

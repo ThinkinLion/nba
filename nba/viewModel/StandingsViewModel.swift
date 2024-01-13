@@ -12,6 +12,7 @@ import Firebase
 final class StandingsViewModel: ObservableObject {
     @Published var standings = StandingsModel.empty
     @Published var newItem = StandingsModel.sample
+    @Published var lastUpdated = ""
     @Published var east: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
     @Published var west: ([StandingsTeam], [StandingsTeam], [StandingsTeam]) = ([], [], [])
     
@@ -96,6 +97,7 @@ extension StandingsViewModel {
             case .success(let standings):
                 //                self.standings = standings
                 //                print("fetchStandings: \(standings)")
+                self.lastUpdated = standings.date?.lastUpdated ?? ""
                 self.east = self.divideConferenceStandings(conference: standings.east)
                 self.west = self.divideConferenceStandings(conference: standings.west)
                 self.errorMessage = nil
@@ -106,7 +108,7 @@ extension StandingsViewModel {
     }
     
     func fetchGameRecap() {
-        db.collection("games").order(by: "date", descending: true).limit(to: 10)
+        db.collection("games").order(by: "date", descending: true).limit(to: 7)
             .getDocuments() { (snapshot, error) in
                 self.gameRecap = snapshot?.documents.compactMap { documentSnapshot in
                     let result = Result { try documentSnapshot.data(as: GamesModel.self) }

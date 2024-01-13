@@ -10,6 +10,7 @@ import FirebaseFirestoreSwift
 
 struct StandingsModel: Codable {
     @DocumentID var id: String?
+    let date: String?
     let east: [StandingsTeam]
     let west: [StandingsTeam]
 }
@@ -38,13 +39,15 @@ extension StandingsTeam {
 }
 
 extension StandingsModel {
-    static var empty = StandingsModel(east: [
+    static var empty = StandingsModel(date: nil,
+                                      east: [
         StandingsTeam(teamId: "", teamCode: "", teamName: "", confRank: "", conference: "", win: "", loss: "", winPct: "", gamesBehind: ""),
-                                    ],
+    ],
                                  west: [
                                     StandingsTeam(teamId: "", teamCode: "", teamName: "", confRank: "", conference: "", win: "", loss: "", winPct: "", gamesBehind: ""),
                                     ])
-    static var sample = StandingsModel(east: [
+    static var sample = StandingsModel(date: nil,
+                                       east: [
         StandingsTeam(teamId: "1610612755", teamCode: "sixers", teamName: "Philadelphia", confRank: "1", conference: "", win: "7", loss: "1", winPct: ".875", gamesBehind: ""),
         StandingsTeam(teamId: "1610612755", teamCode: "celtics", teamName: "Boston", confRank: "2", conference: "", win: "7", loss: "2", winPct: ".778", gamesBehind: "0.5"),
         StandingsTeam(teamId: "1610612755", teamCode: "pacers", teamName: "Indiana", confRank: "3", conference: "", win: "6", loss: "3", winPct: ".667", gamesBehind: "1.5"),

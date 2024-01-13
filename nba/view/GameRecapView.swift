@@ -224,7 +224,7 @@ extension GameRecapView {
                 }
                 
                 Text(viewModel.lastName)
-                    .textStyle(color: .white.opacity(0.9), font: .system(size: 13))
+                    .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
@@ -419,6 +419,7 @@ extension GameRecapView {
             }
             
             HStack(spacing: 0) {
+                //Left Sticky
                 VStack(alignment: .leading) {
                     boxScoreHeaderTitleView()
                     ForEach(boxScores, id: \.self) { boxScore in

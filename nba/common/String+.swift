@@ -97,6 +97,19 @@ extension String {
         dateFormatter.dateFormat = "dd"
         return dateFormatter.string(from: currentDate)
     }
+    
+    var lastUpdated: String {
+        guard !self.isEmpty else { return "" }
+        let dateString = self
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let currentDate = dateFormatter.date(from: dateString) else { return "" }
+        dateFormatter.dateFormat = "MMM. dd"
+        let formatted = "through " + dateFormatter.string(from: currentDate) + " games"
+        return formatted.uppercased()
+    }
 }
 
 extension String {
