@@ -23,17 +23,27 @@ final class StandingsViewModel: ObservableObject {
     @Published var hasGames: Bool = false
     
     //Season Leaders
-    @Published var pointsPerGame: SeasonLeaders = .empty
-    @Published var assistsPerGame: SeasonLeaders = .empty
-    @Published var reboundsPerGame: SeasonLeaders = .empty
+    @Published var firstCardViewSlot: SeasonLeaders = .empty
+    @Published var secondCardViewSlot: SeasonLeaders = .empty
+    @Published var thirdCardViewSlot: SeasonLeaders = .empty
     
-    @Published var blocksPerGame: SeasonLeaders = .empty
-    @Published var stealsPerGame: SeasonLeaders = .empty
-    @Published var fieldGoalPercentage: SeasonLeaders = .empty
+//    @Published var pointsPerGame: SeasonLeaders = .empty
+//    @Published var assistsPerGame: SeasonLeaders = .empty
+//    @Published var reboundsPerGame: SeasonLeaders = .empty
     
-    @Published var threePointersMade: SeasonLeaders = .empty
-    @Published var threePointPercentage: SeasonLeaders = .empty
-    @Published var fantasyPointsPerGame: SeasonLeaders = .empty
+    @Published var firstVStackSlot: SeasonLeaders = .empty
+    @Published var secondVStackSlot: SeasonLeaders = .empty
+    @Published var thirdVStackSlot: SeasonLeaders = .empty
+    @Published var fourthVStackSlot: SeasonLeaders = .empty
+    @Published var fifthVStackSlot: SeasonLeaders = .empty
+    @Published var sixthVStackSlot: SeasonLeaders = .empty
+//    @Published var blocksPerGame: SeasonLeaders = .empty
+//    @Published var stealsPerGame: SeasonLeaders = .empty
+//    @Published var fieldGoalPercentage: SeasonLeaders = .empty
+//    
+//    @Published var threePointersMade: SeasonLeaders = .empty
+//    @Published var threePointPercentage: SeasonLeaders = .empty
+//    @Published var fantasyPointsPerGame: SeasonLeaders = .empty
     
     @Published var rookiesMinutesPerGame: SeasonLeaders = .empty
     @Published var rookiesPointsPerGame: SeasonLeaders = .empty
@@ -86,6 +96,25 @@ final class StandingsViewModel: ObservableObject {
         } catch {
             self.errorMessage = "Error decoding document: \(error.localizedDescription)"
         }
+    }
+}
+
+extension StandingsViewModel {
+    func shuffledSeasonLeaders(leaders: [SeasonLeaders]) {
+        let shuffeld = leaders.shuffled()
+        guard shuffeld.count >= 9 else { return }
+        
+        firstCardViewSlot = shuffeld[0]
+        secondCardViewSlot = shuffeld[1]
+        thirdCardViewSlot = shuffeld[2]
+        
+        firstVStackSlot = shuffeld[3]
+        secondVStackSlot = shuffeld[4]
+        thirdVStackSlot = shuffeld[5]
+        
+        fourthVStackSlot = shuffeld[6]
+        fifthVStackSlot = shuffeld[7]
+        sixthVStackSlot = shuffeld[8]
     }
 }
 
@@ -150,17 +179,28 @@ extension StandingsViewModel {
             switch result {
             case .success(let seasonLeaders):
 //                print("fetchStatsLeaders: \(seasonLeaders)")
-                self.pointsPerGame = seasonLeaders.seasonLeadersPointsPerGame ?? .empty
-                self.assistsPerGame = seasonLeaders.seasonLeadersAssistsPerGame ?? .empty
-                self.reboundsPerGame = seasonLeaders.seasonLeadersReboundsPerGame ?? .empty
+//                self.pointsPerGame = seasonLeaders.seasonLeadersPointsPerGame ?? .empty
+//                self.assistsPerGame = seasonLeaders.seasonLeadersAssistsPerGame ?? .empty
+//                self.reboundsPerGame = seasonLeaders.seasonLeadersReboundsPerGame ?? .empty
+                self.shuffledSeasonLeaders(leaders: [seasonLeaders.seasonLeadersPointsPerGame ?? .empty,
+                                                     seasonLeaders.seasonLeadersAssistsPerGame ?? .empty,
+                                                     seasonLeaders.seasonLeadersReboundsPerGame ?? .empty,
+                                                     
+                                                     seasonLeaders.seasonLeadersBlocksPerGame ?? .empty,
+                                                     seasonLeaders.seasonLeadersStealsPerGame ?? .empty,
+                                                     seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty,
+                                                     
+                                                     seasonLeaders.seasonLeadersThreePointersMade ?? .empty,
+                                                     seasonLeaders.seasonLeadersThreePointPercentage ?? .empty,
+                                                     seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty])
                 
-                self.blocksPerGame = seasonLeaders.seasonLeadersBlocksPerGame ?? .empty
-                self.stealsPerGame = seasonLeaders.seasonLeadersStealsPerGame ?? .empty
-                self.fieldGoalPercentage = seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty
-                
-                self.threePointersMade = seasonLeaders.seasonLeadersThreePointersMade ?? .empty
-                self.threePointPercentage = seasonLeaders.seasonLeadersThreePointPercentage ?? .empty
-                self.fantasyPointsPerGame = seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty
+//                self.blocksPerGame = seasonLeaders.seasonLeadersBlocksPerGame ?? .empty
+//                self.stealsPerGame = seasonLeaders.seasonLeadersStealsPerGame ?? .empty
+//                self.fieldGoalPercentage = seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty
+//                
+//                self.threePointersMade = seasonLeaders.seasonLeadersThreePointersMade ?? .empty
+//                self.threePointPercentage = seasonLeaders.seasonLeadersThreePointPercentage ?? .empty
+//                self.fantasyPointsPerGame = seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty
                 
                 self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
                 self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty

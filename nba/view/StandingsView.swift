@@ -49,7 +49,7 @@ struct StandingsView: View {
                            backgroundColor: Color("#101D46"))
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.pointsPerGame)
+            seasonLeadersCardView(leaders: viewModel.firstCardViewSlot)
             .padding(.top, 15)
             
             conferenceView(playoffs: viewModel.west.0,
@@ -62,19 +62,20 @@ struct StandingsView: View {
             
             BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
             
-            seasonLeadersView(leaders: viewModel.assistsPerGame)
+            seasonLeadersCardView(leaders: viewModel.secondCardViewSlot)
             .padding(.top, 15)
             
-            seasonLeadersView(leaders: viewModel.reboundsPerGame)
+            seasonLeadersCardView(leaders: viewModel.thirdCardViewSlot)
             .padding(.top, 15)
             
-            seasonLeadersVStackView(leaders: viewModel.blocksPerGame)
+            //seasonLeader VStack
+            seasonLeadersVStackView(leaders: viewModel.fifthVStackSlot)
             .padding(.top, 15)
             
-            seasonLeadersVStackView(leaders: viewModel.stealsPerGame)
+            seasonLeadersVStackView(leaders: viewModel.secondVStackSlot)
             .padding(.top, 15)
             
-            seasonLeadersVStackView(leaders: viewModel.fieldGoalPercentage)
+            seasonLeadersVStackView(leaders: viewModel.thirdVStackSlot)
             .padding(.top, 15)
             
             //advanced
@@ -91,14 +92,14 @@ struct StandingsView: View {
             
             BannerView(adUnitId: .standingsView2, paddingTop: 15, paddingHorizontal: 10, height: 100)
             
-            //seasonLeaders
-            seasonLeadersVStackView(leaders: viewModel.threePointersMade)
+            //seasonLeader VStack
+            seasonLeadersVStackView(leaders: viewModel.fourthVStackSlot)
             .padding(.top, 15)
             
-            seasonLeadersVStackView(leaders: viewModel.threePointPercentage)
+            seasonLeadersVStackView(leaders: viewModel.fifthVStackSlot)
             .padding(.top, 15)
             
-            seasonLeadersVStackView(leaders: viewModel.fantasyPointsPerGame)
+            seasonLeadersVStackView(leaders: viewModel.sixthVStackSlot)
             .padding(.top, 15)
             
             //scoring
@@ -118,13 +119,13 @@ struct StandingsView: View {
             .padding(.top, 25)
             
             //rookies
-            seasonLeadersView(leaders: viewModel.rookiesMinutesPerGame)
+            seasonLeadersCardView(leaders: viewModel.rookiesMinutesPerGame)
             .padding(.top, 15)
 
-            seasonLeadersView(leaders: viewModel.rookiesPointsPerGame)
+            seasonLeadersCardView(leaders: viewModel.rookiesPointsPerGame)
             .padding(.top, 15)
 
-            seasonLeadersView(leaders: viewModel.rookiesDoubleDoubles)
+            seasonLeadersCardView(leaders: viewModel.rookiesDoubleDoubles)
             .padding(.top, 15)
             
             //seasonLeaders etc
@@ -432,7 +433,7 @@ extension StandingsView {
 //MARK: seasonLeadersView
 extension StandingsView {
     @ViewBuilder
-    func seasonLeadersView(leaders: SeasonLeaders) -> some View {
+    func seasonLeadersCardView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
                 Text(leaders.category.uppercased())
