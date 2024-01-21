@@ -166,7 +166,11 @@ struct HomeAwayViewModel {
     
     //boxscore
     var awayBoxscore: [BoxScore] {
-        homeAway.away.boxscore ?? []
+        //출전하지 않은 player는 미노출
+        homeAway.away.boxscore?.filter { boxscore in
+            guard let pts = boxscore.pts else { return false }
+            return !pts.isEmpty
+        } ?? []
     }
     
     var hasAwayBoxscore: Bool {
@@ -174,7 +178,10 @@ struct HomeAwayViewModel {
     }
     
     var homeBoxscore: [BoxScore] {
-        homeAway.home.boxscore ?? []
+        homeAway.home.boxscore?.filter { boxscore in
+            guard let pts = boxscore.pts else { return false }
+            return !pts.isEmpty
+        } ?? []
     }
     
     var hasHomeBoxscore: Bool {
