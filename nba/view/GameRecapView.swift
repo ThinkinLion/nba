@@ -91,10 +91,11 @@ struct GameRecapView: View {
                 .padding(.top, -19)
             
             leaderSummaryView(viewModel: viewModel)
-                .padding(.top, -15) //default spcing이 있어서
+                .background(.black.opacity(0.1))
+                .padding(.top, -28) //default spacing이 있어서
             
             boxScoreView(boxScores: viewModel.awayBoxscore, teamName: viewModel.awayTeamNickName)
-                .padding(.top, 20)
+                .padding(.top, 15)
             
             if viewModel.hasAwayBoxscore {
                 BannerView(adUnitId: .gameView)
@@ -467,6 +468,7 @@ extension GameRecapView {
                 Divider()
                     .background(.white.opacity(0.5))
                     .padding(.vertical, 5)
+                    .padding(.horizontal, 5)
                 
                 VStack(alignment: .center, spacing: 0) {
                     Text(viewModel.awayLeaderReb)
@@ -479,6 +481,7 @@ extension GameRecapView {
                 Divider()
                     .background(.white.opacity(0.5))
                     .padding(.vertical, 5)
+                    .padding(.horizontal, 5)
                 
                 VStack(alignment: .center, spacing: 0) {
                     Text(viewModel.awayLeaderAst)
@@ -504,6 +507,7 @@ extension GameRecapView {
                 Divider()
                     .background(.white.opacity(0.5))
                     .padding(.vertical, 5)
+                    .padding(.horizontal, 5)
                 
                 VStack(alignment: .center, spacing: 0) {
                     Text(viewModel.homeLeaderReb)
@@ -516,6 +520,7 @@ extension GameRecapView {
                 Divider()
                     .background(.white.opacity(0.5))
                     .padding(.vertical, 5)
+                    .padding(.horizontal, 5)
                 
                 VStack(alignment: .center, spacing: 0) {
                     Text(viewModel.homeLeaderAst)
