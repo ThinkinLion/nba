@@ -411,7 +411,7 @@ extension GameRecapView {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40)
                         .clipped()
-                    Text(teamName)
+                    Text(teamName.uppercased())
                         .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
                         .padding(.leading, 2)
                     Spacer()

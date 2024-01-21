@@ -64,8 +64,14 @@ struct TeamView: View {
             
             dividerWithBackground()
             
-            rosterView(roster: viewModel.roster)
+            rosterView(roster: viewModel.guardsInRoster, position: "Guards")
                 .padding(.top, 20)
+            
+            rosterView(roster: viewModel.forwardsInRoster, position: "Forwards")
+                .padding(.top, 10)
+            
+            rosterView(roster: viewModel.centersInRoster, position: "Centers")
+                .padding(.top, 10)
             
             if !viewModel.roster.isEmpty {
                 BannerView(adUnitId: .teamView, paddingTop: 10, height: 100)
@@ -119,8 +125,12 @@ struct TeamView: View {
 
 extension TeamView {
     @ViewBuilder
-    func rosterView(roster: [PlayerModel]) -> some View {
+    func rosterView(roster: [PlayerModel], position: String) -> some View {
         VStack(alignment: .leading) {
+            Text(position)
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+                .padding(.horizontal, 5)
+            
             ForEach(roster, id: \.self) { player in
                 let viewModel = PlayerSummaryViewModel(player: player)
                 NavigationLink(destination: PlayerView(playerId: viewModel.playerId, teamId: viewModel.teamId)) {
