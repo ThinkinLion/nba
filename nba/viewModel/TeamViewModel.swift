@@ -172,17 +172,13 @@ struct TeamStatsViewModel {
 
 extension TeamStatsViewModel {
     private func makeTeamStatsItemViewModels(with teamStats: TeamStats) -> [TeamStatsItemViewModel] {
-//        print("randomcolor: \(randomColors(teamId)), \(teamId)")
-        //teamId
-        //1610 6127 37 >> 8387 3894 04
-        //1610 6127 38 >> 9498 4905 16
-        //1610 6127 66 >> 7376 2793 22
+        guard teamId.count >= 10 else { return [] }
         let transformed = transformTeamId(teamId)
-        print("transformed: \(transformed)")
+//        print("transformed: \(transformed)")
         return [
             TeamStatsItemViewModel(title: "GP", value: teamStats.gp ?? "", colors: randomColors(transformed.characterAtIndex(0))),
-            TeamStatsItemViewModel(title: "MIN", value: teamStats.min ?? "", colors: randomColors(transformed.characterAtIndex(1))),
-            TeamStatsItemViewModel(title: "PTS", value: teamStats.pts ?? "", colors: randomColors(transformed.characterAtIndex(2))),
+            TeamStatsItemViewModel(title: "MIN", value: teamStats.min ?? "", colors: randomColors(transformed.characterAtIndex(8))),
+            TeamStatsItemViewModel(title: "PTS", value: teamStats.pts ?? "", colors: randomColors(transformed.characterAtIndex(9))),
             TeamStatsItemViewModel(title: "WIN", value: teamStats.win ?? "", colors: randomColors(transformed.characterAtIndex(3))),
             TeamStatsItemViewModel(title: "LOSS", value: teamStats.loss ?? "", colors: randomColors(transformed.characterAtIndex(3))),
             TeamStatsItemViewModel(title: "WIN%", value: teamStats.wp ?? "", colors: randomColors(transformed.characterAtIndex(3))),
@@ -209,6 +205,13 @@ extension TeamStatsViewModel {
         ]
     }
     
+    /*
+     이 함수는 teamId의 마지막 숫자를 가져와서 각 자리수에 더한 후 1의 자리 숫자만을 사용하여 변환합니다. 만약 teamId가 비어 있거나 마지막 숫자를 가져올 수 없다면 입력된 teamId를 그대로 반환합니다.
+     ex)
+     1610 6127 37 >> 8387 3894 04
+     1610 6127 38 >> 9498 4905 16
+     1610 6127 66 >> 7376 2793 22
+     */
     private func transformTeamId(_ teamId: String) -> String {
         // teamId의 마지막 숫자를 가져옵니다.
         guard let lastDigit = teamId.last, let lastDigitValue = Int(String(lastDigit)) else {
@@ -228,7 +231,6 @@ extension TeamStatsViewModel {
     }
 
     private func randomColors(_ index: Int) -> [Color] {
-        print("randomColors: \(index)")
         guard index >= 0, index < 10 else { return [Color("#EBC67C"), Color("#E4B25A")] }
         return [
             [Color("#EBC67C"), Color("#E4B25A")], //yellow
