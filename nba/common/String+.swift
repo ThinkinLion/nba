@@ -8,6 +8,14 @@
 import Foundation
 
 extension String {
+     func characterAtIndex(_ index: Int) -> Int {
+         guard index >= 0, index < self.count else { return 0 }
+         let i = self.index(self.startIndex, offsetBy: index)
+         return Int(String(self[i])) ?? 0
+     }
+}
+
+extension String {
     var smallImageUrl: String {
         guard !self.isEmpty else { return "" }
         let imageUrl = "https://cdn.nba.com/headshots/nba/latest/260x190/{{playerId}}.png".replacingOccurrences(of: "{{playerId}}", with: self)
