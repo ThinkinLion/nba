@@ -13,6 +13,7 @@ struct TeamView: View {
     @State private var hasAppeared = false
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
+//    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var body: some View {
         let statsViewModel = TeamStatsViewModel(team: viewModel.team)
@@ -64,6 +65,10 @@ struct TeamView: View {
             
             dividerWithBackground()
             
+            //currentSeasonStats
+            statsView(stats: statsViewModel.currentSeasonStats)
+            
+            //roster
             rosterView(roster: viewModel.guardsInRoster, position: "Guards")
                 .padding(.top, 20)
             
@@ -97,6 +102,20 @@ struct TeamView: View {
                 }
                 .opacity(hideNavigationBar ? 0.0 : 1.0)
             }
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button {
+//                    self.presentationMode.wrappedValue.dismiss()
+//                } label: {
+//                    Image("home")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 25, height: 25)
+//                        .scaleEffect(1.2)
+//                        .cornerRadius(12.5)
+//                }
+//                .buttonStyle(PlainButtonStyle())
+//                .opacity(hideNavigationBar ? 0.0 : 1.0)
+//            }
         }
         .onChange(of: scrollOffset, perform: { scrollOfset in
             let offset = scrollOfset + (self.hideNavigationBar ? 50 : 0) // note 1
@@ -122,6 +141,45 @@ struct TeamView: View {
 ///Note 2: I intentionally let a small difference between two thresholds for hiding and showing instead of using the same value, Because if the user scrolls and keep it in the threshold it won't flicker.
 ///Note 2: 나는 나타나고 숨기는 두 임계값 간에 작은 차이를 남겨두었는데, 동일한 값을 사용하는 대신 의도적으로 그렇게 했습니다. 사용자가 스크롤하고 그것을 임계값에서 유지하면 깜빡이지 않도록하기 위해서입니다.
 
+extension TeamView {
+    @ViewBuilder
+    func statsView(stats: [TeamStatsItemViewModel]) -> some View {
+        HStack {
+            Text("OVERALL")
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+            Spacer()
+        }
+        .padding(.horizontal, 15)
+        
+        let layout = [
+              GridItem(.flexible(maximum: 80)),
+              GridItem(.flexible(maximum: 80)),
+              GridItem(.flexible(maximum: 80)),
+//              GridItem(.flexible(maximum: 80))
+          ]
+        
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHGrid(rows: layout, spacing: 10) {
+                ForEach(stats, id: \.self) { viewModel in
+                    ZStack(alignment: .topLeading) {
+                        LinearGradient(colors: viewModel.colors, startPoint: .topLeading, endPoint: .bottom)
+                            .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                        Text(viewModel.value)
+                            .textStyle(color: .white.opacity(0.9), font: .system(size: 22, design: .rounded), weight: .semibold)
+                            .padding(.top, 5)
+                            .padding(.leading, 90)
+                        Text(viewModel.title)
+                            .textStyle(color: .white.opacity(0.8), font: .system(size: 13))
+                            .padding(.leading, 5)
+                            .padding(.top, 40)
+                    }
+                    .frame(width: 150, height: 60)
+                }
+            }
+        }
+        .padding(.horizontal, 10)
+    }
+}
 
 extension TeamView {
     @ViewBuilder

@@ -11,6 +11,7 @@ struct GameRecapView: View {
     let viewModel: HomeAwayViewModel
     let gameRecap: [GamesModel]
     @State private var hasAppeared = false
+//    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     enum Constants {
         static let headerZStackHeight: CGFloat = 250
@@ -135,6 +136,20 @@ struct GameRecapView: View {
                         .frame(width: 30, height: 30)
                         .clipped()
                 }
+            }
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button {
+//                    self.presentationMode.wrappedValue.dismiss()
+//                } label: {
+//                    Image("home")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 25, height: 25)
+//                        .scaleEffect(1.2)
+//                        .cornerRadius(12.5)
+//                }
+//                .buttonStyle(PlainButtonStyle())
+//                .opacity(hideNavigationBar ? 0.0 : 1.0)
             }
         }
         .ignoresSafeArea()

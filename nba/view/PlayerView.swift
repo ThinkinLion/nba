@@ -14,6 +14,7 @@ struct PlayerView: View {
     let teamId: String
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
+//    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var body: some View {
         let player = PlayerSummaryViewModel(player: viewModel.player)
@@ -93,6 +94,20 @@ struct PlayerView: View {
                 }
                 .opacity(hideNavigationBar ? 0.0 : 1.0)
             }
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button {
+//                    self.presentationMode.wrappedValue.dismiss()
+//                } label: {
+//                    Image("home")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 25, height: 25)
+//                        .scaleEffect(1.2)
+//                        .cornerRadius(12.5)
+//                }
+//                .buttonStyle(PlainButtonStyle())
+//                .opacity(hideNavigationBar ? 0.0 : 1.0)
+//            }
         }
         .onChange(of: scrollOffset, perform: { scrollOfset in
             let offset = scrollOfset + (self.hideNavigationBar ? 50 : 0) // note 1
