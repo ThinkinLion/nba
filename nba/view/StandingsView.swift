@@ -430,7 +430,7 @@ extension StandingsView {
     }
 }
 
-//MARK: seasonLeadersView
+//MARK: seasonLeaders CardView
 extension StandingsView {
     @ViewBuilder
     func seasonLeadersCardView(leaders: SeasonLeaders) -> some View {
