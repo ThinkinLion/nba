@@ -150,7 +150,7 @@ struct GameRecapView: View {
 //                }
 //                .buttonStyle(PlainButtonStyle())
 //                .opacity(hideNavigationBar ? 0.0 : 1.0)
-            }
+//            }
         }
         .ignoresSafeArea()
     }

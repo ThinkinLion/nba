@@ -145,7 +145,7 @@ extension StandingsViewModel {
                     case .success(let game):
                         self.errorMessage = nil
                         print("game recap: \(game.date ?? ""), \(game.items.count) game played..(\(String(describing: game.id))")
-                        return game
+                        return game.items.count > 0 ? game : nil
                     case .failure(let error):
                         self.errorMessage = "Error decoding document: \(error.localizedDescription)"
                         return nil
