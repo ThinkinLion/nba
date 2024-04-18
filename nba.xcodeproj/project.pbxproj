@@ -17,7 +17,7 @@
 		C21EF4712B099989005D87D2 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4702B099989005D87D2 /* LineView.swift */; };
 		C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */; };
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
-		C22634972B639F2500692248 /* TeamStatsItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22634962B639F2500692248 /* TeamStatsItemViewModel.swift */; };
+		C22634972B639F2500692248 /* StatsItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22634962B639F2500692248 /* StatsItemViewModel.swift */; };
 		C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B99992B33EF9400A1152E /* TeamView.swift */; };
 		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
 		C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */; };
@@ -35,6 +35,7 @@
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
 		C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C7950C2B02389300D72531 /* StandingsView.swift */; };
+		C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFEC242BD0E80A0065871D /* Transform.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
 		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
 		C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B42B19C29D00E2B3D7 /* String+.swift */; };
@@ -76,7 +77,7 @@
 		C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSummaryViewModel.swift; sourceTree = "<group>"; };
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
-		C22634962B639F2500692248 /* TeamStatsItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamStatsItemViewModel.swift; sourceTree = "<group>"; };
+		C22634962B639F2500692248 /* StatsItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsItemViewModel.swift; sourceTree = "<group>"; };
 		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
@@ -92,6 +93,7 @@
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C2C7950C2B02389300D72531 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
+		C2DFEC242BD0E80A0065871D /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
 		C2FDA6B42B19C29D00E2B3D7 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
@@ -217,7 +219,7 @@
 				C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */,
 				C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */,
 				C22B999D2B358AF300A1152E /* TeamViewModel.swift */,
-				C22634962B639F2500692248 /* TeamStatsItemViewModel.swift */,
+				C22634962B639F2500692248 /* StatsItemViewModel.swift */,
 				C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */,
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
@@ -244,6 +246,7 @@
 			children = (
 				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
 				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
+				C2DFEC242BD0E80A0065871D /* Transform.swift */,
 				C28C32262B220DD00054B189 /* CustomCorner.swift */,
 				C2628F1C2B452C5A005E044B /* ViewModifiers.swift */,
 			);
@@ -418,8 +421,9 @@
 			files = (
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
-				C22634972B639F2500692248 /* TeamStatsItemViewModel.swift in Sources */,
+				C22634972B639F2500692248 /* StatsItemViewModel.swift in Sources */,
 				C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */,
+				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
@@ -627,7 +631,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.13;
+				MARKETING_VERSION = 2.14;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -670,7 +674,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.13;
+				MARKETING_VERSION = 2.14;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
