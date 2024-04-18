@@ -1,5 +1,5 @@
 //
-//  TeamStatsItemViewModel.swift
+//  StatsItemViewModel.swift
 //  nba
 //
 //  Created by 1100690 on 1/26/24.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct TeamStatsItemViewModel: Hashable {
+struct StatsItemViewModel: Hashable {
     let title: String
     let value: String
     let colors: [Color]
 }
 
-extension TeamStatsItemViewModel {
-    static func ==(lhs: TeamStatsItemViewModel, rhs: TeamStatsItemViewModel) -> Bool {
+extension StatsItemViewModel {
+    static func ==(lhs: StatsItemViewModel, rhs: StatsItemViewModel) -> Bool {
         return lhs.title == rhs.title
     }
     
