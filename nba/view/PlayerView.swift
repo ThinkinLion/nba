@@ -74,11 +74,16 @@ struct PlayerView: View {
             BannerView(adUnitId: .playerView, paddingTop: 10)
           
             //current season Traditional Stats
-            statsView(stats: player.currentSeasonTraditional, title: "TRADITIONAL SPLITS")
-//            .padding(.top, 20)
+            if player.hasTraditional {
+                statsView(stats: player.currentSeasonTraditional, title: "TRADITIONAL SPLITS")
+                .padding(.top, 20)
+            }
           
             //current season Advanced Stats
-            statsView(stats: player.currentSeasonAdvanced, title: "ADVANCED SPLITS")
+            if player.hasAdvanced {
+                statsView(stats: player.currentSeasonAdvanced, title: "ADVANCED SPLITS")
+                .padding(.top, 20)
+            }
             
             rosterView(roster: viewModel.roster)
         }
@@ -136,42 +141,44 @@ struct PlayerView: View {
 extension PlayerView {
     @ViewBuilder
     func statsView(stats: [StatsItemViewModel], title: String) -> some View {
-        HStack {
-            Text(title)
-                .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
-            Spacer()
-        }
-        .padding(.horizontal, 15)
-        
-        let layout = [
-              GridItem(.flexible(maximum: 80)),
-              GridItem(.flexible(maximum: 80)),
-              GridItem(.flexible(maximum: 80)),
-//              GridItem(.flexible(maximum: 80))
-          ]
-        
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(rows: layout, spacing: 10) {
-                ForEach(stats, id: \.self) { viewModel in
-                    ZStack(alignment: .topLeading) {
-                        LinearGradient(colors: viewModel.colors, startPoint: .topLeading, endPoint: .bottom)
-                            .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-                        Text(viewModel.value)
-                            .textStyle(color: .white.opacity(0.9), font: .system(size: 22, design: .rounded), weight: .semibold)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .padding(.top, 5)
-                            .padding(.leading, 90)
-                        Text(viewModel.title)
-                            .textStyle(color: .white.opacity(0.8), font: .system(size: 13))
-                            .padding(.leading, 5)
-                            .padding(.top, 40)
+        VStack {
+            HStack {
+                Text(title)
+                    .textStyle(color: .white.opacity(0.9), font: .system(size: 18), weight: .bold)
+                Spacer()
+            }
+            .padding(.horizontal, 15)
+            
+            let layout = [
+                  GridItem(.flexible(maximum: 80)),
+                  GridItem(.flexible(maximum: 80)),
+                  GridItem(.flexible(maximum: 80)),
+    //              GridItem(.flexible(maximum: 80))
+              ]
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHGrid(rows: layout, spacing: 10) {
+                    ForEach(stats, id: \.self) { viewModel in
+                        ZStack(alignment: .topLeading) {
+                            LinearGradient(colors: viewModel.colors, startPoint: .topLeading, endPoint: .bottom)
+                                .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                            Text(viewModel.value)
+                                .textStyle(color: .white.opacity(0.9), font: .system(size: 22, design: .rounded), weight: .semibold)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .padding(.top, 5)
+                                .padding(.leading, 90)
+                            Text(viewModel.title)
+                                .textStyle(color: .white.opacity(0.8), font: .system(size: 13))
+                                .padding(.leading, 5)
+                                .padding(.top, 40)
+                        }
+                        .frame(width: 150, height: 60)
                     }
-                    .frame(width: 150, height: 60)
                 }
             }
+            .padding(.horizontal, 10)
         }
-        .padding(.horizontal, 10)
     }
 }
 

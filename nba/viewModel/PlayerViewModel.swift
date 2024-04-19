@@ -258,6 +258,10 @@ extension PlayerSummaryViewModel {
     self.player.traditional ?? []
   }
   
+  var hasTraditional: Bool {
+    !self.currentSeasonTraditional.isEmpty
+  }
+  
   var currentSeasonTraditional: [StatsItemViewModel] {
     self.traditional.first {
       $0.title == "2023-24"
@@ -269,6 +273,10 @@ extension PlayerSummaryViewModel {
   
   var advanced: [Advanced] {
     self.player.advanced ?? []
+  }
+  
+  var hasAdvanced: Bool {
+    !self.currentSeasonAdvanced.isEmpty
   }
   
   var currentSeasonAdvanced: [StatsItemViewModel] {
@@ -285,6 +293,9 @@ extension PlayerSummaryViewModel {
     let transformed = Transform.transformTeamId(self.teamId)
       return [
         StatsItemViewModel(title: "PIE", value: advanced.pie ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
+        StatsItemViewModel(title: "USG%", value: advanced.usgp ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
+        StatsItemViewModel(title: "Pace", value: advanced.pace ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
+        
         StatsItemViewModel(title: "OFFRTG", value: advanced.offrtg ?? "", colors: Transform.randomColors(transformed.characterAtIndex(9))),
         StatsItemViewModel(title: "DEFRTG", value: advanced.defrtg ?? "", colors: Transform.randomColors(transformed.characterAtIndex(9))),
         StatsItemViewModel(title: "NETRTG", value: advanced.netrtg ?? "", colors: Transform.randomColors(transformed.characterAtIndex(9))),
@@ -300,10 +311,6 @@ extension PlayerSummaryViewModel {
         StatsItemViewModel(title: "TO RATIO", value: advanced.toratio ?? "", colors: Transform.randomColors(transformed.characterAtIndex(7))),
         StatsItemViewModel(title: "EFG%", value: advanced.efgp ?? "", colors: Transform.randomColors(transformed.characterAtIndex(7))),
         StatsItemViewModel(title: "TS%", value: advanced.tsp ?? "", colors: Transform.randomColors(transformed.characterAtIndex(7))),
-        
-        StatsItemViewModel(title: "USG%", value: advanced.usgp ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
-        StatsItemViewModel(title: "Pace", value: advanced.pace ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
-//        StatsItemViewModel(title: "PIE", value: advanced.pie ?? "", colors: Transform.randomColors(transformed.characterAtIndex(8))),
           
       ]
   }
