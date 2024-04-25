@@ -219,6 +219,14 @@ extension StandingsView {
             .background(.white.opacity(0.7))
             .padding(.bottom, 120)
             .zIndex(3)
+          
+            Text(viewModel.series)
+                .padding(3)
+                .background(.black.opacity(0.5))
+                .textStyle(color: .white.opacity(0.9), font: .system(size: 12))
+                .padding(.top, 133)
+                .opacity(viewModel.series.isEmpty ? 0.0 : 1.0)
+                .zIndex(3)
             
             Text(viewModel.homeScore)
                 .foregroundColor(.white.opacity(0.9))

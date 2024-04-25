@@ -31,6 +31,7 @@ struct HomeAway: Codable, Hashable {
     let gameUrl: String? // game/nop-vs-den-0022300539
     let date: String? //cardview 날짜 노출
     let final: String? //"final"
+    let series: String? //"Games1: BOS leads 1-0"
     let leaders: [BoxScore]? //여기에도 모아봤음, 어떤게 쓰일지 몰라서
 }
 

@@ -96,6 +96,11 @@ struct HomeAwayViewModel {
     var score: String {
         awayScore + " - " + homeScore
     }
+  
+    //series text
+    var series: String {
+        homeAway.series ?? ""
+    }
     
     //final
     var final: String {
