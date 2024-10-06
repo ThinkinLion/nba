@@ -37,7 +37,8 @@ extension TeamViewModel {
     
     func fetchRoster(teamId: String) {
         guard !teamId.isEmpty else { return }
-        db.collection("players").whereField("teamId", isEqualTo: teamId)
+        let seasonYear = SeasonProvider.shared.seasonYear()
+        db.collection("players.\(seasonYear)").whereField("teamId", isEqualTo: teamId)
 //            .whereField("pie", isGreaterThanOrEqualTo: 5)
 //            .whereField("position", isEqualTo: "Guard")
             .getDocuments() { (snapshot, error) in

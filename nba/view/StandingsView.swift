@@ -24,7 +24,7 @@ struct StandingsView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 35, height: 35)
                     .clipShape(Circle())
-                Text("The NBA's East & West standings following \(viewModel.todayOfWeek())'s games!")
+                Text("The NBA's East & West standings following \(SeasonProvider.shared.todayOfWeek())'s games!")
                     .font(.system(size: 14))
                 Spacer()
             }

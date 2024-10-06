@@ -80,12 +80,12 @@ final class StandingsViewModel: ObservableObject {
         //        Task {
         //            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
         //        }
-        fetchStandings(documentId: seasonYear())
+        fetchStandings(documentId: SeasonProvider.shared.seasonYear())
 //        fetchGames(documentId: today())
 //        fetchGames(documentId: "2024-01-03")
         fetchGameRecap()
         
-        fetchStatsLeaders(documentId: seasonYear())
+        fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
     }
     
     @MainActor
@@ -330,33 +330,6 @@ extension StandingsViewModel {
 }
 
 extension StandingsViewModel {
-    func todayOfWeek() -> String {
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "EEEE"
-        return dateFormatter.string(from: currentDate)
-    }
     
-    private func today() -> String {
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: currentDate)
-    }
-    
-    private func seasonYear() -> String {
-        let currentDate = Date()
-        let calendar = Calendar.current
-
-        // 현재 년도
-        let currentYear = calendar.component(.year, from: currentDate)
-
-        // NBA 시즌이 10월에 시작하므로, 10월 이전이면 이전 년도를 반환
-        if calendar.component(.month, from: currentDate) < 10 {
-            return "\(currentYear - 1)"
-        } else {
-            return "\(currentYear)"
-        }
-    }
+  
 }

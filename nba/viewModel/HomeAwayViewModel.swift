@@ -193,20 +193,3 @@ struct HomeAwayViewModel {
         !homeBoxscore.isEmpty
     }
 }
-
-extension HomeAwayViewModel {
-    func todayOfWeek() -> String {
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "EEE"
-        return dateFormatter.string(from: currentDate)
-    }
-    
-    private func today() -> String {
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: currentDate)
-    }
-}
