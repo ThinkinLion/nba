@@ -31,6 +31,7 @@
 		C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */; };
 		C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322E2B26F4690054B189 /* PlayerModel.swift */; };
 		C2A995442CB21305009A4C55 /* SeasonProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A995432CB21305009A4C55 /* SeasonProvider.swift */; };
+		C2A995812CC32FEA009A4C55 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C2A995802CC32FEA009A4C55 /* FirebaseAnalyticsSwift */; };
 		C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B7E0F52B1F04B200988259 /* PlayerView.swift */; };
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
@@ -109,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2A995812CC32FEA009A4C55 /* FirebaseAnalyticsSwift in Frameworks */,
 				C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */,
 				C23AF2F42AFB816700984545 /* FirebaseFirestoreSwift in Frameworks */,
 			);
@@ -138,6 +140,7 @@
 				C21E6A122AFA421B00307366 /* nbaTests */,
 				C21E6A1C2AFA421B00307366 /* nbaUITests */,
 				C21E69FF2AFA421900307366 /* Products */,
+				C2A9957F2CC32FEA009A4C55 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -201,6 +204,13 @@
 				C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */,
 			);
 			path = common;
+			sourceTree = "<group>";
+		};
+		C2A9957F2CC32FEA009A4C55 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C2C794F72AFE140D00D72531 /* model */ = {
@@ -276,6 +286,7 @@
 			packageProductDependencies = (
 				C23AF2F32AFB816700984545 /* FirebaseFirestoreSwift */,
 				C23AF2F62AFB833700984545 /* GoogleMobileAds */,
+				C2A995802CC32FEA009A4C55 /* FirebaseAnalyticsSwift */,
 			);
 			productName = nba;
 			productReference = C21E69FE2AFA421900307366 /* nba.app */;
@@ -620,7 +631,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = nba/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -635,7 +646,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.17;
+				MARKETING_VERSION = 2.18;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -663,7 +674,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = nba/Info.plist;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -678,7 +689,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.17;
+				MARKETING_VERSION = 2.18;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -852,6 +863,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C23AF2F52AFB833700984545 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		C2A995802CC32FEA009A4C55 /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C23AF2F22AFB816700984545 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
