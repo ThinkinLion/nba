@@ -25,3 +25,21 @@ extension View {
         modifier(TextViewModifier(color: color, font: font, weight: weight))
     }
 }
+
+struct VisibleModifier: ViewModifier {
+    let isVisible: Bool
+
+    func body(content: Content) -> some View {
+        if isVisible {
+            content
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+extension View {
+    func visible(_ isVisible: Bool) -> some View {
+        self.modifier(VisibleModifier(isVisible: isVisible))
+    }
+}

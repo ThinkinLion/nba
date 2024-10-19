@@ -148,6 +148,7 @@ extension TeamView {
         HStack {
             Text("OVERALL")
                 .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)
+                .visible(!stats.isEmpty)
             Spacer()
         }
         .padding(.horizontal, 15)
