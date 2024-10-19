@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAnalytics
 
 struct StandingsView: View {
     @StateObject var viewModel = StandingsViewModel()
@@ -173,6 +174,7 @@ struct StandingsView: View {
         }
         .onDisappear() {
         }
+        .analyticsScreen(name: "NBA-StandingView")
     }
 }
 

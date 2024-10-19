@@ -153,6 +153,7 @@ struct GameRecapView: View {
 //            }
         }
         .ignoresSafeArea()
+        .analyticsScreen(name: "NBA-GameRecapView")
     }
 }
 

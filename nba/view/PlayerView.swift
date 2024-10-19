@@ -135,6 +135,7 @@ struct PlayerView: View {
             }
         })
         .ignoresSafeArea()
+        .analyticsScreen(name: "NBA-PlayerView")
     }
 }
 

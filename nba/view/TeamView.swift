@@ -131,6 +131,7 @@ struct TeamView: View {
             }
         })
         .ignoresSafeArea()
+        .analyticsScreen(name: "NBA-TeamView")
     }
 }
 
