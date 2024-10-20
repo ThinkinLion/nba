@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension String {
      func characterAtIndex(_ index: Int) -> Int {
@@ -336,4 +337,37 @@ extension String {
         default: return ""
         }
     }
+}
+
+extension String {
+  /*
+   [Color("#EBC67C"), Color("#E4B25A")], //yellow
+   [Color("#EC723D"), Color("#E24627")], //orange-red
+   [Color("#9CD788"), Color("#75BD67")], //green
+   [Color("#EC723D"), Color("#E24627")], //orange-red
+   [Color("#93D9F2"), Color("#62C0E2")], //sky
+   
+   [Color("#A7E3BF"), Color("#74C893")], //green2
+   [Color("#4981DE"), Color("#2E479F")], //blue
+   [Color("#EF9781"), Color("#ED816F")], //red
+   [Color("#F4B474"), Color("#EF974B")], //orange
+   [Color("#A79CF6"), Color("#7E6BF3")], //violet
+   */
+  
+  var containerColor: [Color] {
+    switch self.lowercased() {
+    case _ where self.contains("traditional"):
+      return [Color("#75BD67"), Color("#9CD788")] //green
+    case _ where self.contains("desert"):
+      return [Color("#E4B25A"), Color("#EBC67C")] //yellow
+    case _ where self.contains("royal"):
+      return [Color("#2E479F"), Color("#4981DE")] //blue
+    case _ where self.contains("beach"):
+      return [Color("#62C0E2"), Color("#93D9F2")] //sky
+    case _ where self.contains("ice"):
+      return [Color("#7E6BF3"), Color("#A79CF6")] //violet
+    default:
+      return [Color("#E24627"), Color("#EC723D")] //orange-red
+    }
+  }
 }
