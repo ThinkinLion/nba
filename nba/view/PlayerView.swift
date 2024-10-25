@@ -31,7 +31,7 @@ struct PlayerView: View {
                 .zIndex(0)
                 
                 VStack(alignment: .leading) {
-                    Image(teamId.teamIdToTriCode)
+                    Image(self.teamId.teamIdToTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 50, height: 50)
@@ -39,11 +39,11 @@ struct PlayerView: View {
                         .clipped()
                     
                     Text(player.upperCasedName)
-                    .foregroundColor(.white)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.5)
+                        .foregroundColor(.white)
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.5)
                     
                     Text(player.jerseyAndPosition)
                         .foregroundColor(.white.opacity(0.8))
@@ -57,49 +57,46 @@ struct PlayerView: View {
             .frame(maxWidth: .infinity)
             .padding(.top, 15)
             .padding(.horizontal, 15)
-            .background(Color(teamId.light))
+            .background(Color(self.teamId.light))
         
             Text("")
                 .frame(maxWidth: .infinity)
                 .frame(height: 20)
                 .background {
                     CustomCorner(corners: [.topLeft, ], radius: 20)
-                        .fill(Color(teamId.dark))
+                        .fill(Color(self.teamId.dark))
                         .ignoresSafeArea()
                 }
                 .padding(.top, -19)
             
-            summaryView(player: player)
+            self.summaryView(player: player)
           
             BannerView(adUnitId: .playerView, paddingTop: 10)
           
-            //current season Traditional Stats
-            if player.hasTraditional {
-                statsView(stats: player.currentSeasonTraditional, title: "TRADITIONAL SPLITS")
+            //yearly Stats
+            self.yearlyStatsView(title: "traditional stats", stats: player.traditional)
                 .padding(.top, 20)
-            }
+                .visible(player.hasTraditional)
           
-            //current season Advanced Stats
-            if player.hasAdvanced {
-                statsView(stats: player.currentSeasonAdvanced, title: "ADVANCED SPLITS")
+            self.yearlyStatsView(title: "advanced stats", stats: player.advanced)
                 .padding(.top, 20)
-            }
+                .visible(player.hasAdvanced)
             
-            rosterView(roster: viewModel.roster)
+            self.rosterView(roster: self.viewModel.roster)
         }
-        .background(Color(teamId.dark))
+        .background(Color(self.teamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             guard !hasAppeared else { return }
-            viewModel.fetchPlayer(documentId: playerId)
-            viewModel.fetchRoster(teamId: teamId)
+            viewModel.fetchPlayer(documentId: self.playerId)
+            viewModel.fetchRoster(teamId: self.teamId)
             hasAppeared = true
         }
         .navigationBarTitle("", displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 2) {
-                    Image(teamId.teamIdToTriCode)
+                    Image(self.teamId.teamIdToTriCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40)
@@ -140,8 +137,91 @@ struct PlayerView: View {
 }
 
 extension PlayerView {
+  @ViewBuilder
+  private func yearlyStatsView<T: StatsGeneratable & Hashable>(title: String, stats: [T]) -> some View {
+    ZStack(alignment: .topLeading) {
+//      LinearGradient(colors: title.containerColor, startPoint: .topLeading, endPoint: .bottom)
+      LinearGradient(colors: [Color(self.teamId.light), Color.gray.opacity(0.5), Color(self.teamId.dark)], startPoint: .top, endPoint: .bottom)
+        .clipShape(RoundedRectangle(cornerRadius: 0, style: .continuous))
+
+      HStack {
+        Text("\(title.uppercased())")
+          .textStyle(color: .white.opacity(0.9), font: .system(size: 18), weight: .bold)
+          .padding(10)
+        Spacer()
+      }
+      
+      let layout = [
+        GridItem(.flexible(maximum: 80)),
+      ]
+
+      ScrollView(.horizontal, showsIndicators: false) {
+        LazyHGrid(rows: layout, spacing: 0) {
+          ForEach(Array(stats.enumerated()), id: \.element) { index, stat in
+            let statsItems = stat.createStatsItemViewModels(teamId: self.teamId)
+            HStack(spacing: 0) {
+              self.cardView(stats: statsItems)
+              
+              Divider()
+                .background(Color.black.opacity(0.5))
+                .padding(.vertical, 20)
+                .visible(index < stats.count - 1)
+            }
+            .frame(maxHeight: .infinity) // Ensure the HStack expands fully
+          }
+        }
+      }
+      .padding(.top, 20)
+      .padding(.horizontal, 10)
+    }
+//    .frame(height: 450) //StatsView마다 높이가 다르다. 자식의 크기에 따라 커지도록..
+  }
+  
+  @ViewBuilder
+  private func cardView(stats: [PlayerStatsItemViewModel]) -> some View {
+    VStack {
+      ForEach(Array(stats.enumerated()), id: \.element) { index, item in
+        if index == 0 {
+          HStack(spacing: 0) {
+            Spacer()
+            Image(item.title)
+              .resizable()
+              .frame(width: 30, height: 30, alignment: .trailing)
+              .visible(item.title != "TOT")
+            Text(item.title)
+              .textStyle(color: .white.opacity(0.8), font: .system(size: 16), weight: .bold)
+              .frame(height: 30, alignment: .trailing)
+              .padding(.trailing, 4)
+              .visible(item.title == "TOT")
+            Text(item.value)
+              .textStyle(color: .white.opacity(0.8), font: .system(size: 16), weight: .bold)
+              .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+          }
+        } else {
+          HStack {
+            Spacer()
+            Text(item.title)
+              .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
+              .frame(maxWidth: .infinity, alignment: .trailing)
+              .minimumScaleFactor(0.8)
+            
+            Text(item.value)
+              .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
+              .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
+          }
+        }
+      }
+    }
+    .frame(width: 150)
+    .padding()
+  }
+}
+
+extension PlayerView {
     @ViewBuilder
-    func statsView(stats: [StatsItemViewModel], title: String) -> some View {
+    private func statsView(stats: [PlayerStatsItemViewModel], title: String) -> some View {
         VStack {
             HStack {
                 Text(title)
@@ -185,7 +265,7 @@ extension PlayerView {
 
 extension PlayerView {
     @ViewBuilder
-    func rosterItemView(viewModel: PlayerSummaryViewModel) -> some View {
+    private func rosterItemView(viewModel: PlayerSummaryViewModel) -> some View {
         VStack {
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
                 AsyncImage(url: URL(string: viewModel.smallImageUrl)) { image in
@@ -218,7 +298,7 @@ extension PlayerView {
     }
     
     @ViewBuilder
-    func rosterView(roster: [PlayerModel]) -> some View {
+    private func rosterView(roster: [PlayerModel]) -> some View {
         VStack(alignment: .leading) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
@@ -241,7 +321,7 @@ extension PlayerView {
     }
     
     @ViewBuilder
-    func summaryView(player: PlayerSummaryViewModel) -> some View {
+    private func summaryView(player: PlayerSummaryViewModel) -> some View {
         statsSummaryView(player: player)
         
         dividerWithBackground()
@@ -277,7 +357,7 @@ extension PlayerView {
         bioSummaryView(title: player.lastAttendedTitle, value: player.lastAttended)
     }
     
-    func dividerWithBackground() -> some View {
+    private func dividerWithBackground() -> some View {
         Divider()
             .background(Color("#272628"))
             .opacity(0.9)
@@ -287,7 +367,7 @@ extension PlayerView {
     }
     
     @ViewBuilder
-    func bioSummaryView(title: String, value: String) -> some View {
+    private func bioSummaryView(title: String, value: String) -> some View {
         HStack {
             Text(title)
                 .font(.system(size: 14))
@@ -304,7 +384,7 @@ extension PlayerView {
     }
     
     @ViewBuilder
-    func statsSummaryView(player: PlayerSummaryViewModel) -> some View {
+    private func statsSummaryView(player: PlayerSummaryViewModel) -> some View {
         HStack {
             VStack(alignment: .center) {
                 Text(player.pieTitle)

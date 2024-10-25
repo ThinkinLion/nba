@@ -357,9 +357,11 @@ extension String {
   var containerColor: [Color] {
     switch self.lowercased() {
     case _ where self.contains("traditional"):
-      return [Color("#75BD67"), Color("#9CD788")] //green
-    case _ where self.contains("desert"):
-      return [Color("#E4B25A"), Color("#EBC67C")] //yellow
+      return [Color("#E24627"), Color("#EC723D")] //orange-red
+//      return [Color("#75BD67"), Color("#9CD788")] //green
+    case _ where self.contains("advanced"):
+      return [Color("#7E6BF3"), Color("#A79CF6")] //violet
+//      return [Color("#E4B25A"), Color("#EBC67C")] //yellow
     case _ where self.contains("royal"):
       return [Color("#2E479F"), Color("#4981DE")] //blue
     case _ where self.contains("beach"):

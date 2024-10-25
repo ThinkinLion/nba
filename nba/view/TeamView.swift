@@ -144,7 +144,7 @@ struct TeamView: View {
 
 extension TeamView {
     @ViewBuilder
-    func statsView(stats: [StatsItemViewModel]) -> some View {
+    func statsView(stats: [PlayerStatsItemViewModel]) -> some View {
         HStack {
             Text("OVERALL")
                 .textStyle(color: .white.opacity(0.9), font: .system(size: 20), weight: .bold)

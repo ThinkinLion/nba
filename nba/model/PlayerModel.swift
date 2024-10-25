@@ -155,6 +155,12 @@ extension Traditional {
     }
 }
 
+extension Traditional: StatsGeneratable {
+    func createStatsItemViewModels(teamId: String) -> [PlayerStatsItemViewModel] {
+        return ModelFactory.createTraditionalStatsItemViewModels(with: self, teamId: teamId)
+    }
+}
+
 /*
  stats_data = {
              "id": str(uuid.uuid4()),
@@ -219,5 +225,11 @@ extension Advanced {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+extension Advanced: StatsGeneratable {
+    func createStatsItemViewModels(teamId: String) -> [PlayerStatsItemViewModel] {
+        return ModelFactory.createAdvancedStatsItemViewModels(with: self, teamId: teamId)
     }
 }
