@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct StatsItemViewModel: Hashable {
+struct PlayerStatsItemViewModel: Hashable {
     let title: String
     let value: String
     let colors: [Color]
 }
 
-extension StatsItemViewModel {
-    static func ==(lhs: StatsItemViewModel, rhs: StatsItemViewModel) -> Bool {
+extension PlayerStatsItemViewModel {
+    static func ==(lhs: PlayerStatsItemViewModel, rhs: PlayerStatsItemViewModel) -> Bool {
         return lhs.title == rhs.title
     }
     
