@@ -261,7 +261,7 @@ extension PlayerSummaryViewModel {
   }
   
   var hasTraditional: Bool {
-    !self.currentSeasonTraditional.isEmpty
+    !self.traditional.isEmpty
   }
   
   var currentSeasonTraditional: [PlayerStatsItemViewModel] {
@@ -278,7 +278,7 @@ extension PlayerSummaryViewModel {
   }
   
   var hasAdvanced: Bool {
-    !self.currentSeasonAdvanced.isEmpty
+    !self.advanced.isEmpty
   }
   
   var currentSeasonAdvanced: [PlayerStatsItemViewModel] {
@@ -288,5 +288,29 @@ extension PlayerSummaryViewModel {
     .map {
       ModelFactory.createAdvancedStatsItemViewModels(with: $0, teamId: self.teamId)
     } ?? []
+  }
+  
+  var misc: [Misc] {
+    self.player.misc ?? []
+  }
+  
+  var hasMisc: Bool {
+    !self.misc.isEmpty
+  }
+  
+  var scoring: [Scoring] {
+    self.player.scoring ?? []
+  }
+  
+  var hasScoring: Bool {
+    !self.scoring.isEmpty
+  }
+  
+  var usage: [Usage] {
+    self.player.usage ?? []
+  }
+  
+  var hasUsage: Bool {
+    !self.usage.isEmpty
   }
 }
