@@ -74,15 +74,28 @@ struct PlayerView: View {
             BannerView(adUnitId: .playerView, paddingTop: 10)
           
             //yearly Stats
-            self.yearlyStatsView(title: "traditional stats", stats: player.traditional)
+            self.yearlyStatsView(title: "traditional stats", leftWidth: 60, rightWidth: 60, stats: player.traditional)
                 .padding(.top, 20)
                 .visible(player.hasTraditional)
           
-            self.yearlyStatsView(title: "advanced stats", stats: player.advanced)
+            self.yearlyStatsView(title: "advanced stats", leftWidth: 60, rightWidth: 60, stats: player.advanced)
                 .padding(.top, 20)
                 .visible(player.hasAdvanced)
-            
+          
             self.rosterView(roster: self.viewModel.roster)
+          
+            self.yearlyStatsView(title: "misc stats", leftWidth: 108, rightWidth: 72, stats: player.misc)
+                .visible(player.hasMisc)
+          
+            self.yearlyStatsView(title: "scoring stats", leftWidth: 108, rightWidth: 72, stats: player.scoring)
+                .padding(.top, 20)
+                .visible(player.hasScoring)
+          
+            self.yearlyStatsView(title: "usage stats", leftWidth: 60, rightWidth: 60, stats: player.usage)
+                .padding(.top, 20)
+                .padding(.bottom, 20)
+                .visible(player.hasUsage)
+            
         }
         .background(Color(self.teamId.dark))
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -138,7 +151,7 @@ struct PlayerView: View {
 
 extension PlayerView {
   @ViewBuilder
-  private func yearlyStatsView<T: StatsGeneratable & Hashable>(title: String, stats: [T]) -> some View {
+  private func yearlyStatsView<T: StatsGeneratable & Hashable>(title: String, leftWidth: CGFloat, rightWidth: CGFloat, stats: [T]) -> some View {
     ZStack(alignment: .topLeading) {
 //      LinearGradient(colors: title.containerColor, startPoint: .topLeading, endPoint: .bottom)
       LinearGradient(colors: [Color(self.teamId.light), Color.gray.opacity(0.5), Color(self.teamId.dark)], startPoint: .top, endPoint: .bottom)
@@ -148,6 +161,7 @@ extension PlayerView {
         Text("\(title.uppercased())")
           .textStyle(color: .white.opacity(0.9), font: .system(size: 18), weight: .bold)
           .padding(10)
+          .padding(.leading, 15)
         Spacer()
       }
       
@@ -159,13 +173,13 @@ extension PlayerView {
         LazyHGrid(rows: layout, spacing: 0) {
           ForEach(Array(stats.enumerated()), id: \.element) { index, stat in
             let statsItems = stat.createStatsItemViewModels(teamId: self.teamId)
-            HStack(spacing: 0) {
-              self.cardView(stats: statsItems)
+            LazyHStack(spacing: 0) {
+              self.cardView(stats: statsItems, leftWidth: leftWidth, rightWidth: rightWidth)
               
-              Divider()
-                .background(Color.black.opacity(0.5))
-                .padding(.vertical, 20)
-                .visible(index < stats.count - 1)
+//              Divider()
+//                .background(Color.black.opacity(0.5))
+//                .padding(.vertical, 20)
+//                .visible(index < stats.count - 1)
             }
             .frame(maxHeight: .infinity) // Ensure the HStack expands fully
           }
@@ -178,7 +192,7 @@ extension PlayerView {
   }
   
   @ViewBuilder
-  private func cardView(stats: [PlayerStatsItemViewModel]) -> some View {
+  private func cardView(stats: [PlayerStatsItemViewModel], leftWidth: CGFloat, rightWidth: CGFloat) -> some View {
     VStack {
       ForEach(Array(stats.enumerated()), id: \.element) { index, item in
         if index == 0 {
@@ -203,18 +217,21 @@ extension PlayerView {
             Spacer()
             Text(item.title)
               .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
-              .frame(maxWidth: .infinity, alignment: .trailing)
+//              .frame(maxWidth: .infinity, alignment: .trailing)
+              .frame(width: leftWidth, alignment: .trailing)
               .minimumScaleFactor(0.8)
             
             Text(item.value)
               .textStyle(color: .white.opacity(0.9), font: .system(size: 14))
-              .frame(maxWidth: .infinity, alignment: .leading)
+//              .frame(maxWidth: .infinity, alignment: .leading)
+              .frame(width: rightWidth, alignment: .leading)
             Spacer()
           }
         }
       }
     }
-    .frame(width: 150)
+//    .frame(width: width)
+//    .frame(maxWidth: .infinity)
     .padding()
   }
 }
