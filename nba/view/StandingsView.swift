@@ -18,28 +18,12 @@ struct StandingsView: View {
     
     var body: some View {
         ScrollView(.vertical) {
-            HStack {
-                Image("person")
-                    .resizable()
-                    .background(.white)
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 35, height: 35)
-                    .clipShape(Circle())
-                Text("The NBA's East & West standings following \(SeasonProvider.shared.todayOfWeek())'s games!")
-                    .font(.system(size: 14))
-                Spacer()
-            }
-//            .frame(maxWidth: .infinity)
-            .padding(.top, 15)
-            .padding(.horizontal, 15)
+            
+            //power ranking
             
             if viewModel.hasGames {
-//                gameRecapView(games: viewModel.games)
                 gameRecapView(gameRecap: viewModel.gameRecap)
-                .padding(.horizontal, 15)
-                
-//                gamesView(games: viewModel.games)
-//                .padding(.horizontal, 15)
+                  .padding(.horizontal, 15)
             }
             
             conferenceView(playoffs: viewModel.east.0,
