@@ -85,4 +85,5 @@ struct PowerRankingAdvancedItemModel: Codable {
   let title: String?
   let value: String?
   let rank: String?
+  //test
 }
