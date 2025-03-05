@@ -89,6 +89,8 @@ struct TeamView: View {
             guard !hasAppeared else { return }
             viewModel.fetchTeam(documentId: teamId)
             viewModel.fetchRoster(teamId: teamId)
+//          viewModel.fetchCountry(country: "Canada")
+//          viewModel.fetchCountry(country: "Germany")
             hasAppeared = true
         }
         .navigationBarTitle("", displayMode: .inline)

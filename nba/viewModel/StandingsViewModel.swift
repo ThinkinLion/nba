@@ -21,6 +21,7 @@ final class StandingsViewModel: ObservableObject {
     @Published var gameRecap: [GamesModel] = []
 //    @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
+    @Published var powerRankings: [PowerRankingModel] = []
     
     //Season Leaders
     @Published var firstCardViewSlot: SeasonLeaders = .empty
@@ -80,12 +81,14 @@ final class StandingsViewModel: ObservableObject {
         //        Task {
         //            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
         //        }
-        fetchStandings(documentId: SeasonProvider.shared.seasonYear())
+      self.fetchStandings(documentId: SeasonProvider.shared.seasonYear())
 //        fetchGames(documentId: today())
 //        fetchGames(documentId: "2024-01-03")
-        fetchGameRecap()
+      self.fetchGameRecap()
         
-        fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
+      self.fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
+      
+      self.fetchPowerRankings()
     }
     
     @MainActor
@@ -119,6 +122,29 @@ extension StandingsViewModel {
 }
 
 extension StandingsViewModel {
+  func fetchPowerRankings() {
+    db.collection("powerRankings.2024").order(by: "week", descending: true).limit(to: 2)
+      .getDocuments() { (snapshot, error) in
+        self.powerRankings = snapshot?.documents.compactMap { documentSnapshot in
+          let result = Result { try documentSnapshot.data(as: PowerRankingModel.self) }
+          switch result {
+          case .success(let powerRanking):
+            self.errorMessage = nil
+            print("power rankings: \(powerRanking.week ?? "")")
+            return powerRanking.items?.count ?? 0 > 0 ? powerRanking : nil
+          case .failure(let error):
+            self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+            print("decoding error: \(error.localizedDescription)")
+            return nil
+          }
+        } ?? []
+        
+//        let lastGameRecap = self.gameRecap.first
+  //                self.games = lastGameRecap?.items ?? []
+//        self.hasGames = lastGameRecap?.items.count ?? 0 > 0
+    }
+  }
+  
     private func fetchStandings(documentId: String) {
         guard !documentId.isEmpty else { return }
         db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseFirestoreSwift
+import FirebaseFirestore
 import Firebase
 
 final class TeamViewModel: ObservableObject {
@@ -35,6 +35,32 @@ extension TeamViewModel {
         }
     }
     
+    func fetchCountry(country: String) {
+        guard !country.isEmpty else { return }
+        let seasonYear = SeasonProvider.shared.seasonYear()
+        db.collection("players.\(seasonYear)").whereField("country", isEqualTo: country)
+            .whereField("retired", isEqualTo: false)
+  //            .whereField("pie", isGreaterThanOrEqualTo: 5)
+  //            .whereField("position", isEqualTo: "Guard")
+            .getDocuments() { (snapshot, error) in
+                self.roster = snapshot?.documents.compactMap { documentSnapshot in
+                    let result = Result { try documentSnapshot.data(as: PlayerModel.self) }
+                    switch result {
+                    case .success(let playerModel):
+                        self.errorMessage = nil
+                      print("country: \(playerModel.lastName ?? ""), retired: \(String(describing: playerModel.retired)),  pie: \(String(describing: playerModel.advanced?.first?.pie))")
+                        return playerModel
+                    case .failure(let error):
+                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+                        return nil
+                    }
+                } ?? []
+                self.guardsInRoster = self.classifyByPosition(postion: "G", roster: self.roster)
+                self.forwardsInRoster = self.classifyByPosition(postion: "F", roster: self.roster)
+                self.centersInRoster = self.classifyByPosition(postion: "C", roster: self.roster)
+        }
+    }
+  
     func fetchRoster(teamId: String) {
         guard !teamId.isEmpty else { return }
         let seasonYear = SeasonProvider.shared.seasonYear()
@@ -159,7 +185,7 @@ extension TeamStatsViewModel {
   }
   
   var currentSeasonStats: [PlayerStatsItemViewModel] {
-      stats.first { $0.title == "2023-24" }
+      stats.first { $0.title == "2024-25" }
           .map {
               makeTeamStatsItemViewModels(with: $0)
           } ?? []

@@ -173,7 +173,7 @@ extension PlayerView {
         LazyHGrid(rows: layout, spacing: 0) {
           ForEach(Array(stats.enumerated()), id: \.element) { index, stat in
             let statsItems = stat.createStatsItemViewModels(teamId: self.teamId)
-            LazyHStack(spacing: 0) {
+            LazyHStack(spacing: 0) { //껍데기를 lazy로 만들어야 update를 덜한다
               self.cardView(stats: statsItems, leftWidth: leftWidth, rightWidth: rightWidth)
               
 //              Divider()
