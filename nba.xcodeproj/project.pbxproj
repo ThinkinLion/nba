@@ -45,6 +45,7 @@
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
 		C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C7950C2B02389300D72531 /* StandingsView.swift */; };
 		C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFEC242BD0E80A0065871D /* Transform.swift */; };
+		C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E076682D77F28C00CE8ED3 /* PowerRankingModel.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
 		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
 		C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B42B19C29D00E2B3D7 /* String+.swift */; };
@@ -111,6 +112,7 @@
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C2C7950C2B02389300D72531 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 		C2DFEC242BD0E80A0065871D /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
+		C2E076682D77F28C00CE8ED3 /* PowerRankingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingModel.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
 		C2FDA6B42B19C29D00E2B3D7 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 		C2C794F72AFE140D00D72531 /* model */ = {
 			isa = PBXGroup;
 			children = (
+				C2E076682D77F28C00CE8ED3 /* PowerRankingModel.swift */,
 				C2C794F82AFE140D00D72531 /* StandingsModel.swift */,
 				C26B8F482B37120100BE185E /* TeamModel.swift */,
 				C2F034A82B175DD4009B372F /* GamesModel.swift */,
@@ -455,6 +458,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
+				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
 				C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */,
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
