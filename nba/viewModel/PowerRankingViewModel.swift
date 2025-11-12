@@ -88,3 +88,99 @@ final class PowerRankingViewModel: ObservableObject {
 }
 
 
+extension PowerRankingViewModel {
+    struct PowerRankingViewState {
+        let weekLabel: String?
+        let title: String?
+        let subTitle: String?
+        let imageURL: URL?
+        let imageDesc: String?
+        let teams: [TeamState]
+    }
+    
+    struct TeamState: Identifiable {
+        let id: String
+        let displayRank: Int
+        let name: String
+        let record: String?
+        let rankChangeText: String
+        let rankChangeStyle: RankChangeStyle
+        let triCode: String?
+        let backgroundColorName: String
+        let model: PowerRankingTeamModel
+    }
+    
+    enum RankChangeStyle {
+        case up
+        case down
+        case same
+    }
+    
+    var currentViewState: PowerRankingViewState? {
+        guard let powerRanking = currentPowerRanking else { return nil }
+        
+        let teams: [TeamState] = (powerRanking.items ?? [])
+            .enumerated()
+            .map { index, team in
+                let triCode = Self.makeTriCode(from: team.teamCode)
+                let backgroundColorName = Self.makeBackgroundColorName(from: team.teamCode)
+                let rankChange = Self.makeRankChange(from: team.lastWeek)
+                
+                return TeamState(
+                    id: team.id?.isEmpty == false ? team.id! : "\(index)",
+                    displayRank: index + 1,
+                    name: (team.teamName ?? "").uppercased(),
+                    record: team.record?.isEmpty == false ? team.record : nil,
+                    rankChangeText: rankChange.text,
+                    rankChangeStyle: rankChange.style,
+                    triCode: triCode.isEmpty ? nil : triCode,
+                    backgroundColorName: backgroundColorName,
+                    model: team
+                )
+            }
+        
+        return PowerRankingViewState(
+            weekLabel: powerRanking.week?.isEmpty == false ? "Week \(powerRanking.week!)" : nil,
+            title: powerRanking.title?.isEmpty == false ? powerRanking.title : nil,
+            subTitle: powerRanking.subTitle?.isEmpty == false ? powerRanking.subTitle : nil,
+            imageURL: powerRanking.image?.isEmpty == false ? URL(string: powerRanking.image!) : nil,
+            imageDesc: powerRanking.imageDesc?.isEmpty == false ? powerRanking.imageDesc : nil,
+            teams: teams
+        )
+    }
+    
+    private static func makeTriCode(from teamCode: String?) -> String {
+        guard let teamCode = teamCode, !teamCode.isEmpty else { return "" }
+        if teamCode.count == 3 {
+            return teamCode.uppercased()
+        } else {
+            return teamCode.nickNameToTriCode
+        }
+    }
+    
+    private static func makeBackgroundColorName(from teamCode: String?) -> String {
+        guard let teamCode = teamCode, !teamCode.isEmpty else { return "#1C1B1D" }
+        let nickName = teamCode.triCodeToNickName.isEmpty ? teamCode.lowercased() : teamCode.triCodeToNickName
+        return nickName.isEmpty ? "#1C1B1D" : nickName
+    }
+    
+    private static func makeRankChange(from lastWeek: String?) -> (text: String, style: RankChangeStyle) {
+        guard let raw = lastWeek?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty else {
+            return ("-", .same)
+        }
+        
+        let upIndicators: [Character] = ["↑", "▲", "△", "↗", "➚", "⬆"]
+        let downIndicators: [Character] = ["↓", "▼", "▽", "↘", "➘", "⬇"]
+        
+        if raw.contains(where: { upIndicators.contains($0) }) {
+            return (raw, .up)
+        }
+        
+        if raw.contains(where: { downIndicators.contains($0) }) {
+            return (raw, .down)
+        }
+        
+        return ("-", .same)
+    }
+}
+

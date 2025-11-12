@@ -17,15 +17,15 @@ struct PowerRankingView: View {
             if viewModel.isLoading {
                 ProgressView()
                     .padding(.top, 50)
-            } else if let currentRanking = viewModel.currentPowerRanking {
+            } else if let currentRanking = viewModel.currentViewState {
                 // 헤더 섹션
                 headerView(powerRanking: currentRanking)
                     .padding(.horizontal, 15)
                     .padding(.top, 15)
                 
                 // 랭킹 리스트
-                if let items = currentRanking.items, !items.isEmpty {
-                    rankingListView(items: items)
+                if !currentRanking.teams.isEmpty {
+                    rankingListView(items: currentRanking.teams)
                         .padding(.top, 20)
                 }
                 
@@ -55,10 +55,10 @@ struct PowerRankingView: View {
 // MARK: - Header View
 extension PowerRankingView {
     @ViewBuilder
-    func headerView(powerRanking: PowerRankingModel) -> some View {
+    func headerView(powerRanking: PowerRankingViewModel.PowerRankingViewState) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let week = powerRanking.week {
-                Text("Week \(week)")
+            if let week = powerRanking.weekLabel {
+                Text(week)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white.opacity(0.7))
             }
@@ -75,8 +75,8 @@ extension PowerRankingView {
                     .foregroundColor(.white.opacity(0.8))
             }
             
-            if let imageUrl = powerRanking.image, !imageUrl.isEmpty {
-                AsyncImage(url: URL(string: imageUrl)) { image in
+            if let imageUrl = powerRanking.imageURL {
+                AsyncImage(url: imageUrl) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -103,11 +103,11 @@ extension PowerRankingView {
 // MARK: - Ranking List View
 extension PowerRankingView {
     @ViewBuilder
-    func rankingListView(items: [PowerRankingTeamModel]) -> some View {
+    func rankingListView(items: [PowerRankingViewModel.TeamState]) -> some View {
         VStack(spacing: 12) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { index, team in
-                NavigationLink(destination: PowerRankingDetailView(team: team)) {
-                    rankingCardView(team: team, rank: index + 1)
+            ForEach(items) { team in
+                NavigationLink(destination: PowerRankingDetailView(team: team.model)) {
+                    rankingCardView(team: team)
                 }
             }
         }
@@ -115,31 +115,28 @@ extension PowerRankingView {
     }
     
     @ViewBuilder
-    func rankingCardView(team: PowerRankingTeamModel, rank: Int) -> some View {
+    func rankingCardView(team: PowerRankingViewModel.TeamState) -> some View {
         HStack(spacing: 12) {
             // 순위
-            Text("\(rank)")
+            Text("\(team.displayRank)")
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .frame(width: 40)
             
             // 팀 로고
-            if let teamCode = team.teamCode {
-                let triCode = teamCode.count == 3 ? teamCode.uppercased() : teamCode.nickNameToTriCode
-                if !triCode.isEmpty {
-                    Image(triCode)
+            if let triCode = team.triCode {
+                Image(triCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 50, height: 50)
                         .background(Color.white.opacity(0.1))
                         .clipShape(Circle())
-                }
             }
             
             // 팀 정보
             VStack(alignment: .leading, spacing: 4) {
-                if let teamName = team.teamName {
-                    Text(teamName.uppercased())
+                if !team.name.isEmpty {
+                    Text(team.name)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.white)
                 }
@@ -152,9 +149,9 @@ extension PowerRankingView {
                     }
                     
                     // 전주 대비 순위 변화
-                    if let lastWeek = team.lastWeek, !lastWeek.isEmpty {
-                        rankChangeView(change: lastWeek)
-                    }
+                    Text(team.rankChangeText)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
                 }
             }
             
@@ -162,43 +159,19 @@ extension PowerRankingView {
         }
         .padding(15)
         .background(
-            Group {
-                if let teamCode = team.teamCode {
-                    // teamCode가 triCode일 수 있으므로 nickName으로 변환
-                    let nickName = teamCode.triCodeToNickName.isEmpty ? teamCode.lowercased() : teamCode.triCodeToNickName
-                    Color(nickName)
-                } else {
-                    Color("#1C1B1D")
-                }
-            }
+            Color(team.backgroundColorName)
         )
         .cornerRadius(12)
     }
     
-    @ViewBuilder
-    func rankChangeView(change: String) -> some View {
-        let changeValue = Int(change) ?? 0
-        
-        if changeValue > 0 {
-            HStack(spacing: 2) {
-                Image(systemName: "arrow.up")
-                Text("\(changeValue)")
-            }
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundColor(.green)
-        } else if changeValue < 0 {
-            HStack(spacing: 2) {
-                Image(systemName: "arrow.down")
-                Text("\(abs(changeValue))")
-            }
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundColor(.red)
-        } else {
-            HStack(spacing: 2) {
-                Image(systemName: "minus")
-            }
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundColor(.white.opacity(0.6))
+    private func rankChangeColor(for style: PowerRankingViewModel.RankChangeStyle) -> Color {
+        switch style {
+        case .up:
+            return .green
+        case .down:
+            return .red
+        case .same:
+            return .white.opacity(0.6)
         }
     }
 }
