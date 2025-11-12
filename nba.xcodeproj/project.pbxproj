@@ -22,6 +22,9 @@
 		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
 		C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
+		C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */; };
+		C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */; };
+		C24D07C22EC29E1500777BF1 /* PowerRankingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D07C12EC29E1500777BF1 /* PowerRankingViewModel.swift */; };
 		C2628F1A2B401B7B005E044B /* GameRecapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F192B401B7B005E044B /* GameRecapView.swift */; };
 		C2628F1D2B452C5A005E044B /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F1C2B452C5A005E044B /* ViewModifiers.swift */; };
 		C2628F212B4576B3005E044B /* BoxScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */; };
@@ -91,6 +94,9 @@
 		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
 		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
+		C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingDetailView.swift; sourceTree = "<group>"; };
+		C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingView.swift; sourceTree = "<group>"; };
+		C24D07C12EC29E1500777BF1 /* PowerRankingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingViewModel.swift; sourceTree = "<group>"; };
 		C2628F192B401B7B005E044B /* GameRecapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecapView.swift; sourceTree = "<group>"; };
 		C2628F1C2B452C5A005E044B /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreViewModel.swift; sourceTree = "<group>"; };
@@ -258,6 +264,7 @@
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */,
 				C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */,
+				C24D07C12EC29E1500777BF1 /* PowerRankingViewModel.swift */,
 			);
 			path = viewModel;
 			sourceTree = "<group>";
@@ -271,6 +278,8 @@
 				C22B99992B33EF9400A1152E /* TeamView.swift */,
 				C2628F192B401B7B005E044B /* GameRecapView.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
+				C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */,
+				C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -460,10 +469,13 @@
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
 				C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */,
+				C24D07C22EC29E1500777BF1 /* PowerRankingViewModel.swift in Sources */,
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
 				C22634972B639F2500692248 /* PlayerStatsItemViewModel.swift in Sources */,
 				C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */,
+				C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */,
+				C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */,
 				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C2AC6EDE2CCCF13B00E5DF61 /* Scoring.swift in Sources */,
@@ -678,9 +690,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.20;
+				MARKETING_VERSION = 1.01;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nbaPowerRanking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -721,9 +733,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 2.20;
+				MARKETING_VERSION = 1.01;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nba;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nbaPowerRanking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";

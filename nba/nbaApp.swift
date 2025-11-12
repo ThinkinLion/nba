@@ -31,7 +31,7 @@ struct nbaApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-        StandingsView()
+        PowerRankingView()
       }
     }
   }
