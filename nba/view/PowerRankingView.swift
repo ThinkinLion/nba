@@ -118,10 +118,16 @@ extension PowerRankingView {
     func rankingCardView(team: PowerRankingViewModel.TeamState) -> some View {
         HStack(spacing: 12) {
             // 순위
-            Text("\(team.displayRank)")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundColor(.white)
-                .frame(width: 40)
+            VStack(spacing: 4) {
+                Text("\(team.displayRank)")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                
+                Text(team.rankChangeText)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
+            }
+            .frame(width: 50)
             
             // 팀 로고
             if let triCode = team.triCode {
@@ -147,11 +153,6 @@ extension PowerRankingView {
                             .font(.system(size: 14))
                             .foregroundColor(.white.opacity(0.8))
                     }
-                    
-                    // 전주 대비 순위 변화
-                    Text(team.rankChangeText)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
                 }
             }
             
