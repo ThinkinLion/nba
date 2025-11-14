@@ -102,7 +102,7 @@ extension PowerRankingDetailView {
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    HStack(spacing: 16) {
+                    HStack(spacing: 28) {
                         if let rank = viewState.rank {
                             VStack {
                                 Text("RANK")
@@ -125,13 +125,11 @@ extension PowerRankingDetailView {
                             }
                         }
                         
-                        if let lastWeek = viewState.lastWeek, !lastWeek.isEmpty {
-                            VStack {
-                                Text("CHANGE")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.white.opacity(0.7))
-                                rankChangeBadge(change: lastWeek)
-                            }
+                        VStack {
+                            Text("LAST WEEK")
+                                .font(.system(size: 12))
+                                .foregroundColor(.white.opacity(0.7))
+                            rankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
                         }
                     }
                 }
@@ -162,27 +160,20 @@ extension PowerRankingDetailView {
     }
     
     @ViewBuilder
-    func rankChangeBadge(change: String) -> some View {
-        let changeValue = Int(change) ?? 0
-        
-        if changeValue > 0 {
-            HStack(spacing: 4) {
-                Image(systemName: "arrow.up")
-                Text("\(changeValue)")
-            }
+    func rankChangeBadge(text: String, style: PowerRankingViewModel.RankChangeStyle) -> some View {
+        Text(text)
             .font(.system(size: 18, weight: .bold))
-            .foregroundColor(.green)
-        } else if changeValue < 0 {
-            HStack(spacing: 4) {
-                Image(systemName: "arrow.down")
-                Text("\(abs(changeValue))")
-            }
-            .font(.system(size: 18, weight: .bold))
-            .foregroundColor(.red)
-        } else {
-            Image(systemName: "minus")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.white.opacity(0.6))
+            .foregroundColor(rankChangeColor(for: style))
+    }
+    
+    private func rankChangeColor(for style: PowerRankingViewModel.RankChangeStyle) -> Color {
+        switch style {
+        case .up:
+            return .green
+        case .down:
+            return .red
+        case .same:
+            return .white.opacity(0.6)
         }
     }
 }

@@ -129,12 +129,14 @@ extension PowerRankingViewModel {
         let model: PowerRankingTeamModel
         
         var detailViewState: TeamDetailViewState {
-            TeamDetailViewState(
+            let rankChange = PowerRankingViewModel.makeRankChange(from: model.lastWeek)
+            return TeamDetailViewState(
                 triCode: triCode,
                 name: name,
                 rank: model.rank,
                 record: record,
-                lastWeek: model.lastWeek,
+                rankChangeText: rankChange.text,
+                rankChangeStyle: rankChange.style,
                 overview: model.overview,
                 takeaways: model.takeaways,
                 advanced: model.advanced,
@@ -149,7 +151,8 @@ extension PowerRankingViewModel {
         let name: String
         let rank: String?
         let record: String?
-        let lastWeek: String?
+        let rankChangeText: String
+        let rankChangeStyle: RankChangeStyle
         let overview: String?
         let takeaways: [String]?
         let advanced: PowerRankingAdvancedModel?
