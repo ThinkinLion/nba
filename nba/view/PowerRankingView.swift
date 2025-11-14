@@ -137,7 +137,7 @@ extension PowerRankingView {
                 )
                 .shadow(color: baseColor.opacity(0.28), radius: 10, x: 0, y: 8)
             
-            HStack(alignment: .center, spacing: 12) {
+            HStack(alignment: .center, spacing: 10) {
                 // 순위
                 VStack(spacing: 5) {
                     Text("\(team.displayRank)")
@@ -160,8 +160,10 @@ extension PowerRankingView {
                 VStack(alignment: .leading, spacing: 6) {
                     if !team.name.isEmpty {
                         Text(team.name)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.white)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
                     HStack(spacing: 8) {
@@ -182,7 +184,7 @@ extension PowerRankingView {
             }
             .padding(.top, 16)
             .padding(.bottom, 14)
-            .padding(.leading, 52)
+            .padding(.leading, 44)
             .padding(.trailing, 16)
         }
         .overlay(alignment: .topLeading) {

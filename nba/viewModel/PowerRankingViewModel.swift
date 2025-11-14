@@ -140,13 +140,31 @@ extension PowerRankingViewModel {
             }
         
         return PowerRankingViewState(
-            weekLabel: powerRanking.week?.isEmpty == false ? "Week \(powerRanking.week!)" : nil,
+            weekLabel: Self.makeWeekLabel(from: powerRanking.week),
             title: powerRanking.title?.isEmpty == false ? powerRanking.title : nil,
             subTitle: powerRanking.subTitle?.isEmpty == false ? powerRanking.subTitle : nil,
             imageURL: powerRanking.image?.isEmpty == false ? URL(string: powerRanking.image!) : nil,
             imageDesc: powerRanking.imageDesc?.isEmpty == false ? powerRanking.imageDesc : nil,
             teams: teams
         )
+    }
+    
+    private static func makeWeekLabel(from week: String?) -> String? {
+        guard let week = week, !week.isEmpty else { return nil }
+        
+        // "week-3" 형식인 경우 숫자만 추출
+        if week.lowercased().hasPrefix("week-") {
+            let weekNumber = String(week.dropFirst(5))
+            return "Week \(weekNumber)"
+        }
+        
+        // 이미 "Week"로 시작하는 경우 그대로 반환
+        if week.hasPrefix("Week ") {
+            return week
+        }
+        
+        // 숫자만 있는 경우 "Week "를 붙여서 반환
+        return "Week \(week)"
     }
     
     private static func makeTriCode(from teamCode: String?) -> String {
