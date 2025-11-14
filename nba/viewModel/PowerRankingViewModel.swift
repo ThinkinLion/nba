@@ -12,6 +12,7 @@ import Firebase
 final class PowerRankingViewModel: ObservableObject {
     @Published var powerRankings: [PowerRankingModel] = []
     @Published var currentPowerRanking: PowerRankingModel?
+    @Published var selectedWeek: String?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
@@ -46,7 +47,10 @@ final class PowerRankingViewModel: ObservableObject {
                 } ?? []
                 
                 // 가장 최신 랭킹을 currentPowerRanking으로 설정
-                self.currentPowerRanking = self.powerRankings.first
+                if let firstRanking = self.powerRankings.first {
+                    self.currentPowerRanking = firstRanking
+                    self.selectedWeek = firstRanking.week
+                }
                 self.isLoading = false
             }
     }
@@ -84,6 +88,21 @@ final class PowerRankingViewModel: ObservableObject {
     
     func selectPowerRanking(_ powerRanking: PowerRankingModel) {
         currentPowerRanking = powerRanking
+        selectedWeek = powerRanking.week
+    }
+    
+    func selectWeek(_ week: String) {
+        if let ranking = powerRankings.first(where: { $0.week == week }) {
+            selectPowerRanking(ranking)
+        }
+    }
+    
+    var availableWeeks: [String] {
+        powerRankings.compactMap { $0.week }.reversed()
+    }
+    
+    var weekLabels: [String] {
+        availableWeeks.compactMap { Self.makeWeekLabel(from: $0) }
     }
 }
 

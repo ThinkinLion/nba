@@ -13,32 +13,41 @@ struct PowerRankingView: View {
     @State private var hasAppeared = false
     
     var body: some View {
-        ScrollView(.vertical) {
-            if viewModel.isLoading {
-                ProgressView()
-                    .padding(.top, 50)
-            } else if let currentRanking = viewModel.currentViewState {
-                // 헤더 섹션
-                headerView(powerRanking: currentRanking)
-                    .padding(.horizontal, 15)
-                    .padding(.top, 15)
-                
-                // 랭킹 리스트
-                if !currentRanking.teams.isEmpty {
-                    rankingListView(items: currentRanking.teams)
+        VStack(spacing: 0) {
+            // Week 선택 캐러셀
+            if !viewModel.availableWeeks.isEmpty {
+                weekCarouselView()
+                    .padding(.top, 10)
+                    .padding(.bottom, 15)
+            }
+            
+            ScrollView(.vertical) {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .padding(.top, 50)
+                } else if let currentRanking = viewModel.currentViewState {
+                    // 헤더 섹션
+                    headerView(powerRanking: currentRanking)
+                        .padding(.horizontal, 15)
+                        .padding(.top, 15)
+                    
+                    // 랭킹 리스트
+                    if !currentRanking.teams.isEmpty {
+                        rankingListView(items: currentRanking.teams)
+                            .padding(.top, 20)
+                    }
+                    
+                    BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
                         .padding(.top, 20)
+                } else if let errorMessage = viewModel.errorMessage {
+                    Text("Error: \(errorMessage)")
+                        .foregroundColor(.red)
+                        .padding()
+                } else {
+                    Text("No power rankings available")
+                        .foregroundColor(.gray)
+                        .padding()
                 }
-                
-                BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
-                    .padding(.top, 20)
-            } else if let errorMessage = viewModel.errorMessage {
-                Text("Error: \(errorMessage)")
-                    .foregroundColor(.red)
-                    .padding()
-            } else {
-                Text("No power rankings available")
-                    .foregroundColor(.gray)
-                    .padding()
             }
         }
         .navigationBarTitle("Power Rankings", displayMode: .large)
@@ -52,17 +61,45 @@ struct PowerRankingView: View {
     }
 }
 
+// MARK: - Week Carousel View
+extension PowerRankingView {
+    @ViewBuilder
+    func weekCarouselView() -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(Array(viewModel.availableWeeks.enumerated()), id: \.element) { index, week in
+                    let weekLabel = viewModel.weekLabels[index]
+                    let isSelected = viewModel.selectedWeek == week
+                    
+                    Button(action: {
+                        viewModel.selectWeek(week)
+                    }) {
+                        Text(weekLabel)
+                            .font(.system(size: 15, weight: isSelected ? .bold : .medium))
+                            .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .fill(isSelected ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .stroke(isSelected ? Color.white.opacity(0.4) : Color.clear, lineWidth: 1.5)
+                            )
+                    }
+                }
+            }
+            .padding(.horizontal, 15)
+        }
+    }
+}
+
 // MARK: - Header View
 extension PowerRankingView {
     @ViewBuilder
     func headerView(powerRanking: PowerRankingViewModel.PowerRankingViewState) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let week = powerRanking.weekLabel {
-                Text(week)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.7))
-            }
-            
             if let title = powerRanking.title {
                 Text(title)
                     .font(.system(size: 28, weight: .bold))
