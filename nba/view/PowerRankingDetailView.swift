@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct PowerRankingDetailView: View {
-    let team: PowerRankingTeamModel
+    let teamState: PowerRankingViewModel.TeamState
     @State var scrollOffset: CGFloat = CGFloat.zero
+    
+    private var viewState: PowerRankingViewModel.TeamDetailViewState {
+        teamState.detailViewState
+    }
     
     var body: some View {
         ObservableScrollView(scrollOffset: $scrollOffset) {
@@ -17,25 +21,25 @@ struct PowerRankingDetailView: View {
             headerView()
             
             // Overview 섹션
-            if let overview = team.overview, !overview.isEmpty {
+            if let overview = viewState.overview, !overview.isEmpty {
                 sectionView(title: "Overview", content: overview)
                     .padding(.top, 20)
             }
             
             // Takeaways 섹션
-            if let takeaways = team.takeaways, !takeaways.isEmpty {
+            if let takeaways = viewState.takeaways, !takeaways.isEmpty {
                 takeawaysView(takeaways: takeaways)
                     .padding(.top, 20)
             }
             
             // Advanced Stats 섹션
-            if let advanced = team.advanced {
+            if let advanced = viewState.advanced {
                 advancedStatsView(advanced: advanced)
                     .padding(.top, 20)
             }
             
             // Upcoming 섹션
-            if let upcoming = team.upcomming, !upcoming.isEmpty {
+            if let upcoming = viewState.upcoming, !upcoming.isEmpty {
                 sectionView(title: "Upcoming", content: upcoming)
                     .padding(.top, 20)
             }
@@ -48,17 +52,15 @@ struct PowerRankingDetailView: View {
         .navigationBarTitle("", displayMode: .inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                if let teamCode = team.teamCode {
+                if let triCode = viewState.triCode {
                     HStack(spacing: 2) {
-                        Image(teamCode)
+                        Image(triCode)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 20, height: 20)
-                        if let teamName = team.teamName {
-                            Text(teamName.uppercased())
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.white)
-                        }
+                        Text(viewState.name)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
                     }
                 }
             }
@@ -66,12 +68,7 @@ struct PowerRankingDetailView: View {
     }
     
     private var backgroundColor: Color {
-        if let teamCode = team.teamCode {
-            // teamCode가 triCode일 수 있으므로 nickName으로 변환
-            let nickName = teamCode.triCodeToNickName.isEmpty ? teamCode.lowercased() : teamCode.triCodeToNickName
-            return Color(nickName)
-        }
-        return Color("#1C1B1D")
+        Color(viewState.backgroundColorName)
     }
 }
 
@@ -83,8 +80,8 @@ extension PowerRankingDetailView {
             Color.clear
             
             // 배경 로고
-            if let teamCode = team.teamCode {
-                Image(teamCode)
+            if let triCode = viewState.triCode {
+                Image(triCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .opacity(0.1)
@@ -94,21 +91,19 @@ extension PowerRankingDetailView {
                     .zIndex(0)
                 
                 VStack(alignment: .center, spacing: 12) {
-                    Image(teamCode)
+                    Image(triCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 120, height: 120)
                         .clipped()
                     
-                    if let teamName = team.teamName {
-                        Text(teamName.uppercased())
-                            .foregroundColor(.white)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                    }
+                    Text(viewState.name)
+                        .foregroundColor(.white)
+                        .font(.title2)
+                        .fontWeight(.semibold)
                     
                     HStack(spacing: 16) {
-                        if let rank = team.rank {
+                        if let rank = viewState.rank {
                             VStack {
                                 Text("RANK")
                                     .font(.system(size: 12))
@@ -119,7 +114,7 @@ extension PowerRankingDetailView {
                             }
                         }
                         
-                        if let record = team.record {
+                        if let record = viewState.record {
                             VStack {
                                 Text("RECORD")
                                     .font(.system(size: 12))
@@ -130,7 +125,7 @@ extension PowerRankingDetailView {
                             }
                         }
                         
-                        if let lastWeek = team.lastWeek, !lastWeek.isEmpty {
+                        if let lastWeek = viewState.lastWeek, !lastWeek.isEmpty {
                             VStack {
                                 Text("CHANGE")
                                     .font(.system(size: 12))
@@ -162,12 +157,8 @@ extension PowerRankingDetailView {
     }
     
     private var darkBackgroundColor: Color {
-        if let teamCode = team.teamCode {
-            // teamCode가 triCode일 수 있으므로 nickName으로 변환
-            let nickName = teamCode.triCodeToNickName.isEmpty ? teamCode.lowercased() : teamCode.triCodeToNickName
-            return Color(nickName + ".dark")
-        }
-        return Color("#1C1B1D")
+        let nickName = viewState.backgroundColorName
+        return Color(nickName + ".dark")
     }
     
     @ViewBuilder
@@ -301,17 +292,27 @@ struct PowerRankingDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             PowerRankingDetailView(
-                team: PowerRankingTeamModel(
+                teamState: PowerRankingViewModel.TeamState(
                     id: "1",
-                    rank: "1",
+                    displayRank: 1,
+                    name: "MILWAUKEE BUCKS",
                     record: "30-12",
-                    teamName: "Milwaukee Bucks",
-                    teamCode: "MIL",
-                    lastWeek: "1",
-                    advanced: nil,
-                    overview: "The Bucks are playing great basketball...",
-                    takeaways: ["Takeaway 1", "Takeaway 2"],
-                    upcomming: "Next 5 games..."
+                    rankChangeText: "↑1",
+                    rankChangeStyle: .up,
+                    triCode: "MIL",
+                    backgroundColorName: "bucks",
+                    model: PowerRankingTeamModel(
+                        id: "1",
+                        rank: "1",
+                        record: "30-12",
+                        teamName: "Milwaukee Bucks",
+                        teamCode: "MIL",
+                        lastWeek: "1",
+                        advanced: nil,
+                        overview: "The Bucks are playing great basketball...",
+                        takeaways: ["Takeaway 1", "Takeaway 2"],
+                        upcomming: "Next 5 games..."
+                    )
                 )
             )
         }

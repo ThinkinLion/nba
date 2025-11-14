@@ -171,7 +171,7 @@ extension PowerRankingView {
     func rankingListView(items: [PowerRankingViewModel.TeamState]) -> some View {
         VStack(spacing: 12) {
             ForEach(items) { team in
-                NavigationLink(destination: PowerRankingDetailView(team: team.model)) {
+                NavigationLink(destination: PowerRankingDetailView(teamState: team)) {
                     rankingCardView(team: team)
                 }
             }

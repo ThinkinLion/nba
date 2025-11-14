@@ -127,6 +127,34 @@ extension PowerRankingViewModel {
         let triCode: String?
         let backgroundColorName: String
         let model: PowerRankingTeamModel
+        
+        var detailViewState: TeamDetailViewState {
+            TeamDetailViewState(
+                triCode: triCode,
+                name: name,
+                rank: model.rank,
+                record: record,
+                lastWeek: model.lastWeek,
+                overview: model.overview,
+                takeaways: model.takeaways,
+                advanced: model.advanced,
+                upcoming: model.upcomming,
+                backgroundColorName: backgroundColorName
+            )
+        }
+    }
+    
+    struct TeamDetailViewState {
+        let triCode: String?
+        let name: String
+        let rank: String?
+        let record: String?
+        let lastWeek: String?
+        let overview: String?
+        let takeaways: [String]?
+        let advanced: PowerRankingAdvancedModel?
+        let upcoming: String?
+        let backgroundColorName: String
     }
     
     enum RankChangeStyle {
