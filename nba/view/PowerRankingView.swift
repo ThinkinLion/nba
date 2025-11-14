@@ -116,53 +116,88 @@ extension PowerRankingView {
     
     @ViewBuilder
     func rankingCardView(team: PowerRankingViewModel.TeamState) -> some View {
-        HStack(spacing: 12) {
-            // 순위
-            VStack(spacing: 4) {
-                Text("\(team.displayRank)")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                
-                Text(team.rankChangeText)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
-            }
-            .frame(width: 50)
+        let baseColor = Color(team.backgroundColorName)
+        
+        ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            baseColor,
+                            baseColor.opacity(0.75),
+                            baseColor.opacity(0.55)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+                .shadow(color: baseColor.opacity(0.28), radius: 10, x: 0, y: 8)
             
-            // 팀 로고
-            if let triCode = team.triCode {
-                Image(triCode)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50, height: 50)
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(Circle())
-            }
-            
-            // 팀 정보
-            VStack(alignment: .leading, spacing: 4) {
-                if !team.name.isEmpty {
-                    Text(team.name)
-                        .font(.system(size: 16, weight: .semibold))
+            HStack(alignment: .center, spacing: 12) {
+                // 순위
+                VStack(spacing: 5) {
+                    Text("\(team.displayRank)")
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
+                    
+                    Text(team.rankChangeText)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            Capsule()
+                                .fill(Color.white.opacity(0.1))
+                        )
                 }
+                .frame(width: 48)
                 
-                HStack(spacing: 8) {
-                    if let record = team.record {
-                        Text(record)
-                            .font(.system(size: 14))
-                            .foregroundColor(.white.opacity(0.8))
+                // 팀 정보
+                VStack(alignment: .leading, spacing: 6) {
+                    if !team.name.isEmpty {
+                        Text(team.name)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
+                    
+                    HStack(spacing: 8) {
+                        if let record = team.record {
+                            Label {
+                                Text(record)
+                                    .font(.system(size: 13, weight: .medium))
+                            } icon: {
+                                Image(systemName: "chart.bar.fill")
+                                    .font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundColor(.white.opacity(0.85))
+                        }
                     }
                 }
+                
+                Spacer()
             }
-            
-            Spacer()
+            .padding(.top, 16)
+            .padding(.bottom, 14)
+            .padding(.leading, 52)
+            .padding(.trailing, 16)
         }
-        .padding(15)
-        .background(
-            Color(team.backgroundColorName)
-        )
-        .cornerRadius(12)
+        .overlay(alignment: .topLeading) {
+            if let triCode = team.triCode {
+                Image(triCode)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 62, height: 62)
+                    .shadow(color: .black.opacity(0.25), radius: 9, x: 0, y: 6)
+                    .offset(x: -20, y: -20)
+            }
+        }
+        .padding(.top, 16)
+        .padding(.horizontal, 2)
+        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
     
     private func rankChangeColor(for style: PowerRankingViewModel.RankChangeStyle) -> Color {

@@ -129,7 +129,7 @@ extension PowerRankingViewModel {
                 return TeamState(
                     id: team.id?.isEmpty == false ? team.id! : "\(index)",
                     displayRank: index + 1,
-                    name: (team.teamName ?? "").uppercased(),
+                    name: Self.makeDisplayName(from: team),
                     record: team.record?.isEmpty == false ? team.record : nil,
                     rankChangeText: rankChange.text,
                     rankChangeStyle: rankChange.style,
@@ -181,6 +181,35 @@ extension PowerRankingViewModel {
         }
         
         return ("-", .same)
+    }
+    
+    private static func makeDisplayName(from team: PowerRankingTeamModel) -> String {
+        let rawCity = (team.teamName ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        var rawCode = (team.teamCode ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if rawCode.count == 3, rawCode.uppercased() == rawCode {
+            let nickname = rawCode.triCodeToNickName
+            if !nickname.isEmpty {
+                rawCode = nickname
+            }
+        }
+        
+        let city = rawCity.isEmpty ? nil : rawCity
+        let nickname = rawCode.isEmpty ? nil : rawCode
+        
+        if let city, let nickname {
+            return "\(city) \(nickname)".uppercased()
+        }
+        
+        if let city {
+            return city.uppercased()
+        }
+        
+        if let nickname {
+            return nickname.uppercased()
+        }
+        
+        return "UNKNOWN TEAM"
     }
 }
 
