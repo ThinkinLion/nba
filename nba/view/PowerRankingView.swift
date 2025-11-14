@@ -11,42 +11,70 @@ import FirebaseAnalytics
 struct PowerRankingView: View {
     @StateObject var viewModel = PowerRankingViewModel()
     @State private var hasAppeared = false
+    @State private var scrollOffset: CGFloat = 0
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Week 선택 캐러셀
-            if !viewModel.availableWeeks.isEmpty {
-                weekCarouselView()
-                    .padding(.top, 10)
-                    .padding(.bottom, 15)
-            }
-            
+        ZStack(alignment: .top) {
             ScrollView(.vertical) {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .padding(.top, 50)
-                } else if let currentRanking = viewModel.currentViewState {
-                    // 헤더 섹션
-                    headerView(powerRanking: currentRanking)
-                        .padding(.horizontal, 15)
-                        .padding(.top, 15)
-                    
-                    // 랭킹 리스트
-                    if !currentRanking.teams.isEmpty {
-                        rankingListView(items: currentRanking.teams)
-                            .padding(.top, 20)
+                VStack(spacing: 0) {
+                    // Week 캐러셀을 위한 공간 (스크롤 시 사라짐)
+                    if !viewModel.availableWeeks.isEmpty {
+                        weekCarouselView()
+                            .padding(.top, 10)
+                            .padding(.bottom, 15)
+                            .background(
+                                GeometryReader { proxy in
+                                    Color.clear
+                                        .preference(key: ScrollOffsetPreferenceKey.self, value: -proxy.frame(in: .named("scroll")).minY)
+                                }
+                            )
                     }
                     
-                    BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
-                        .padding(.top, 20)
-                } else if let errorMessage = viewModel.errorMessage {
-                    Text("Error: \(errorMessage)")
-                        .foregroundColor(.red)
-                        .padding()
-                } else {
-                    Text("No power rankings available")
-                        .foregroundColor(.gray)
-                        .padding()
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .padding(.top, 50)
+                            .frame(maxWidth: .infinity)
+                    } else if let currentRanking = viewModel.currentViewState {
+                        // 헤더 섹션
+                        headerView(powerRanking: currentRanking)
+                            .padding(.horizontal, 15)
+                            .padding(.top, 15)
+                        
+                        // 랭킹 리스트
+                        if !currentRanking.teams.isEmpty {
+                            rankingListView(items: currentRanking.teams)
+                                .padding(.top, 20)
+                        }
+                        
+                        BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
+                            .padding(.top, 20)
+                    } else if let errorMessage = viewModel.errorMessage {
+                        Text("Error: \(errorMessage)")
+                            .foregroundColor(.red)
+                            .padding()
+                    } else {
+                        Text("No power rankings available")
+                            .foregroundColor(.gray)
+                            .padding()
+                    }
+                }
+            }
+            .coordinateSpace(name: "scroll")
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                scrollOffset = value
+            }
+            
+            // Sticky Week 캐러셀 (스크롤 시 상단에 고정)
+            if !viewModel.availableWeeks.isEmpty && scrollOffset > 0 {
+                VStack(spacing: 0) {
+                    weekCarouselView()
+                        .padding(.top, 10)
+                        .padding(.bottom, 15)
+                        .background(
+                            Color.black
+                                .ignoresSafeArea(edges: .top)
+                        )
+                    Spacer()
                 }
             }
         }
@@ -248,6 +276,14 @@ extension PowerRankingView {
         case .same:
             return .white.opacity(0.6)
         }
+    }
+}
+
+// MARK: - Scroll Offset Preference Key
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
