@@ -67,7 +67,7 @@ struct PowerRankingDetailView: View {
             BannerView(adUnitId: .teamView, paddingTop: 20, height: 100)
                 .padding(.bottom, 30)
         }
-        .background(backgroundColor)
+        .background(darkBackgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarTitle("", displayMode: .inline)
         .toolbar {
@@ -90,7 +90,8 @@ struct PowerRankingDetailView: View {
     }
     
     private var backgroundColor: Color {
-        Color(viewState.backgroundColorName)
+        let nickName = viewState.backgroundColorName
+        return Color(nickName + ".light")
     }
 }
 
