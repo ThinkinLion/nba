@@ -121,46 +121,47 @@ extension PowerRankingDetailView {
                     
                     Text(viewState.name)
                         .foregroundColor(.white)
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 26, weight: .bold))
+                        .padding(.bottom, 2)
                     
                     HStack(spacing: 28) {
                         if let rank = viewState.rank {
-                            VStack {
+                            VStack(spacing: 4) {
                                 Text("RANK")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.white.opacity(0.7))
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
                                 Text(rank)
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .foregroundColor(.white.opacity(0.9))
                             }
                         }
                         
                         if let record = viewState.record {
-                            VStack {
+                            VStack(spacing: 4) {
                                 Text("RECORD")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.white.opacity(0.7))
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
                                 Text(record)
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .foregroundColor(.white.opacity(0.9))
                             }
                         }
                         
-                        VStack {
+                        VStack(spacing: 4) {
                             Text("LAST WEEK")
-                                .font(.system(size: 12))
-                                .foregroundColor(.white.opacity(0.7))
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.white.opacity(0.6))
                             rankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
                         }
                     }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, 50)
+                .padding(.bottom, 20)
                 .zIndex(1)
             }
         }
-        .frame(height: 280)
+        .frame(height: 300)
         .frame(maxWidth: .infinity)
         .background(backgroundColor)
         
@@ -211,7 +212,7 @@ extension PowerRankingDetailView {
     @ViewBuilder
     func rankChangeBadge(text: String, style: PowerRankingViewModel.RankChangeStyle) -> some View {
         Text(text)
-            .font(.system(size: 18, weight: .bold))
+            .font(.system(size: 20, weight: .semibold))
             .foregroundColor(rankChangeColor(for: style))
     }
     
