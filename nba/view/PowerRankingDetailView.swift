@@ -10,9 +10,16 @@ import SwiftUI
 struct PowerRankingDetailView: View {
     let teamState: PowerRankingViewModel.TeamState
     @State var scrollOffset: CGFloat = CGFloat.zero
+    @StateObject private var playerViewModel = PlayerViewModel()
+    @State private var hasAppeared = false
     
     private var viewState: PowerRankingViewModel.TeamDetailViewState {
         teamState.detailViewState
+    }
+    
+    private var teamId: String {
+        guard let triCode = viewState.triCode else { return "" }
+        return triCode.triCodeToTeamId
     }
     
     var body: some View {
@@ -24,12 +31,25 @@ struct PowerRankingDetailView: View {
             if let overview = viewState.overview, !overview.isEmpty {
                 sectionView(title: "Overview", content: overview)
                     .padding(.top, 20)
+                
+                // Overview에 언급된 선수들
+                if let mentionedPlayers = extractMentionedPlayers(from: overview) {
+                    mentionedPlayersView(players: mentionedPlayers)
+                        .padding(.top, 15)
+                }
             }
             
             // Takeaways 섹션
             if let takeaways = viewState.takeaways, !takeaways.isEmpty {
                 takeawaysView(takeaways: takeaways)
                     .padding(.top, 20)
+                
+                // Takeaways에 언급된 선수들
+                let allTakeaways = takeaways.joined(separator: " ")
+                if let mentionedPlayers = extractMentionedPlayers(from: allTakeaways) {
+                    mentionedPlayersView(players: mentionedPlayers)
+                        .padding(.top, 15)
+                }
             }
             
             // Advanced Stats 섹션
@@ -53,17 +73,19 @@ struct PowerRankingDetailView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 if let triCode = viewState.triCode {
-                    HStack(spacing: 2) {
-                        Image(triCode)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
-                        Text(viewState.name)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
+                    Image(triCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24, height: 24)
                 }
             }
+        }
+        .onAppear {
+            guard !hasAppeared else { return }
+            if !teamId.isEmpty {
+                playerViewModel.fetchRoster(teamId: teamId)
+            }
+            hasAppeared = true
         }
     }
     
@@ -159,6 +181,33 @@ extension PowerRankingDetailView {
         return Color(nickName + ".dark")
     }
     
+    // 텍스트에서 언급된 선수 추출
+    private func extractMentionedPlayers(from text: String) -> [PlayerModel]? {
+        let roster = playerViewModel.roster
+        guard !roster.isEmpty else { return nil }
+        
+        var mentionedPlayers: [PlayerModel] = []
+        
+        for player in roster {
+            guard let firstName = player.firstName,
+                  let lastName = player.lastName else { continue }
+            
+            let fullName = "\(firstName) \(lastName)"
+            let lastNameOnly = lastName
+            
+            // 전체 이름 또는 성만으로 언급되었는지 확인
+            if text.localizedCaseInsensitiveContains(fullName) ||
+               text.localizedCaseInsensitiveContains(lastNameOnly) {
+                // 중복 제거
+                if !mentionedPlayers.contains(where: { $0.id == player.id }) {
+                    mentionedPlayers.append(player)
+                }
+            }
+        }
+        
+        return mentionedPlayers.isEmpty ? nil : mentionedPlayers
+    }
+    
     @ViewBuilder
     func rankChangeBadge(text: String, style: PowerRankingViewModel.RankChangeStyle) -> some View {
         Text(text)
@@ -175,6 +224,91 @@ extension PowerRankingDetailView {
         case .same:
             return .white.opacity(0.6)
         }
+    }
+}
+
+// MARK: - Mentioned Players View
+extension PowerRankingDetailView {
+    @ViewBuilder
+    func mentionedPlayersView(players: [PlayerModel]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Mentioned Players".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(players, id: \.id) { player in
+                        NavigationLink(destination: PlayerView(
+                            playerId: player.playerId ?? "",
+                            teamId: player.teamId ?? ""
+                        )) {
+                            playerCardView(player: player)
+                        }
+                    }
+                }
+                .padding(.horizontal, 15)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func playerCardView(player: PlayerModel) -> some View {
+        VStack(spacing: 8) {
+            // 선수 이름
+            Text("\(player.firstName ?? "") \(player.lastName ?? "")")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+                .lineLimit(1)
+            
+            // 포지션
+            if let position = player.position {
+                Text(position)
+                    .font(.system(size: 12))
+                    .foregroundColor(.white.opacity(0.7))
+            }
+            
+            // 주요 스탯
+            HStack(spacing: 8) {
+                if let ppg = player.ppg, !ppg.isEmpty {
+                    VStack(spacing: 2) {
+                        Text("PPG")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text(ppg)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                
+                if let rpg = player.rpg, !rpg.isEmpty {
+                    VStack(spacing: 2) {
+                        Text("RPG")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text(rpg)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                
+                if let apg = player.apg, !apg.isEmpty {
+                    VStack(spacing: 2) {
+                        Text("APG")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white.opacity(0.6))
+                        Text(apg)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .frame(width: 140)
+        .background(Color.white.opacity(0.1))
+        .cornerRadius(12)
     }
 }
 
@@ -232,12 +366,12 @@ extension PowerRankingDetailView {
                 .padding(.horizontal, 15)
             
             VStack(spacing: 12) {
+                if let offRtg = advanced.offRtg {
+                  advancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "")
+                }
+              
                 if let defRtg = advanced.defRtg {
                     advancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "")
-                }
-                
-                if let offRtg = advanced.offfRtg {
-                    advancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "")
                 }
                 
                 if let netRtg = advanced.netRtg {
