@@ -15,6 +15,8 @@ final class PowerRankingViewModel: ObservableObject {
     @Published var selectedWeek: String?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var recentGames: [HomeAway] = []
+    @Published var isLoadingGames: Bool = false
     
     private var db = Firestore.firestore()
     
@@ -103,6 +105,42 @@ final class PowerRankingViewModel: ObservableObject {
     
     var weekLabels: [String] {
         availableWeeks.compactMap { Self.makeWeekLabel(from: $0) }
+    }
+    
+    func fetchRecentGames(teamId: String) {
+        guard !teamId.isEmpty else { return }
+        isLoadingGames = true
+        
+        db.collection("games")
+            .order(by: "date", descending: true)
+            .limit(to: 10)
+            .getDocuments() { [weak self] (snapshot, error) in
+                guard let self = self else { return }
+                guard let documents = snapshot?.documents else {
+                    self.isLoadingGames = false
+                    return
+                }
+                
+                var allGames: [HomeAway] = []
+                
+                for document in documents {
+                    let result = Result { try document.data(as: GamesModel.self) }
+                    switch result {
+                    case .success(let gamesModel):
+                        // 해당 팀이 참여한 경기만 필터링
+                        let teamGames = gamesModel.items.filter { game in
+                            game.home.teamId == teamId || game.away.teamId == teamId
+                        }
+                        allGames.append(contentsOf: teamGames)
+                    case .failure:
+                        continue
+                    }
+                }
+                
+                // 최근 5경기만
+                self.recentGames = Array(allGames.prefix(5))
+                self.isLoadingGames = false
+            }
     }
 }
 
