@@ -76,7 +76,7 @@ extension PowerRankingTeamModel {
 
 struct PowerRankingAdvancedModel: Codable {
   let defRtg: PowerRankingAdvancedItemModel?
-  let offfRtg: PowerRankingAdvancedItemModel?
+  let offRtg: PowerRankingAdvancedItemModel?
   let netRtg: PowerRankingAdvancedItemModel?
   let pace: PowerRankingAdvancedItemModel?
 }
