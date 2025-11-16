@@ -232,13 +232,13 @@ extension PowerRankingDetailView {
     @ViewBuilder
     func mentionedPlayersView(players: [PlayerModel]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Mentioned Players".uppercased())
+            Text("Players to Watch".uppercased())
                 .font(.system(size: 14, weight: .bold))
                 .foregroundColor(.white.opacity(0.7))
                 .padding(.horizontal, 15)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
                     ForEach(players, id: \.id) { player in
                         NavigationLink(destination: PlayerView(
                             playerId: player.playerId ?? "",
@@ -255,60 +255,116 @@ extension PowerRankingDetailView {
     
     @ViewBuilder
     func playerCardView(player: PlayerModel) -> some View {
-        VStack(spacing: 8) {
-            // 선수 이름
-            Text("\(player.firstName ?? "") \(player.lastName ?? "")")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.white)
-                .lineLimit(1)
-            
-            // 포지션
-            if let position = player.position {
-                Text(position)
-                    .font(.system(size: 12))
-                    .foregroundColor(.white.opacity(0.7))
+        VStack(spacing: 0) {
+            // 선수 이미지
+            if let playerId = player.playerId, !playerId.isEmpty {
+                AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
+                    switch phase {
+                    case .empty:
+                        Rectangle()
+                            .fill(Color.white.opacity(0.1))
+                            .overlay(
+                                ProgressView()
+                                    .tint(.white.opacity(0.7))
+                            )
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        Rectangle()
+                            .fill(Color.white.opacity(0.1))
+                            .overlay(
+                                Image(systemName: "person.fill")
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.white.opacity(0.5))
+                            )
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .frame(width: 140, height: 100)
+                .clipped()
+            } else {
+                Rectangle()
+                    .fill(Color.white.opacity(0.1))
+                    .frame(width: 140, height: 100)
+                    .overlay(
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 30))
+                            .foregroundColor(.white.opacity(0.5))
+                    )
             }
             
-            // 주요 스탯
-            HStack(spacing: 8) {
-                if let ppg = player.ppg, !ppg.isEmpty {
-                    VStack(spacing: 2) {
-                        Text("PPG")
-                            .font(.system(size: 10))
-                            .foregroundColor(.white.opacity(0.6))
-                        Text(ppg)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
-                    }
+            // 선수 정보
+            VStack(spacing: 6) {
+                // 선수 이름
+                Text("\(player.firstName ?? "") \(player.lastName ?? "")")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.white)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .frame(height: 36, alignment: .center)
+                
+                // 포지션
+                if let position = player.position {
+                    Text(position)
+                        .font(.system(size: 11))
+                        .foregroundColor(.white.opacity(0.7))
+                        .frame(height: 16)
+                } else {
+                    Spacer()
+                        .frame(height: 16)
                 }
                 
-                if let rpg = player.rpg, !rpg.isEmpty {
-                    VStack(spacing: 2) {
-                        Text("RPG")
-                            .font(.system(size: 10))
-                            .foregroundColor(.white.opacity(0.6))
-                        Text(rpg)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
+                // 주요 스탯
+                HStack(spacing: 6) {
+                    if let ppg = player.ppg, !ppg.isEmpty {
+                        VStack(spacing: 1) {
+                            Text("PPG")
+                                .font(.system(size: 9))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text(ppg)
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    
+                    if let rpg = player.rpg, !rpg.isEmpty {
+                        VStack(spacing: 1) {
+                            Text("RPG")
+                                .font(.system(size: 9))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text(rpg)
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    
+                    if let apg = player.apg, !apg.isEmpty {
+                        VStack(spacing: 1) {
+                            Text("APG")
+                                .font(.system(size: 9))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text(apg)
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white)
+                        }
                     }
                 }
-                
-                if let apg = player.apg, !apg.isEmpty {
-                    VStack(spacing: 2) {
-                        Text("APG")
-                            .font(.system(size: 10))
-                            .foregroundColor(.white.opacity(0.6))
-                        Text(apg)
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
-                    }
-                }
+                .frame(height: 32)
             }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 8)
+            .frame(maxWidth: .infinity, minHeight: 100)
         }
-        .padding(12)
-        .frame(width: 140)
+        .frame(width: 140, height: 200)
         .background(Color.white.opacity(0.1))
         .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
     }
 }
 
