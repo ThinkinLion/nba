@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import FirebaseFirestore
 import Firebase
 
@@ -167,6 +168,65 @@ final class PowerRankingViewModel: ObservableObject {
         
         return mentionedPlayers
     }
+    
+    // RankChangeStyle에 따른 색상 반환
+    static func rankChangeColor(for style: RankChangeStyle) -> Color {
+        switch style {
+        case .up:
+            return .green
+        case .down:
+            return .red
+        case .same:
+            return .white.opacity(0.6)
+        }
+    }
+    
+    // 날짜 포맷팅
+    static func formatGameDate(_ dateString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        if let date = formatter.date(from: dateString) {
+            formatter.dateFormat = "MMM d"
+            return formatter.string(from: date).uppercased()
+        }
+        
+        return dateString
+    }
+    
+    // 경기 정보 구조체
+    struct GameInfo {
+        let teamScore: String
+        let opponentScore: String
+        let opponentTriCode: String
+        let teamWon: Bool
+        
+        static func from(game: HomeAway, teamId: String) -> GameInfo {
+            let isHome = game.home.teamId == teamId
+            let team = isHome ? game.home : game.away
+            let opponent = isHome ? game.away : game.home
+            
+            let opponentTriCode: String = {
+                if opponent.teamCode.count == 3 {
+                    return opponent.teamCode.uppercased()
+                } else {
+                    let triCode = opponent.teamCode.nickNameToTriCode
+                    return triCode.isEmpty ? opponent.teamCode.uppercased() : triCode
+                }
+            }()
+            
+            let teamWon = isHome ?
+                (Int(game.home.score ?? "0") ?? 0) > (Int(game.away.score ?? "0") ?? 0) :
+                (Int(game.away.score ?? "0") ?? 0) > (Int(game.home.score ?? "0") ?? 0)
+            
+            return GameInfo(
+                teamScore: team.score ?? "-",
+                opponentScore: opponent.score ?? "-",
+                opponentTriCode: opponentTriCode,
+                teamWon: teamWon
+            )
+        }
+    }
 }
 
 
@@ -221,6 +281,19 @@ extension PowerRankingViewModel {
         let advanced: PowerRankingAdvancedModel?
         let upcoming: String?
         let backgroundColorName: String
+        
+        var teamId: String {
+            guard let triCode = triCode else { return "" }
+            return triCode.triCodeToTeamId
+        }
+        
+        var backgroundColor: Color {
+            return Color(backgroundColorName + ".light")
+        }
+        
+        var darkBackgroundColor: Color {
+            return Color(backgroundColorName + ".dark")
+        }
     }
     
     enum RankChangeStyle {

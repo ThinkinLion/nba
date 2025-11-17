@@ -19,10 +19,6 @@ struct PowerRankingDetailView: View {
         teamState.detailViewState
     }
     
-    private var teamId: String {
-        guard let triCode = viewState.triCode else { return "" }
-        return triCode.triCodeToTeamId
-    }
     
     var body: some View {
         ObservableScrollView(scrollOffset: $scrollOffset) {
@@ -77,7 +73,7 @@ struct PowerRankingDetailView: View {
             BannerView(adUnitId: .teamView, paddingTop: 20, height: 100)
                 .padding(.bottom, 30)
         }
-        .background(darkBackgroundColor)
+        .background(viewState.darkBackgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarTitle("", displayMode: .inline)
         .toolbar {
@@ -106,17 +102,12 @@ struct PowerRankingDetailView: View {
         }
         .onAppear {
             guard !hasAppeared else { return }
-            if !teamId.isEmpty {
-                playerViewModel.fetchRoster(teamId: teamId)
-                viewModel.fetchRecentGames(teamId: teamId)
+            if !viewState.teamId.isEmpty {
+                playerViewModel.fetchRoster(teamId: viewState.teamId)
+                viewModel.fetchRecentGames(teamId: viewState.teamId)
             }
             hasAppeared = true
         }
-    }
-    
-    private var backgroundColor: Color {
-        let nickName = viewState.backgroundColorName
-        return Color(nickName + ".light")
     }
 }
 
@@ -133,21 +124,21 @@ extension PowerRankingDetailView {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .opacity(0.1)
-                    .frame(width: 250, height: 250)
+                    .frame(width: 167, height: 167)
                     .scaleEffect(1.2)
                     .clipped()
                     .zIndex(0)
                 
-                VStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .center, spacing: 6) {
                     Image(triCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 120, height: 120)
+                        .frame(width: 80, height: 80)
                         .clipped()
                     
                     Text(viewState.name)
                         .foregroundColor(.white)
-                        .font(.system(size: 26, weight: .bold))
+                        .font(.system(size: 22, weight: .bold))
                         .padding(.bottom, 2)
                     
                     HStack(spacing: 28) {
@@ -182,14 +173,14 @@ extension PowerRankingDetailView {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top, 50)
+                .padding(.top, 30)
                 .padding(.bottom, 20)
                 .zIndex(1)
             }
         }
-        .frame(height: 300)
+        .frame(height: 220)
         .frame(maxWidth: .infinity)
-        .background(backgroundColor)
+        .background(viewState.backgroundColor)
         
         // 커스텀 코너로 다음 섹션과 연결
         Text("")
@@ -197,33 +188,17 @@ extension PowerRankingDetailView {
             .frame(height: 20)
             .background {
                 CustomCorner(corners: [.topLeft], radius: 20)
-                    .fill(darkBackgroundColor)
+                    .fill(viewState.darkBackgroundColor)
                     .ignoresSafeArea()
             }
             .padding(.top, -19)
-    }
-    
-    private var darkBackgroundColor: Color {
-        let nickName = viewState.backgroundColorName
-        return Color(nickName + ".dark")
     }
     
     @ViewBuilder
     func rankChangeBadge(text: String, style: PowerRankingViewModel.RankChangeStyle) -> some View {
         Text(text)
             .font(.system(size: 20, weight: .semibold))
-            .foregroundColor(rankChangeColor(for: style))
-    }
-    
-    private func rankChangeColor(for style: PowerRankingViewModel.RankChangeStyle) -> Color {
-        switch style {
-        case .up:
-            return .green
-        case .down:
-            return .red
-        case .same:
-            return .white.opacity(0.6)
-        }
+            .foregroundColor(PowerRankingViewModel.rankChangeColor(for: style))
     }
 }
 
@@ -394,46 +369,32 @@ extension PowerRankingDetailView {
     
     @ViewBuilder
     func recentGameCardView(game: HomeAway) -> some View {
-        let isHome = game.home.teamId == teamId
-        let team = isHome ? game.home : game.away
-        let opponent = isHome ? game.away : game.home
-        let teamWon = isHome ? 
-            (Int(game.home.score ?? "0") ?? 0) > (Int(game.away.score ?? "0") ?? 0) :
-            (Int(game.away.score ?? "0") ?? 0) > (Int(game.home.score ?? "0") ?? 0)
+        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
         
         HStack(spacing: 12) {
             // 날짜
             if let date = game.date {
-                Text(formatGameDate(date))
+                Text(PowerRankingViewModel.formatGameDate(date))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.white.opacity(0.6))
                     .frame(width: 50, alignment: .leading)
             }
             
             // 상대팀 로고
-            let opponentTriCode: String = {
-                if opponent.teamCode.count == 3 {
-                    return opponent.teamCode.uppercased()
-                } else {
-                    let triCode = opponent.teamCode.nickNameToTriCode
-                    return triCode.isEmpty ? opponent.teamCode.uppercased() : triCode
-                }
-            }()
-            
-            Image(opponentTriCode)
+            Image(gameInfo.opponentTriCode)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 32, height: 32)
             
             // 상대팀 이름
-            Text(opponentTriCode)
+            Text(gameInfo.opponentTriCode)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             // 점수
             HStack(spacing: 4) {
-                Text(team.score ?? "-")
+                Text(gameInfo.teamScore)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
                 
@@ -441,36 +402,24 @@ extension PowerRankingDetailView {
                     .font(.system(size: 14))
                     .foregroundColor(.white.opacity(0.5))
                 
-                Text(opponent.score ?? "-")
+                Text(gameInfo.opponentScore)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white.opacity(0.7))
             }
             
             // 승/패 표시
-            Text(teamWon ? "W" : "L")
+            Text(gameInfo.teamWon ? "W" : "L")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundColor(teamWon ? .green : .red)
+                .foregroundColor(gameInfo.teamWon ? .green : .red)
                 .frame(width: 24, height: 24)
                 .background(
                     Circle()
-                        .fill((teamWon ? Color.green : Color.red).opacity(0.2))
+                        .fill((gameInfo.teamWon ? Color.green : Color.red).opacity(0.2))
                 )
         }
         .padding(12)
         .background(Color.white.opacity(0.05))
         .cornerRadius(10)
-    }
-    
-    private func formatGameDate(_ dateString: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        
-        if let date = formatter.date(from: dateString) {
-            formatter.dateFormat = "MMM d"
-            return formatter.string(from: date).uppercased()
-        }
-        
-        return dateString
     }
 }
 

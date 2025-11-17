@@ -211,7 +211,7 @@ extension PowerRankingView {
                     
                     Text(team.rankChangeText)
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(rankChangeColor(for: team.rankChangeStyle))
+                        .foregroundColor(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(
@@ -267,16 +267,6 @@ extension PowerRankingView {
         .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
     
-    private func rankChangeColor(for style: PowerRankingViewModel.RankChangeStyle) -> Color {
-        switch style {
-        case .up:
-            return .green
-        case .down:
-            return .red
-        case .same:
-            return .white.opacity(0.6)
-        }
-    }
 }
 
 // MARK: - Scroll Offset Preference Key
