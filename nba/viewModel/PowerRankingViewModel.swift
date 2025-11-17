@@ -156,12 +156,32 @@ final class PowerRankingViewModel: ObservableObject {
             let fullName = "\(firstName) \(lastName)"
             let lastNameOnly = lastName
             
-            // 전체 이름 또는 성만으로 언급되었는지 확인
-            if text.localizedCaseInsensitiveContains(fullName) ||
-               text.localizedCaseInsensitiveContains(lastNameOnly) {
-                // 중복 제거
+            // 전체 이름 매칭 (우선순위 1)
+            if text.localizedCaseInsensitiveContains(fullName) {
                 if !mentionedPlayers.contains(where: { $0.id == player.id }) {
                     mentionedPlayers.append(player)
+                }
+                continue
+            }
+            
+            // 성만으로 매칭할 때는 단어 경계를 확인하여 더 정확하게 매칭
+            // "야니스" 같은 이름이 다른 선수의 이름과 겹치는 것을 방지
+            let wordBoundaryPattern = "\\b\(NSRegularExpression.escapedPattern(for: lastNameOnly))\\b"
+            if let regex = try? NSRegularExpression(pattern: wordBoundaryPattern, options: [.caseInsensitive]),
+               regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil {
+                // 성만으로 매칭되더라도, 같은 성을 가진 다른 선수가 이미 매칭되지 않았는지 확인
+                // 단, 전체 이름이 명시적으로 언급된 경우는 제외 (이미 위에서 처리됨)
+                let hasOtherPlayerWithSameLastName = roster.contains { otherPlayer in
+                    otherPlayer.id != player.id &&
+                    otherPlayer.lastName?.localizedCaseInsensitiveCompare(lastNameOnly) == .orderedSame &&
+                    text.localizedCaseInsensitiveContains("\(otherPlayer.firstName ?? "") \(otherPlayer.lastName ?? "")")
+                }
+                
+                // 같은 성을 가진 다른 선수가 전체 이름으로 명시적으로 언급되지 않은 경우만 추가
+                if !hasOtherPlayerWithSameLastName {
+                    if !mentionedPlayers.contains(where: { $0.id == player.id }) {
+                        mentionedPlayers.append(player)
+                    }
                 }
             }
         }
