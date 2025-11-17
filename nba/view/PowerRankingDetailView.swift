@@ -35,7 +35,8 @@ struct PowerRankingDetailView: View {
                     .padding(.top, 20)
                 
                 // Overview에 언급된 선수들
-                if let mentionedPlayers = extractMentionedPlayers(from: overview) {
+                let mentionedPlayers = viewModel.extractMentionedPlayers(from: overview, roster: playerViewModel.roster)
+                if !mentionedPlayers.isEmpty {
                     mentionedPlayersView(players: mentionedPlayers)
                         .padding(.top, 15)
                 }
@@ -48,7 +49,8 @@ struct PowerRankingDetailView: View {
                 
                 // Takeaways에 언급된 선수들
                 let allTakeaways = takeaways.joined(separator: " ")
-                if let mentionedPlayers = extractMentionedPlayers(from: allTakeaways) {
+                let mentionedPlayers = viewModel.extractMentionedPlayers(from: allTakeaways, roster: playerViewModel.roster)
+                if !mentionedPlayers.isEmpty {
                     mentionedPlayersView(players: mentionedPlayers)
                         .padding(.top, 15)
                 }
@@ -204,33 +206,6 @@ extension PowerRankingDetailView {
     private var darkBackgroundColor: Color {
         let nickName = viewState.backgroundColorName
         return Color(nickName + ".dark")
-    }
-    
-    // 텍스트에서 언급된 선수 추출
-    private func extractMentionedPlayers(from text: String) -> [PlayerModel]? {
-        let roster = playerViewModel.roster
-        guard !roster.isEmpty else { return nil }
-        
-        var mentionedPlayers: [PlayerModel] = []
-        
-        for player in roster {
-            guard let firstName = player.firstName,
-                  let lastName = player.lastName else { continue }
-            
-            let fullName = "\(firstName) \(lastName)"
-            let lastNameOnly = lastName
-            
-            // 전체 이름 또는 성만으로 언급되었는지 확인
-            if text.localizedCaseInsensitiveContains(fullName) ||
-               text.localizedCaseInsensitiveContains(lastNameOnly) {
-                // 중복 제거
-                if !mentionedPlayers.contains(where: { $0.id == player.id }) {
-                    mentionedPlayers.append(player)
-                }
-            }
-        }
-        
-        return mentionedPlayers.isEmpty ? nil : mentionedPlayers
     }
     
     @ViewBuilder

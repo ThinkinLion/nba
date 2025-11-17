@@ -142,6 +142,31 @@ final class PowerRankingViewModel: ObservableObject {
                 self.isLoadingGames = false
             }
     }
+    
+    func extractMentionedPlayers(from text: String, roster: [PlayerModel]) -> [PlayerModel] {
+        guard !roster.isEmpty else { return [] }
+        
+        var mentionedPlayers: [PlayerModel] = []
+        
+        for player in roster {
+            guard let firstName = player.firstName,
+                  let lastName = player.lastName else { continue }
+            
+            let fullName = "\(firstName) \(lastName)"
+            let lastNameOnly = lastName
+            
+            // 전체 이름 또는 성만으로 언급되었는지 확인
+            if text.localizedCaseInsensitiveContains(fullName) ||
+               text.localizedCaseInsensitiveContains(lastNameOnly) {
+                // 중복 제거
+                if !mentionedPlayers.contains(where: { $0.id == player.id }) {
+                    mentionedPlayers.append(player)
+                }
+            }
+        }
+        
+        return mentionedPlayers
+    }
 }
 
 
