@@ -227,6 +227,83 @@ final class PowerRankingViewModel: ObservableObject {
             )
         }
     }
+    
+    // 포지션 축약
+    static func abbreviatePosition(_ position: String) -> String {
+        let lowercased = position.lowercased()
+        
+        // 하이픈으로 구분된 포지션 처리
+        if lowercased.contains("-") {
+            let parts = lowercased.components(separatedBy: "-")
+            let abbreviated = parts.map { part in
+                switch part.trimmingCharacters(in: .whitespaces) {
+                case "point guard", "guard":
+                    return "G"
+                case "shooting guard":
+                    return "SG"
+                case "small forward", "forward":
+                    return "F"
+                case "power forward":
+                    return "PF"
+                case "center":
+                    return "C"
+                default:
+                    return part.prefix(1).uppercased()
+                }
+            }
+            return abbreviated.joined(separator: "-")
+        }
+        
+        // 단일 포지션 처리
+        switch lowercased {
+        case "point guard", "guard":
+            return "G"
+        case "shooting guard":
+            return "SG"
+        case "small forward", "forward":
+            return "F"
+        case "power forward":
+            return "PF"
+        case "center":
+            return "C"
+        default:
+            // 이미 축약된 형태이거나 알 수 없는 경우 원본 반환
+            return position.uppercased()
+        }
+    }
+    
+    // 포지션별 색상
+    static func positionColor(for position: String) -> Color {
+        let lowercased = position.lowercased()
+        
+        // 하이픈으로 구분된 포지션 처리
+        if lowercased.contains("guard") && lowercased.contains("forward") {
+            return Color(red: 0.0, green: 0.8, blue: 0.8) // 청록색 (G-F)
+        }
+        if lowercased.contains("forward") && lowercased.contains("center") {
+            return Color(red: 1.0, green: 0.84, blue: 0.0) // 노란색 (F-C)
+        }
+        
+        // 단일 포지션 처리
+        if lowercased.contains("point guard") || lowercased.contains("guard") {
+            return Color(red: 0.2, green: 0.6, blue: 1.0) // 파란색 (G)
+        }
+        if lowercased.contains("shooting guard") {
+            return Color(red: 0.0, green: 0.8, blue: 0.4) // 초록색 (SG)
+        }
+        if lowercased.contains("small forward") || lowercased.contains("forward") {
+            return Color(red: 1.0, green: 0.65, blue: 0.0) // 주황색 (F)
+        }
+        if lowercased.contains("power forward") {
+            return Color(red: 1.0, green: 0.3, blue: 0.3) // 빨간색 (PF)
+        }
+        if lowercased.contains("center") {
+            return Color(red: 0.7, green: 0.3, blue: 1.0) // 보라색 (C)
+        }
+        
+        // 기본 색상
+        return Color.white.opacity(0.3)
+    }
 }
 
 

@@ -230,116 +230,187 @@ extension PowerRankingDetailView {
     
     @ViewBuilder
     func playerCardView(player: PlayerModel) -> some View {
-        VStack(spacing: 0) {
-            // 선수 이미지
-            if let playerId = player.playerId, !playerId.isEmpty {
-                AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
-                    switch phase {
-                    case .empty:
-                        Rectangle()
-                            .fill(Color.white.opacity(0.1))
-                            .overlay(
-                                ProgressView()
-                                    .tint(.white.opacity(0.7))
+        ZStack(alignment: .topLeading) {
+            VStack(alignment: .leading, spacing: 0) {
+                // 선수 이미지
+                if let playerId = player.playerId, !playerId.isEmpty {
+                    AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
+                        switch phase {
+                        case .empty:
+                            Rectangle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.15),
+                                            Color.white.opacity(0.05)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .overlay(
+                                    ProgressView()
+                                        .tint(.white.opacity(0.7))
+                                )
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Rectangle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.15),
+                                            Color.white.opacity(0.05)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .overlay(
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.white.opacity(0.5))
+                                )
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 140, height: 100)
+                    .clipped()
+                } else {
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.white.opacity(0.15),
+                                    Color.white.opacity(0.05)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
                             )
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    case .failure:
-                        Rectangle()
-                            .fill(Color.white.opacity(0.1))
-                            .overlay(
-                                Image(systemName: "person.fill")
-                                    .font(.system(size: 30))
-                                    .foregroundColor(.white.opacity(0.5))
-                            )
-                    @unknown default:
-                        EmptyView()
+                        )
+                        .frame(width: 140, height: 100)
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 30))
+                                .foregroundColor(.white.opacity(0.5))
+                        )
+                }
+                
+                // 선수 정보
+                VStack(alignment: .leading, spacing: 8) {
+                    // 선수 이름
+                    Text("\(player.firstName ?? "") \(player.lastName ?? "")")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    // 주요 스탯
+                    HStack(spacing: 8) {
+                        if let ppg = player.ppg, !ppg.isEmpty {
+                            VStack(spacing: 2) {
+                                Text("PPG")
+                                    .font(.system(size: 8, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(ppg)
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        
+                        if let rpg = player.rpg, !rpg.isEmpty {
+                            VStack(spacing: 2) {
+                                Text("RPG")
+                                    .font(.system(size: 8, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(rpg)
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        
+                        if let apg = player.apg, !apg.isEmpty {
+                            VStack(spacing: 2) {
+                                Text("APG")
+                                    .font(.system(size: 8, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(apg)
+                                    .font(.system(size: 12, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
                     }
                 }
-                .frame(width: 140, height: 100)
-                .clipped()
-            } else {
-                Rectangle()
-                    .fill(Color.white.opacity(0.1))
-                    .frame(width: 140, height: 100)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 30))
-                            .foregroundColor(.white.opacity(0.5))
-                    )
+                .padding(.top, 10)
+                .padding(.horizontal, 10)
+                .padding(.bottom, 12)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             
-            // 선수 정보
-            VStack(spacing: 6) {
-                // 선수 이름
-                Text("\(player.firstName ?? "") \(player.lastName ?? "")")
-                    .font(.system(size: 13, weight: .semibold))
+            // 포지션 태그 (왼쪽 상단 모서리)
+            if let position = player.position {
+                let abbreviatedPosition = PowerRankingViewModel.abbreviatePosition(position)
+                let positionColor = PowerRankingViewModel.positionColor(for: position)
+                
+                Text(abbreviatedPosition)
+                    .font(.system(size: 9, weight: .bold))
                     .foregroundColor(.white)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .frame(height: 36, alignment: .center)
-                
-                // 포지션
-                if let position = player.position {
-                    Text(position)
-                        .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.7))
-                        .frame(height: 16)
-                } else {
-                    Spacer()
-                        .frame(height: 16)
-                }
-                
-                // 주요 스탯
-                HStack(spacing: 6) {
-                    if let ppg = player.ppg, !ppg.isEmpty {
-                        VStack(spacing: 1) {
-                            Text("PPG")
-                                .font(.system(size: 9))
-                                .foregroundColor(.white.opacity(0.6))
-                            Text(ppg)
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                    }
-                    
-                    if let rpg = player.rpg, !rpg.isEmpty {
-                        VStack(spacing: 1) {
-                            Text("RPG")
-                                .font(.system(size: 9))
-                                .foregroundColor(.white.opacity(0.6))
-                            Text(rpg)
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                    }
-                    
-                    if let apg = player.apg, !apg.isEmpty {
-                        VStack(spacing: 1) {
-                            Text("APG")
-                                .font(.system(size: 9))
-                                .foregroundColor(.white.opacity(0.6))
-                            Text(apg)
-                                .font(.system(size: 11, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
-                .frame(height: 32)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        positionColor.opacity(0.8),
+                                        positionColor.opacity(0.6)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(positionColor.opacity(0.9), lineWidth: 1)
+                    )
+                    .shadow(color: positionColor.opacity(0.4), radius: 4, x: 0, y: 2)
+                    .offset(x: 8, y: 8)
             }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 8)
-            .frame(maxWidth: .infinity, minHeight: 100)
         }
-        .frame(width: 140, height: 200)
-        .background(Color.white.opacity(0.1))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        .frame(width: 140)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.12),
+                            Color.white.opacity(0.06)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.2),
+                            Color.white.opacity(0.05)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
 }
 
