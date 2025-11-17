@@ -31,8 +31,8 @@ struct PowerRankingView: View {
                     }
                     
                     if viewModel.isLoading {
-                        ProgressView()
-                            .padding(.top, 50)
+                        LogoLoadingView(size: 140)
+                            .padding(.top, 60)
                             .frame(maxWidth: .infinity)
                     } else if let currentRanking = viewModel.currentViewState {
                         // 헤더 섹션
