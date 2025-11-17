@@ -55,6 +55,7 @@
 		C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */; };
 		C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */; };
 		C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */; };
+		C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,7 @@
 		C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeadersModel.swift; sourceTree = "<group>"; };
 		C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeaderViewModel.swift; sourceTree = "<group>"; };
+		C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +226,7 @@
 			children = (
 				C21EF4702B099989005D87D2 /* LineView.swift */,
 				C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */,
+				C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
 				C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */,
