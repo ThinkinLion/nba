@@ -292,37 +292,40 @@ final class PowerRankingViewModel: ObservableObject {
         }
     }
     
-    // 포지션별 색상
-    static func positionColor(for position: String) -> Color {
-        let lowercased = position.lowercased()
+    // 포지션별 색상 (멀티 포지션 지원)
+    static func positionGradientColors(for position: String) -> (Color, Color) {
+        let abbreviated = abbreviatePosition(position)
+        let components = abbreviated.components(separatedBy: "-")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
         
-        // 하이픈으로 구분된 포지션 처리
-        if lowercased.contains("guard") && lowercased.contains("forward") {
-            return Color(red: 0.0, green: 0.8, blue: 0.8) // 청록색 (G-F)
-        }
-        if lowercased.contains("forward") && lowercased.contains("center") {
-            return Color(red: 1.0, green: 0.84, blue: 0.0) // 노란색 (F-C)
-        }
+        let colors = components.compactMap { baseColor(for: $0) }
         
-        // 단일 포지션 처리
-        if lowercased.contains("point guard") || lowercased.contains("guard") {
-            return Color(red: 0.2, green: 0.6, blue: 1.0) // 파란색 (G)
+        if let first = colors.first, let second = colors.dropFirst().first {
+            return (first, second)
+        } else if let first = colors.first {
+            return (first, first)
+        } else {
+            let fallback = Color.white.opacity(0.3)
+            return (fallback, fallback.opacity(0.6))
         }
-        if lowercased.contains("shooting guard") {
-            return Color(red: 0.0, green: 0.8, blue: 0.4) // 초록색 (SG)
+    }
+    
+    private static func baseColor(for abbreviation: String) -> Color? {
+        switch abbreviation.uppercased() {
+        case "PG", "G":
+            return Color(red: 0.2, green: 0.6, blue: 1.0) // 파란색
+        case "SG":
+            return Color(red: 0.0, green: 0.8, blue: 0.4) // 초록색
+        case "SF", "F":
+            return Color(red: 1.0, green: 0.65, blue: 0.0) // 주황색
+        case "PF":
+            return Color(red: 1.0, green: 0.3, blue: 0.3) // 빨간색
+        case "C":
+            return Color(red: 0.7, green: 0.3, blue: 1.0) // 보라색
+        default:
+            return nil
         }
-        if lowercased.contains("small forward") || lowercased.contains("forward") {
-            return Color(red: 1.0, green: 0.65, blue: 0.0) // 주황색 (F)
-        }
-        if lowercased.contains("power forward") {
-            return Color(red: 1.0, green: 0.3, blue: 0.3) // 빨간색 (PF)
-        }
-        if lowercased.contains("center") {
-            return Color(red: 0.7, green: 0.3, blue: 1.0) // 보라색 (C)
-        }
-        
-        // 기본 색상
-        return Color.white.opacity(0.3)
     }
 }
 

@@ -249,8 +249,7 @@ extension PowerRankingDetailView {
                                     )
                                 )
                                 .overlay(
-                                    ProgressView()
-                                        .tint(.white.opacity(0.7))
+                                    LogoLoadingView(size: 48, showBackground: false)
                                 )
                         case .success(let image):
                             image
@@ -354,7 +353,9 @@ extension PowerRankingDetailView {
             // 포지션 태그 (왼쪽 상단 모서리)
             if let position = player.position {
                 let abbreviatedPosition = PowerRankingViewModel.abbreviatePosition(position)
-                let positionColor = PowerRankingViewModel.positionColor(for: position)
+                let gradientColors = PowerRankingViewModel.positionGradientColors(for: position)
+                let startColor = gradientColors.0
+                let endColor = gradientColors.1
                 
                 Text(abbreviatedPosition)
                     .font(.system(size: 9, weight: .bold))
@@ -366,8 +367,8 @@ extension PowerRankingDetailView {
                             .fill(
                                 LinearGradient(
                                     colors: [
-                                        positionColor.opacity(0.8),
-                                        positionColor.opacity(0.6)
+                                        startColor.opacity(0.9),
+                                        endColor.opacity(0.7)
                                     ],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -376,9 +377,9 @@ extension PowerRankingDetailView {
                     )
                     .overlay(
                         Capsule()
-                            .stroke(positionColor.opacity(0.9), lineWidth: 1)
+                            .stroke(startColor.opacity(0.95), lineWidth: 1)
                     )
-                    .shadow(color: positionColor.opacity(0.4), radius: 4, x: 0, y: 2)
+                    .shadow(color: startColor.opacity(0.4), radius: 4, x: 0, y: 2)
                     .offset(x: 8, y: 8)
             }
         }
