@@ -93,63 +93,87 @@ struct PowerRankingView: View {
 extension PowerRankingView {
     @ViewBuilder
     func weekCarouselView() -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(Array(viewModel.availableWeeks.enumerated()), id: \.element) { index, week in
-                    let weekLabel = viewModel.weekLabels[index]
-                    let isSelected = viewModel.selectedWeek == week
-                    
-                    Button(action: {
-                        viewModel.selectWeek(week)
-                    }) {
-                        Text(weekLabel)
-                            .font(.system(size: 15, weight: isSelected ? .bold : .semibold))
-                            .foregroundColor(isSelected ? .white : .weekCarouselBlueLight)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .fill(
-                                        isSelected ?
-                                        LinearGradient(
-                                            colors: [
-                                                .weekCarouselBlue,
-                                                .weekCarouselBlueDark
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ) :
-                                        LinearGradient(
-                                            colors: [
-                                                .weekCarouselBlue.opacity(0.15),
-                                                .weekCarouselBlueDark.opacity(0.1)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Array(viewModel.availableWeeks.enumerated()), id: \.element) { index, week in
+                        let weekLabel = viewModel.weekLabels[index]
+                        let isSelected = viewModel.selectedWeek == week
+                        
+                        Button(action: {
+                            viewModel.selectWeek(week)
+                            withAnimation {
+                                proxy.scrollTo(week, anchor: .center)
+                            }
+                        }) {
+                            Text(weekLabel)
+                                .font(.system(size: 15, weight: isSelected ? .bold : .semibold))
+                                .foregroundColor(isSelected ? .white : .weekCarouselBlueLight)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                        .fill(
+                                            isSelected ?
+                                            LinearGradient(
+                                                colors: [
+                                                    .weekCarouselBlue,
+                                                    .weekCarouselBlueDark
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ) :
+                                            LinearGradient(
+                                                colors: [
+                                                    .weekCarouselBlue.opacity(0.15),
+                                                    .weekCarouselBlueDark.opacity(0.1)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
                                         )
-                                    )
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .stroke(
-                                        isSelected ?
-                                        Color.white.opacity(0.5) :
-                                        .weekCarouselBlue.opacity(0.4),
-                                        lineWidth: 1.5
-                                    )
-                            )
-                            .shadow(
-                                color: isSelected ?
-                                .weekCarouselBlue.opacity(0.4) :
-                                .weekCarouselBlue.opacity(0.2),
-                                radius: isSelected ? 8 : 4,
-                                x: 0,
-                                y: isSelected ? 4 : 2
-                            )
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                        .stroke(
+                                            isSelected ?
+                                            Color.white.opacity(0.5) :
+                                            .weekCarouselBlue.opacity(0.4),
+                                            lineWidth: 1.5
+                                        )
+                                )
+                                .shadow(
+                                    color: isSelected ?
+                                    .weekCarouselBlue.opacity(0.4) :
+                                    .weekCarouselBlue.opacity(0.2),
+                                    radius: isSelected ? 8 : 4,
+                                    x: 0,
+                                    y: isSelected ? 4 : 2
+                                )
+                        }
+                        .id(week)
+                    }
+                }
+                .padding(.horizontal, 15)
+            }
+            .onAppear {
+                // 초기 로드 시 선택된 week로 스크롤 (최신이 맨 앞이므로 leading으로 스크롤)
+                if let selectedWeek = viewModel.selectedWeek {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation {
+                            proxy.scrollTo(selectedWeek, anchor: .leading)
+                        }
                     }
                 }
             }
-            .padding(.horizontal, 15)
+            .onChange(of: viewModel.selectedWeek) { newWeek in
+                // selectedWeek가 변경될 때 스크롤 (외부에서 변경된 경우)
+                if let newWeek = newWeek {
+                    withAnimation {
+                        proxy.scrollTo(newWeek, anchor: .center)
+                    }
+                }
+            }
         }
     }
 }

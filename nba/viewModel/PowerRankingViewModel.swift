@@ -101,7 +101,7 @@ final class PowerRankingViewModel: ObservableObject {
     }
     
     var availableWeeks: [String] {
-        powerRankings.compactMap { $0.week }.reversed()
+        powerRankings.compactMap { $0.week }
     }
     
     var weekLabels: [String] {
