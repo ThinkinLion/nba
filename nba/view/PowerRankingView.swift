@@ -128,8 +128,8 @@ extension PowerRankingView {
     @ViewBuilder
     func headerView(powerRanking: PowerRankingViewModel.PowerRankingViewState) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let title = powerRanking.title {
-                Text(title)
+            if let cleanedTitle = powerRanking.cleanedTitle {
+                Text(cleanedTitle)
                     .font(.system(size: 28, weight: .bold))
                     .foregroundColor(.white)
             }

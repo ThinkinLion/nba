@@ -338,6 +338,19 @@ extension PowerRankingViewModel {
         let imageURL: URL?
         let imageDesc: String?
         let teams: [TeamState]
+        
+        // "Power Rankings, WeekX:" 접두어를 제거한 title
+        var cleanedTitle: String? {
+            guard let title = title else { return nil }
+            // "Power Rankings, WeekX:" 또는 "Power Rankings, Week X:" 패턴 제거
+            let pattern = "^Power Rankings,\\s*Week\\s*\\d+:\\s*"
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                let range = NSRange(location: 0, length: title.utf16.count)
+                let cleaned = regex.stringByReplacingMatches(in: title, options: [], range: range, withTemplate: "")
+                return cleaned.isEmpty ? nil : cleaned
+            }
+            return title
+        }
     }
     
     struct TeamState: Identifiable {
