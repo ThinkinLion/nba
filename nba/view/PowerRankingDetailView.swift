@@ -70,7 +70,7 @@ struct PowerRankingDetailView: View {
                     .padding(.top, 20)
             }
             
-            BannerView(adUnitId: .teamView, paddingTop: 20, height: 100)
+            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
                 .padding(.bottom, 30)
         }
         .background(viewState.darkBackgroundColor)

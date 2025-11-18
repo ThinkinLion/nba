@@ -46,7 +46,7 @@ struct PowerRankingView: View {
                                 .padding(.top, 20)
                         }
                         
-                        BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
+                        BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10)
                             .padding(.top, 20)
                     } else if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")

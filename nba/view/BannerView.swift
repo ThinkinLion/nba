@@ -15,6 +15,8 @@ enum BannerUnitID: String {
     case playerView = "ca-app-pub-3499543148696658/9594728923" //NBA-PlayerView banner
     case teamView = "ca-app-pub-3499543148696658/9569476486" //NBA-TeamView banner
     case gameView = "ca-app-pub-3499543148696658/9865882150" //NBA - GameRecap banner
+    case powerRanking = "ca-app-pub-3499543148696658/1710102296" //NBA - powerRanking banner
+  
     
 }
 
