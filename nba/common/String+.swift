@@ -128,7 +128,7 @@ extension String {
         case "blazers", "trail blazers": return "POR"
         case "bucks": return "MIL"
         case "bulls": return "CHI"
-        case "cavaliers": return "CLE"
+        case "cavaliers", "cavs": return "CLE"
         case "celtics": return "BOS"
         case "clippers": return "LAC"
         case "grizzlies": return "MEM"

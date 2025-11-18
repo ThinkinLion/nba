@@ -188,7 +188,7 @@ extension PowerRankingView {
                     .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.white, .weekCarouselBlue, .weekCarouselBlueDark],
+                            colors: powerRanking.titleGradientColors,
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )

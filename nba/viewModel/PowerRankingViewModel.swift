@@ -351,6 +351,44 @@ extension PowerRankingViewModel {
             }
             return title
         }
+        
+        // cleanedTitle에서 첫 번째 팀 이름을 추출하여 그라디언트 컬러 생성
+        var titleGradientColors: [Color] {
+            guard let cleanedTitle = cleanedTitle else {
+                return [.white, .weekCarouselBlue, .weekCarouselBlueDark]
+            }
+            
+            // 쉼표로 먼저 분리하여 첫 번째 부분 추출 (예: "Pistons, Warriors..." -> "Pistons")
+            let firstPart = cleanedTitle.components(separatedBy: ",").first?.trimmingCharacters(in: .whitespaces) ?? cleanedTitle
+            
+            // 첫 번째 부분을 공백으로 분리하여 단어들 추출
+            let words = firstPart.components(separatedBy: .whitespaces)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+            
+            // 첫 번째 단어부터 시작하여 최대 3단어까지 조합하여 팀 이름 매칭 시도
+            // (예: "Trail Blazers" 같은 2단어 팀 이름 처리)
+            for i in 0..<min(words.count, 3) {
+                let candidate = words[0...i].joined(separator: " ").lowercased()
+                let triCode = candidate.nickNameToTriCode
+                
+                if !triCode.isEmpty {
+                    // 팀 이름을 찾았으면 해당 팀의 컬러 사용
+                    let nickName = triCode.triCodeToNickName
+                    let backgroundColorName = nickName.isEmpty ? triCode.lowercased() : nickName
+                    let teamColor = Color(backgroundColorName)
+                    
+                    return [
+                        .white,
+                        teamColor,
+                        teamColor.opacity(0.7)
+                    ]
+                }
+            }
+            
+            // 팀 이름을 찾지 못한 경우 기본 그라디언트
+            return [.white, .weekCarouselBlue, .weekCarouselBlueDark]
+        }
     }
     
     struct TeamState: Identifiable {
