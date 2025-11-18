@@ -186,7 +186,13 @@ extension PowerRankingView {
             if let cleanedTitle = powerRanking.cleanedTitle {
                 Text(cleanedTitle)
                     .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.white, .weekCarouselBlue, .weekCarouselBlueDark],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             }
             
             if let subTitle = powerRanking.subTitle {
