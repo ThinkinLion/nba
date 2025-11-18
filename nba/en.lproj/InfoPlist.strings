@@ -6,4 +6,5 @@
   
 */
 //CFBundleDisplayName = "NBA Standings";
-CFBundleDisplayName = "POWER Ranking";
+//CFBundleDisplayName = "PowerRank";
+CFBundleDisplayName = "HoopRank";
