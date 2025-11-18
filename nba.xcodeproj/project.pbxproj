@@ -56,6 +56,7 @@
 		C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */; };
 		C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */; };
 		C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */; };
+		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +125,7 @@
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
 		C2FDA6B42B19C29D00E2B3D7 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeadersModel.swift; sourceTree = "<group>"; };
 		C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeaderViewModel.swift; sourceTree = "<group>"; };
 		C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 			children = (
 				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
 				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
+				C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */,
 				C2DFEC242BD0E80A0065871D /* Transform.swift */,
 				C28C32262B220DD00054B189 /* CustomCorner.swift */,
 				C2628F1C2B452C5A005E044B /* ViewModifiers.swift */,
@@ -478,6 +481,7 @@
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
 				C22634972B639F2500692248 /* PlayerStatsItemViewModel.swift in Sources */,
 				C2FDA6B52B19C29D00E2B3D7 /* String+.swift in Sources */,
+				C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5 /* Color+.swift in Sources */,
 				C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */,
 				C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */,
 				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,

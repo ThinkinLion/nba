@@ -103,17 +103,48 @@ extension PowerRankingView {
                         viewModel.selectWeek(week)
                     }) {
                         Text(weekLabel)
-                            .font(.system(size: 15, weight: isSelected ? .bold : .medium))
-                            .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+                            .font(.system(size: 15, weight: isSelected ? .bold : .semibold))
+                            .foregroundColor(isSelected ? .white : .weekCarouselBlueLight)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
                             .background(
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .fill(isSelected ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                                    .fill(
+                                        isSelected ?
+                                        LinearGradient(
+                                            colors: [
+                                                .weekCarouselBlue,
+                                                .weekCarouselBlueDark
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ) :
+                                        LinearGradient(
+                                            colors: [
+                                                .weekCarouselBlue.opacity(0.15),
+                                                .weekCarouselBlueDark.opacity(0.1)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .stroke(isSelected ? Color.white.opacity(0.4) : Color.clear, lineWidth: 1.5)
+                                    .stroke(
+                                        isSelected ?
+                                        Color.white.opacity(0.5) :
+                                        .weekCarouselBlue.opacity(0.4),
+                                        lineWidth: 1.5
+                                    )
+                            )
+                            .shadow(
+                                color: isSelected ?
+                                .weekCarouselBlue.opacity(0.4) :
+                                .weekCarouselBlue.opacity(0.2),
+                                radius: isSelected ? 8 : 4,
+                                x: 0,
+                                y: isSelected ? 4 : 2
                             )
                     }
                 }
