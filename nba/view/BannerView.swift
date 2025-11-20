@@ -10,18 +10,14 @@ import GoogleMobileAds
 import UIKit
 
 enum BannerUnitID: String {
-    case standingsView = "ca-app-pub-3499543148696658/6384435245" //NBA-StandingsView banner
-    case standingsView2 = "ca-app-pub-3499543148696658/8586673667" //NBA-StandingsView banner2
-    case playerView = "ca-app-pub-3499543148696658/9594728923" //NBA-PlayerView banner
-    case teamView = "ca-app-pub-3499543148696658/9569476486" //NBA-TeamView banner
-    case gameView = "ca-app-pub-3499543148696658/9865882150" //NBA - GameRecap banner
-    case powerRanking = "ca-app-pub-3499543148696658/1710102296" //NBA - powerRanking banner
+//    case standingsView = "ca-app-pub-3499543148696658/6384435245" //NBA-StandingsView banner
+    case powerRanking = "ca-app-pub-3499543148696658/8684442869" //NBA - powerRanking banner
   
-    
+  //앱아이디: ca-app-pub-3499543148696658~9532273069
 }
 
 struct BannerView: View {
-    var adUnitId: BannerUnitID = .standingsView
+    var adUnitId: BannerUnitID = .powerRanking
     var paddingTop: CGFloat = 0
     var paddingHorizontal: CGFloat = 0
     var height: CGFloat = 50
@@ -42,7 +38,7 @@ struct BannerView: View {
 }
 
 struct AdView : UIViewRepresentable {
-    var adUnitId: BannerUnitID = .standingsView
+    var adUnitId: BannerUnitID = .powerRanking
     var paddingHorizontal: CGFloat = 15
     
     func makeUIView(context: UIViewRepresentableContext<AdView>) -> GADBannerView {
