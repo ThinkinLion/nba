@@ -186,6 +186,9 @@ extension PowerRankingView {
             if let cleanedTitle = powerRanking.cleanedTitle {
                 Text(cleanedTitle)
                     .font(.system(size: 28, weight: .bold))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(
                         LinearGradient(
                             colors: powerRanking.titleGradientColors,
