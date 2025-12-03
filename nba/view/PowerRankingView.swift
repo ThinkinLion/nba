@@ -204,27 +204,27 @@ extension PowerRankingView {
                     .foregroundColor(.white.opacity(0.8))
             }
             
-            // 이미지 섹션 제거 (App Store 심사 대응)
-            // if let imageUrl = powerRanking.imageURL {
-            //     AsyncImage(url: imageUrl) { image in
-            //         image
-            //             .resizable()
-            //             .aspectRatio(contentMode: .fill)
-            //     } placeholder: {
-            //         Rectangle()
-            //             .fill(Color.gray.opacity(0.3))
-            //     }
-            //     .frame(height: 200)
-            //     .cornerRadius(12)
-            //     .padding(.top, 10)
-            //     
-            //     if let imageDesc = powerRanking.imageDesc {
-            //         Text(imageDesc)
-            //             .font(.system(size: 12))
-            //             .foregroundColor(.white.opacity(0.6))
-            //             .padding(.top, 5)
-            //     }
-            // }
+            // Remote Config로 이미지 표시 제어
+            if viewModel.shouldUseOfficialTeamData, let imageUrl = powerRanking.imageURL {
+                AsyncImage(url: imageUrl) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.3))
+                }
+                .frame(height: 200)
+                .cornerRadius(12)
+                .padding(.top, 10)
+                
+                if let imageDesc = powerRanking.imageDesc {
+                    Text(imageDesc)
+                        .font(.system(size: 12))
+                        .foregroundColor(.white.opacity(0.6))
+                        .padding(.top, 5)
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -318,7 +318,7 @@ extension PowerRankingView {
             .padding(.trailing, 16)
         }
         .overlay(alignment: .topLeading) {
-            if let triCode = team.triCode {
+            if viewModel.shouldUseOfficialTeamData, let triCode = team.triCode {
                 Image(triCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

@@ -1,0 +1,351 @@
+//
+//  SafeModePowerRankingDetailView.swift
+//  nba
+//
+//  Created on 12/03/24.
+//
+
+import SwiftUI
+
+struct SafeModePowerRankingDetailView: View {
+    let teamState: PowerRankingViewModel.TeamState
+    @ObservedObject var viewModel: PowerRankingViewModel
+    @ObservedObject var playerViewModel: PlayerViewModel
+    @Binding var scrollOffset: CGFloat
+    @Binding var hideNavigationBar: Bool
+    
+    private var viewState: PowerRankingViewModel.TeamDetailViewState {
+        teamState.detailViewState
+    }
+    
+    var body: some View {
+        ObservableScrollView(scrollOffset: $scrollOffset) {
+            // 헤더 섹션 (로고 없음)
+            headerView()
+            
+            // Overview 섹션
+            if let overview = viewState.overview, !overview.isEmpty {
+                PowerRankingDetailSectionView(title: "Overview", content: overview)
+                    .padding(.top, 20)
+                
+                // Overview에 언급된 선수들 (네비게이션 비활성화)
+                let mentionedPlayers = viewModel.extractMentionedPlayers(from: overview, roster: playerViewModel.roster)
+                if !mentionedPlayers.isEmpty {
+                    mentionedPlayersView(players: mentionedPlayers)
+                        .padding(.top, 15)
+                }
+            }
+            
+            // Takeaways 섹션
+            if let takeaways = viewState.takeaways, !takeaways.isEmpty {
+                PowerRankingDetailTakeawaysView(takeaways: takeaways)
+                    .padding(.top, 20)
+                
+                // Takeaways에 언급된 선수들 (네비게이션 비활성화)
+                let allTakeaways = takeaways.joined(separator: " ")
+                let mentionedPlayers = viewModel.extractMentionedPlayers(from: allTakeaways, roster: playerViewModel.roster)
+                if !mentionedPlayers.isEmpty {
+                    mentionedPlayersView(players: mentionedPlayers)
+                        .padding(.top, 15)
+                }
+            }
+            
+            // Advanced Stats 섹션
+            if let advanced = viewState.advanced {
+                PowerRankingDetailAdvancedStatsView(advanced: advanced)
+                    .padding(.top, 20)
+            }
+            
+            // Upcoming 섹션
+            if let upcoming = viewState.upcoming, !upcoming.isEmpty {
+                PowerRankingDetailSectionView(title: "Upcoming", content: upcoming)
+                    .padding(.top, 20)
+            }
+            
+            // Recent Games 섹션 (네비게이션 비활성화)
+            if !viewModel.recentGames.isEmpty {
+                recentGamesView(games: viewModel.recentGames)
+                    .padding(.top, 20)
+            }
+            
+            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
+                .padding(.bottom, 30)
+        }
+        .background(viewState.darkBackgroundColor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    // MARK: - Header View (No Logos)
+    @ViewBuilder
+    func headerView() -> some View {
+        ZStack(alignment: .topLeading) {
+            Color.clear
+            
+            VStack(alignment: .center, spacing: 6) {
+                Text(viewState.name)
+                    .foregroundColor(.white)
+                    .font(.system(size: 22, weight: .bold))
+                    .padding(.bottom, 2)
+                    .padding(.top, 20)
+                
+                HStack(spacing: 28) {
+                    if let rank = viewState.rank {
+                        VStack(spacing: 4) {
+                            Text("RANK")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text(rank)
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.white.opacity(0.9))
+                        }
+                    }
+                    
+                    if let record = viewState.record {
+                        VStack(spacing: 4) {
+                            Text("RECORD")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text(record)
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.white.opacity(0.9))
+                        }
+                    }
+                    
+                    VStack(spacing: 4) {
+                        Text("LAST WEEK")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(.white.opacity(0.6))
+                        PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 30)
+            .padding(.bottom, 20)
+            .zIndex(1)
+        }
+        .frame(height: 220)
+        .frame(maxWidth: .infinity)
+        .background(viewState.backgroundColor)
+        
+        // 커스텀 코너로 다음 섹션과 연결
+        Text("")
+            .frame(maxWidth: .infinity)
+            .frame(height: 20)
+            .background {
+                CustomCorner(corners: [.topLeft], radius: 20)
+                    .fill(viewState.darkBackgroundColor)
+                    .ignoresSafeArea()
+            }
+            .padding(.top, -19)
+    }
+    
+    // MARK: - Mentioned Players View (No Navigation, No Images)
+    @ViewBuilder
+    func mentionedPlayersView(players: [PlayerModel]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Players to Watch".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12) {
+                    ForEach(players, id: \.id) { player in
+                        playerCardView(player: player)
+                    }
+                }
+                .padding(.horizontal, 15)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func playerCardView(player: PlayerModel) -> some View {
+        ZStack(alignment: .topLeading) {
+            VStack(alignment: .leading, spacing: 0) {
+                // 선수 정보 (이미지 없음)
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("\(player.firstName ?? "") \(player.lastName ?? "")")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    HStack(spacing: 12) {
+                        if let ppg = player.ppg, !ppg.isEmpty {
+                            VStack(spacing: 3) {
+                                Text("PPG")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(ppg)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        
+                        if let rpg = player.rpg, !rpg.isEmpty {
+                            VStack(spacing: 3) {
+                                Text("RPG")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(rpg)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        
+                        if let apg = player.apg, !apg.isEmpty {
+                            VStack(spacing: 3) {
+                                Text("APG")
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.6))
+                                Text(apg)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                    }
+                }
+                .padding(.top, 16)
+                .padding(.horizontal, 10)
+                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            
+            // 포지션 태그 (오른쪽 하단)
+            if let position = player.position {
+                let abbreviatedPosition = PowerRankingViewModel.abbreviatePosition(position)
+                let gradientColors = PowerRankingViewModel.positionGradientColors(for: position)
+                let startColor = gradientColors.0
+                let endColor = gradientColors.1
+                
+                Text(abbreviatedPosition)
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        startColor.opacity(0.9),
+                                        endColor.opacity(0.7)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(startColor.opacity(0.95), lineWidth: 1)
+                    )
+                    .shadow(color: startColor.opacity(0.4), radius: 4, x: 0, y: 2)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .offset(x: -8, y: -8)
+            }
+        }
+        .frame(width: 140)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.12),
+                            Color.white.opacity(0.06)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.2),
+                            Color.white.opacity(0.05)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+    }
+    
+    // MARK: - Recent Games View (No Navigation)
+    @ViewBuilder
+    func recentGamesView(games: [HomeAway]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Recent Games".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            VStack(spacing: 10) {
+                ForEach(games, id: \.gameId) { game in
+                    recentGameCardView(game: game)
+                }
+            }
+            .padding(.horizontal, 15)
+        }
+    }
+    
+    @ViewBuilder
+    func recentGameCardView(game: HomeAway) -> some View {
+        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
+        
+        HStack(spacing: 12) {
+            if let date = game.date {
+                Text(PowerRankingViewModel.formatGameDate(date))
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.white.opacity(0.6))
+                    .frame(width: 50, alignment: .leading)
+            }
+            
+            // Safe Mode: 팀 코드만 표시 (로고 없음)
+            Text(gameInfo.opponentTriCode)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white)
+                .frame(width: 40, alignment: .center)
+            
+            Text("vs")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.white.opacity(0.5))
+            
+            HStack(spacing: 4) {
+                Text(gameInfo.teamScore)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.white)
+                
+                Text("-")
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.5))
+                
+                Text(gameInfo.opponentScore)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.7))
+            }
+            
+            Spacer()
+            
+            Text(gameInfo.teamWon ? "W" : "L")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundColor(gameInfo.teamWon ? .green : .red)
+                .frame(width: 24, height: 24)
+                .background(
+                    Circle()
+                        .fill((gameInfo.teamWon ? Color.green : Color.red).opacity(0.2))
+                )
+        }
+        .padding(12)
+        .background(Color.white.opacity(0.05))
+        .cornerRadius(10)
+    }
+}

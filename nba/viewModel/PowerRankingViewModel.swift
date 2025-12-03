@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import FirebaseFirestore
 import Firebase
+import Combine
 
 final class PowerRankingViewModel: ObservableObject {
     @Published var powerRankings: [PowerRankingModel] = []
@@ -18,8 +19,31 @@ final class PowerRankingViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var recentGames: [HomeAway] = []
     @Published var isLoadingGames: Bool = false
+    @Published var shouldUseOfficialTeamData: Bool = false
     
     private var db = Firestore.firestore()
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        fetchRemoteConfig()
+        
+        // Remote Config 변경 감지하여 뷰 갱신 트리거
+        RemoteConfigManager.shared.$shouldUseOfficialTeamData
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func fetchRemoteConfig() {
+        RemoteConfigManager.shared.fetchConfig { [weak self] success in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.shouldUseOfficialTeamData = RemoteConfigManager.shared.shouldUseOfficialTeamData
+            }
+        }
+    }
     
     func fetchPowerRankings() {
         isLoading = true
@@ -506,15 +530,36 @@ extension PowerRankingViewModel {
     
     private static func makeTriCode(from teamCode: String?) -> String {
         guard let teamCode = teamCode, !teamCode.isEmpty else { return "" }
+        
+        let triCode: String
         if teamCode.count == 3 {
-            return teamCode.uppercased()
+            triCode = teamCode.uppercased()
         } else {
-            return teamCode.nickNameToTriCode
+            triCode = teamCode.nickNameToTriCode
         }
+        
+        // Safe Mode Check
+        if !RemoteConfigManager.shared.shouldUseOfficialTeamData {
+            if let genericInfo = GenericTeamData.get(byTriCode: triCode) {
+                return genericInfo.triCode
+            }
+        }
+        
+        return triCode
     }
     
     private static func makeBackgroundColorName(from teamCode: String?) -> String {
         guard let teamCode = teamCode, !teamCode.isEmpty else { return "#1C1B1D" }
+        
+        // Safe Mode Check - For now we use the same colors as they are abstract enough,
+        // but we ensure we map correctly via GenericTeamData if needed.
+        if !RemoteConfigManager.shared.shouldUseOfficialTeamData {
+             let triCode = teamCode.count == 3 ? teamCode.uppercased() : teamCode.nickNameToTriCode
+             if let genericInfo = GenericTeamData.get(byTriCode: triCode) {
+                 return genericInfo.colorName
+             }
+        }
+        
         let nickName = teamCode.triCodeToNickName.isEmpty ? teamCode.lowercased() : teamCode.triCodeToNickName
         return nickName.isEmpty ? "#1C1B1D" : nickName
     }
@@ -539,6 +584,21 @@ extension PowerRankingViewModel {
     }
     
     private static func makeDisplayName(from team: PowerRankingTeamModel) -> String {
+        // Safe Mode Check
+        if !RemoteConfigManager.shared.shouldUseOfficialTeamData {
+            // Try to find by ID first
+            if let id = team.id, let genericInfo = GenericTeamData.get(for: id) {
+                return genericInfo.name.uppercased()
+            }
+            
+            // Fallback: Try to find by TriCode/NickName
+            let rawCode = (team.teamCode ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let triCode = rawCode.count == 3 ? rawCode.uppercased() : rawCode.nickNameToTriCode
+            if !triCode.isEmpty, let genericInfo = GenericTeamData.get(byTriCode: triCode) {
+                return genericInfo.name.uppercased()
+            }
+        }
+        
         let rawCity = (team.teamName ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         var rawCode = (team.teamCode ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         
