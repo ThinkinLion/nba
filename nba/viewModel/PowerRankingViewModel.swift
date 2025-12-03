@@ -402,10 +402,12 @@ extension PowerRankingViewModel {
                     let backgroundColorName = nickName.isEmpty ? triCode.lowercased() : nickName
                     let teamColor = Color(backgroundColorName)
                     
+                    // 가독성을 위해 White 비중을 높이고, 팀 컬러는 끝부분에 은은하게 적용
+                    // 배경색과 텍스트 색상이 비슷해도(예: 토론토) 가독성이 유지됨
                     return [
                         .white,
-                        teamColor,
-                        teamColor.opacity(0.7)
+                        .white,
+                        teamColor.opacity(0.6)
                     ]
                 }
             }

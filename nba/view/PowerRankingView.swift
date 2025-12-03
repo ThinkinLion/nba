@@ -187,7 +187,7 @@ extension PowerRankingView {
                 Text(cleanedTitle)
                     .font(.system(size: 28, weight: .bold))
                     .multilineTextAlignment(.leading)
-                    .lineLimit(2)
+                    .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(
                         LinearGradient(
