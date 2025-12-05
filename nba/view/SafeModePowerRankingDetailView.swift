@@ -64,6 +64,12 @@ struct SafeModePowerRankingDetailView: View {
                     .padding(.top, 20)
             }
             
+            // Ranking History 섹션
+            if !viewModel.rankingHistory.isEmpty {
+                RankingHistoryView(history: viewModel.rankingHistory, teamColor: teamColor)
+                    .padding(.top, 20)
+            }
+            
             // Upcoming 섹션
             if let upcoming = viewState.upcoming, !upcoming.isEmpty {
                 PowerRankingDetailSectionView(title: "Upcoming", content: upcoming)

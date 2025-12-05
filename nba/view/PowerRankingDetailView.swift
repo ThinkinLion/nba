@@ -12,7 +12,7 @@ struct PowerRankingDetailView: View {
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
     @StateObject private var playerViewModel = PlayerViewModel()
-    @StateObject private var viewModel = PowerRankingViewModel()
+    @ObservedObject var viewModel: PowerRankingViewModel
     @State private var hasAppeared = false
     
     private var viewState: PowerRankingViewModel.TeamDetailViewState {
@@ -69,6 +69,7 @@ struct PowerRankingDetailView: View {
             if !viewState.teamId.isEmpty {
                 playerViewModel.fetchRoster(teamId: viewState.teamId)
                 viewModel.fetchRecentGames(teamId: viewState.teamId)
+                viewModel.updateRankingHistory(teamId: viewState.teamId, teamCode: viewState.triCode)
             }
             hasAppeared = true
         }
@@ -100,7 +101,8 @@ struct PowerRankingDetailView_Previews: PreviewProvider {
                         takeaways: ["Takeaway 1", "Takeaway 2"],
                         upcomming: "Next 5 games..."
                     )
-                )
+                ),
+                viewModel: PowerRankingViewModel()
             )
         }
         .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))

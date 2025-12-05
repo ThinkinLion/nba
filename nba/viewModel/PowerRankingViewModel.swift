@@ -119,6 +119,46 @@ final class PowerRankingViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Ranking History Logic
+    @Published var rankingHistory: [(week: String, rank: Int)] = []
+    
+    func updateRankingHistory(teamId: String, teamCode: String? = nil) {
+        guard !teamId.isEmpty else {
+            rankingHistory = []
+            return
+        }
+        
+        var history: [(week: String, rank: Int)] = []
+        
+        // 모든 주차의 랭킹을 순회하며 해당 팀의 순위를 찾음
+        for ranking in powerRankings {
+            guard let week = ranking.week,
+                  let items = ranking.items else { continue }
+            
+            // 1. teamCode로 매칭 (가장 정확)
+            if let teamCode = teamCode, !teamCode.isEmpty,
+               let teamIndex = items.firstIndex(where: { $0.teamCode == teamCode || $0.teamCode?.nickNameToTriCode == teamCode || $0.teamCode?.triCodeToNickName == teamCode }) {
+                let rank = teamIndex + 1
+                history.append((week: week, rank: rank))
+                continue
+            }
+            
+            // 2. id로 매칭 (fallback)
+            if let teamIndex = items.firstIndex(where: { $0.id == teamId || $0.teamCode?.triCodeToTeamId == teamId }) {
+                let rank = teamIndex + 1
+                history.append((week: week, rank: rank))
+            }
+        }
+        
+        // 주차 순으로 정렬 (Week 1, Week 2, ...)
+        // "Week X" 형식에서 숫자만 추출하여 정렬
+        rankingHistory = history.sorted { (lhs, rhs) -> Bool in
+            let lhsNum = Int(lhs.week.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()) ?? 0
+            let rhsNum = Int(rhs.week.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()) ?? 0
+            return lhsNum < rhsNum
+        }
+    }
+    
     var availableWeeks: [String] {
         powerRankings.compactMap { $0.week }
     }
@@ -554,12 +594,25 @@ extension PowerRankingViewModel {
         
         static func findKeyPlayerId(from players: [PlayerModel]) -> String? {
             return players.map { player -> (id: String?, score: Double) in
+                // 1. PIE (Player Impact Estimate) - 가장 정확한 공헌도 지표
+                if let pieString = player.pie, let pie = Double(pieString), pie > 0 {
+                    return (player.id, pie * 100) // PIE는 보통 0.1~0.2 수준이므로 점수화
+                }
+                
+                // 2. Fantasy Points (Traditional Stats에 있는 경우)
+                if let traditional = player.traditional?.first,
+                   let fpString = traditional.fp,
+                   let fp = Double(fpString), fp > 0 {
+                    return (player.id, fp)
+                }
+                
+                // 3. Fallback: Composite Score (PPG + RPG + APG)
                 let p = Double(player.ppg ?? "0") ?? 0
                 let r = Double(player.rpg ?? "0") ?? 0
                 let a = Double(player.apg ?? "0") ?? 0
                 return (player.id, p + r + a)
             }
-            .filter { $0.score >= 15.0 }
+            .filter { $0.score >= 10.0 } // 최소 점수 기준 (PIE 10.0은 0.1, FP 10.0, Composite 10.0)
             .max(by: { $0.score < $1.score })?
             .id
         }
