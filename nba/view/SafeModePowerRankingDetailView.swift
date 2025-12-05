@@ -18,9 +18,17 @@ struct SafeModePowerRankingDetailView: View {
         teamState.detailViewState
     }
     
+    // 팀 컬러 추출 (그라데이션의 중간색 사용)
+    private var teamColor: Color {
+        if viewState.titleGradientColors.count >= 3 {
+            return viewState.titleGradientColors[2] // opacity가 적용된 팀 컬러
+        }
+        return .blue
+    }
+    
     var body: some View {
         ObservableScrollView(scrollOffset: $scrollOffset) {
-            // 헤더 섹션 (로고 없음)
+            // 헤더 섹션 (로고 없음, 기하학적 패턴 추가)
             headerView()
             
             // Overview 섹션
@@ -50,9 +58,9 @@ struct SafeModePowerRankingDetailView: View {
                 }
             }
             
-            // Advanced Stats 섹션
+            // Advanced Stats 섹션 (Visual)
             if let advanced = viewState.advanced {
-                PowerRankingDetailAdvancedStatsView(advanced: advanced)
+                visualAdvancedStatsView(advanced: advanced)
                     .padding(.top, 20)
             }
             
@@ -62,7 +70,7 @@ struct SafeModePowerRankingDetailView: View {
                     .padding(.top, 20)
             }
             
-            // Recent Games 섹션 (네비게이션 비활성화)
+            // Recent Games 섹션 (네비게이션 비활성화, Form Guide 추가)
             if !viewModel.recentGames.isEmpty {
                 recentGamesView(games: viewModel.recentGames)
                     .padding(.top, 20)
@@ -75,56 +83,97 @@ struct SafeModePowerRankingDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
-    // MARK: - Header View (No Logos)
+    // MARK: - Header View (Geometric Pattern)
     @ViewBuilder
     func headerView() -> some View {
         ZStack(alignment: .topLeading) {
-            Color.clear
+            // 배경 패턴
+            GeometryReader { geometry in
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.05))
+                        .frame(width: 300, height: 300)
+                        .offset(x: -100, y: -100)
+                    
+                    Circle()
+                        .stroke(Color.white.opacity(0.1), lineWidth: 40)
+                        .frame(width: 200, height: 200)
+                        .offset(x: geometry.size.width - 100, y: 50)
+                    
+                    Rectangle()
+                        .fill(Color.white.opacity(0.03))
+                        .rotationEffect(.degrees(45))
+                        .frame(width: 200, height: 200)
+                        .offset(x: 50, y: 100)
+                }
+            }
+            .clipped()
             
             VStack(alignment: .center, spacing: 6) {
                 Text(viewState.name)
                     .foregroundColor(.white)
-                    .font(.system(size: 22, weight: .bold))
+                    .font(.system(size: 28, weight: .heavy)) // 폰트 크기 및 굵기 증가
                     .padding(.bottom, 2)
-                    .padding(.top, 20)
+                    .padding(.top, 40) // 상단 여백 증가
+                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
                 
                 HStack(spacing: 28) {
                     if let rank = viewState.rank {
                         VStack(spacing: 4) {
                             Text("RANK")
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(.white.opacity(0.6))
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white.opacity(0.7))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(4)
+                            
                             Text(rank)
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.white.opacity(0.9))
+                                .font(.system(size: 32, weight: .bold)) // 폰트 크기 증가
+                                .foregroundColor(.white)
+                                .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
                         }
                     }
                     
                     if let record = viewState.record {
                         VStack(spacing: 4) {
                             Text("RECORD")
-                                .font(.system(size: 11, weight: .medium))
-                                .foregroundColor(.white.opacity(0.6))
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white.opacity(0.7))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(4)
+                            
                             Text(record)
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.white.opacity(0.9))
+                                .font(.system(size: 24, weight: .bold)) // 폰트 크기 증가
+                                .foregroundColor(.white)
+                                .padding(.top, 4)
                         }
                     }
                     
                     VStack(spacing: 4) {
                         Text("LAST WEEK")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(.white.opacity(0.6))
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.white.opacity(0.1))
+                            .cornerRadius(4)
+                        
                         PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
+                            .scaleEffect(1.2) // 배지 크기 증가
+                            .padding(.top, 4)
                     }
                 }
+                .padding(.top, 10)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 30)
-            .padding(.bottom, 20)
+            .padding(.bottom, 30)
             .zIndex(1)
         }
-        .frame(height: 220)
+        .frame(height: 260) // 헤더 높이 증가
         .frame(maxWidth: .infinity)
         .background(viewState.backgroundColor)
         
@@ -138,6 +187,36 @@ struct SafeModePowerRankingDetailView: View {
                     .ignoresSafeArea()
             }
             .padding(.top, -19)
+    }
+    
+    // MARK: - Visual Advanced Stats View
+    @ViewBuilder
+    func visualAdvancedStatsView(advanced: PowerRankingAdvancedModel) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Advanced Stats".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            VStack(spacing: 12) {
+                if let offRtg = advanced.offRtg {
+                    VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
+                }
+              
+                if let defRtg = advanced.defRtg {
+                    VisualAdvancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "", color: .red)
+                }
+                
+                if let netRtg = advanced.netRtg {
+                    VisualAdvancedStatRow(title: netRtg.title ?? "Net Rtg", value: netRtg.value ?? "", rank: netRtg.rank ?? "", color: .orange)
+                }
+                
+                if let pace = advanced.pace {
+                    VisualAdvancedStatRow(title: pace.title ?? "Pace", value: pace.value ?? "", rank: pace.rank ?? "", color: .blue)
+                }
+            }
+            .padding(.horizontal, 15)
+        }
     }
     
     // MARK: - Mentioned Players View (No Navigation, No Images)
@@ -279,14 +358,28 @@ struct SafeModePowerRankingDetailView: View {
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
     
-    // MARK: - Recent Games View (No Navigation)
+    // MARK: - Recent Games View (No Navigation, Form Guide Added)
     @ViewBuilder
     func recentGamesView(games: [HomeAway]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent Games".uppercased())
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white.opacity(0.7))
-                .padding(.horizontal, 15)
+            HStack {
+                Text("Recent Games".uppercased())
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white.opacity(0.7))
+                
+                Spacer()
+                
+                // Form Guide (Last 5)
+                HStack(spacing: 4) {
+                    ForEach(games.prefix(5), id: \.gameId) { game in
+                        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
+                        Circle()
+                            .fill(gameInfo.teamWon ? Color.green : Color.red)
+                            .frame(width: 8, height: 8)
+                    }
+                }
+            }
+            .padding(.horizontal, 15)
             
             VStack(spacing: 10) {
                 ForEach(games, id: \.gameId) { game in

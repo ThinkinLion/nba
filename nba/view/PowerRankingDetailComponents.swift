@@ -122,6 +122,75 @@ struct AdvancedStatRow: View {
     }
 }
 
+struct VisualAdvancedStatRow: View {
+    let title: String
+    let value: String
+    let rank: String
+    let color: Color
+    
+    private var progress: Double {
+        // Rank 1 = 1.0 (Full), Rank 30 = 0.0 (Empty)
+        // Formula: (31 - rank) / 30
+        guard let rankInt = Int(rank) else { return 0.5 }
+        return max(0.1, Double(31 - rankInt) / 30.0)
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text(title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.white.opacity(0.8))
+                
+                Spacer()
+                
+                HStack(spacing: 4) {
+                    Text(value)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    if !rank.isEmpty {
+                        Text("#\(rank)")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(color)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(color.opacity(0.2))
+                            .cornerRadius(4)
+                    }
+                }
+            }
+            
+            // Progress Bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.1))
+                        .frame(height: 6)
+                    
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [color.opacity(0.7), color],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * progress, height: 6)
+                }
+            }
+            .frame(height: 6)
+        }
+        .padding(16)
+        .background(Color.white.opacity(0.05))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
+    }
+}
+
 struct PowerRankingDetailRankChangeBadge: View {
     let text: String
     let style: PowerRankingViewModel.RankChangeStyle

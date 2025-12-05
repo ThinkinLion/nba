@@ -366,8 +366,8 @@ extension PowerRankingViewModel {
         // "Power Rankings, WeekX:" 접두어를 제거한 title
         var cleanedTitle: String? {
             guard let title = title else { return nil }
-            // "Power Rankings, WeekX:" 또는 "Power Rankings, Week X:" 패턴 제거
-            let pattern = "^Power Rankings,\\s*Week\\s*\\d+:\\s*"
+            // "Power Rankings, WeekX:" 또는 "Power Rankings Week X:" 패턴 제거 (쉼표 유무 상관없이)
+            let pattern = "^Power Rankings,?\\s*Week\\s*\\d+:\\s*"
             if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
                 let range = NSRange(location: 0, length: title.utf16.count)
                 let cleaned = regex.stringByReplacingMatches(in: title, options: [], range: range, withTemplate: "")
@@ -470,6 +470,23 @@ extension PowerRankingViewModel {
         
         var darkBackgroundColor: Color {
             return Color(backgroundColorName + ".dark")
+        }
+        
+        var titleGradientColors: [Color] {
+            guard let triCode = triCode, !triCode.isEmpty else {
+                return [.white, .weekCarouselBlue, .weekCarouselBlueDark]
+            }
+            
+            let nickName = triCode.triCodeToNickName
+            let backgroundColorName = nickName.isEmpty ? triCode.lowercased() : nickName
+            let teamColor = Color(backgroundColorName)
+            
+            // 가독성을 위해 White 비중을 높이고, 팀 컬러는 끝부분에 은은하게 적용
+            return [
+                .white,
+                .white,
+                teamColor.opacity(0.6)
+            ]
         }
     }
     

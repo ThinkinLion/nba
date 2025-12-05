@@ -52,7 +52,7 @@ struct OfficialPowerRankingDetailView: View {
             
             // Advanced Stats 섹션
             if let advanced = viewState.advanced {
-                PowerRankingDetailAdvancedStatsView(advanced: advanced)
+                visualAdvancedStatsView(advanced: advanced)
                     .padding(.top, 20)
             }
             
@@ -158,6 +158,36 @@ struct OfficialPowerRankingDetailView: View {
                     .ignoresSafeArea()
             }
             .padding(.top, -19)
+    }
+    
+    // MARK: - Visual Advanced Stats View
+    @ViewBuilder
+    func visualAdvancedStatsView(advanced: PowerRankingAdvancedModel) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Advanced Stats".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            VStack(spacing: 12) {
+                if let offRtg = advanced.offRtg {
+                    VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
+                }
+              
+                if let defRtg = advanced.defRtg {
+                    VisualAdvancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "", color: .red)
+                }
+                
+                if let netRtg = advanced.netRtg {
+                    VisualAdvancedStatRow(title: netRtg.title ?? "Net Rtg", value: netRtg.value ?? "", rank: netRtg.rank ?? "", color: .orange)
+                }
+                
+                if let pace = advanced.pace {
+                    VisualAdvancedStatRow(title: pace.title ?? "Pace", value: pace.value ?? "", rank: pace.rank ?? "", color: .blue)
+                }
+            }
+            .padding(.horizontal, 15)
+        }
     }
     
     // MARK: - Mentioned Players View
@@ -374,10 +404,24 @@ struct OfficialPowerRankingDetailView: View {
     @ViewBuilder
     func recentGamesView(games: [HomeAway]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent Games".uppercased())
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white.opacity(0.7))
-                .padding(.horizontal, 15)
+            HStack {
+                Text("Recent Games".uppercased())
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white.opacity(0.7))
+                
+                Spacer()
+                
+                // Form Guide (Last 5)
+                HStack(spacing: 4) {
+                    ForEach(games.prefix(5), id: \.gameId) { game in
+                        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
+                        Circle()
+                            .fill(gameInfo.teamWon ? Color.green : Color.red)
+                            .frame(width: 8, height: 8)
+                    }
+                }
+            }
+            .padding(.horizontal, 15)
             
             VStack(spacing: 10) {
                 ForEach(games, id: \.gameId) { game in
