@@ -153,6 +153,15 @@ final class PowerRankingViewModel: ObservableObject {
         var mentionedPlayers: [PlayerModel] = []
         
         for player in roster {
+            // PPG가 없거나 너무 낮은 선수(예: 1.0 미만)는 제외하여 동명이인(예: 타나시스 아데토쿤보) 문제 방지
+            // "--"와 같이 숫자가 아닌 경우도 0으로 취급하여 제외
+            let ppgString = player.ppg ?? "0"
+            let ppg = Double(ppgString) ?? 0.0
+            
+            if ppg < 1.0 {
+                continue
+            }
+            
             guard let firstName = player.firstName,
                   let lastName = player.lastName else { continue }
             
