@@ -79,3 +79,4 @@ extension PlayerModel {
 extension PlayerModel {
   static var empty = PlayerModel(playerId: "", teamId: "", teamName: "", teamCode: "", firstName: "", lastName: "", jersey: "", position: "", ppg: "", rpg: "", apg: "", pie: "", height: "", weight: "", country: "", lastAttended: "", age: "", brithdate: "", draft: "", experience: "", retired: false, traditional: [], advanced: [], misc: [], scoring: [], usage: [])
 }
+

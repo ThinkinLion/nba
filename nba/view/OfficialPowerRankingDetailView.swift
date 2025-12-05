@@ -137,6 +137,8 @@ struct OfficialPowerRankingDetailView: View {
                             .foregroundColor(.white.opacity(0.6))
                         PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
                     }
+                    
+                    MomentumView(momentum: viewState.momentum)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -169,6 +171,19 @@ struct OfficialPowerRankingDetailView: View {
                 .foregroundColor(.white.opacity(0.7))
                 .padding(.horizontal, 15)
             
+            // Radar Chart
+            HStack {
+                Spacer()
+                RadarChartView(
+                    data: viewState.radarChartData,
+                    labels: ["OFF", "DEF", "NET", "PACE"],
+                    color: viewState.backgroundColor
+                )
+                .frame(width: 200, height: 200)
+                Spacer()
+            }
+            .padding(.bottom, 10)
+            
             VStack(spacing: 12) {
                 if let offRtg = advanced.offRtg {
                     VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
@@ -199,6 +214,9 @@ struct OfficialPowerRankingDetailView: View {
                 .foregroundColor(.white.opacity(0.7))
                 .padding(.horizontal, 15)
             
+            // Find Key Player
+            let keyPlayerId = PowerRankingViewModel.TeamDetailViewState.findKeyPlayerId(from: players)
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(players, id: \.id) { player in
@@ -206,7 +224,7 @@ struct OfficialPowerRankingDetailView: View {
                             playerId: player.playerId ?? "",
                             teamId: player.teamId ?? ""
                         )) {
-                            playerCardView(player: player)
+                            playerCardView(player: player, isKeyPlayer: player.id == keyPlayerId)
                         }
                     }
                 }
@@ -216,7 +234,7 @@ struct OfficialPowerRankingDetailView: View {
     }
     
     @ViewBuilder
-    func playerCardView(player: PlayerModel) -> some View {
+    func playerCardView(player: PlayerModel, isKeyPlayer: Bool = false) -> some View {
         ZStack(alignment: .topLeading) {
             VStack(alignment: .leading, spacing: 0) {
                 // 선수 이미지
@@ -302,7 +320,7 @@ struct OfficialPowerRankingDetailView: View {
                                     .foregroundColor(.white.opacity(0.6))
                                 Text(ppg)
                                     .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(isKeyPlayer ? .yellow : .white) // Highlight PPG
                             }
                         }
                         
@@ -368,6 +386,18 @@ struct OfficialPowerRankingDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .offset(x: 8, y: 8)
             }
+            
+            // Key Player Badge
+            if isKeyPlayer {
+                Text("KEY PLAYER")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.yellow)
+                    .cornerRadius(4)
+                    .offset(x: 8, y: 80) // Position above info
+            }
         }
         .frame(width: 140)
         .background(
@@ -375,8 +405,8 @@ struct OfficialPowerRankingDetailView: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.12),
-                            Color.white.opacity(0.06)
+                            isKeyPlayer ? Color.yellow.opacity(0.15) : Color.white.opacity(0.12),
+                            isKeyPlayer ? Color.yellow.opacity(0.05) : Color.white.opacity(0.06)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -388,16 +418,16 @@ struct OfficialPowerRankingDetailView: View {
                 .stroke(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.2),
-                            Color.white.opacity(0.05)
+                            isKeyPlayer ? Color.yellow.opacity(0.8) : Color.white.opacity(0.2),
+                            isKeyPlayer ? Color.yellow.opacity(0.3) : Color.white.opacity(0.05)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 1
+                    lineWidth: isKeyPlayer ? 2 : 1
                 )
         )
-        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: isKeyPlayer ? Color.yellow.opacity(0.2) : .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
     
     // MARK: - Recent Games View

@@ -165,6 +165,8 @@ struct SafeModePowerRankingDetailView: View {
                             .scaleEffect(1.2) // 배지 크기 증가
                             .padding(.top, 4)
                     }
+                    
+                    MomentumView(momentum: viewState.momentum)
                 }
                 .padding(.top, 10)
             }
@@ -198,6 +200,19 @@ struct SafeModePowerRankingDetailView: View {
                 .foregroundColor(.white.opacity(0.7))
                 .padding(.horizontal, 15)
             
+            // Radar Chart
+            HStack {
+                Spacer()
+                RadarChartView(
+                    data: viewState.radarChartData,
+                    labels: ["OFF", "DEF", "NET", "PACE"],
+                    color: teamColor
+                )
+                .frame(width: 200, height: 200)
+                Spacer()
+            }
+            .padding(.bottom, 10)
+            
             VStack(spacing: 12) {
                 if let offRtg = advanced.offRtg {
                     VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
@@ -228,10 +243,13 @@ struct SafeModePowerRankingDetailView: View {
                 .foregroundColor(.white.opacity(0.7))
                 .padding(.horizontal, 15)
             
+            // Find Key Player
+            let keyPlayerId = PowerRankingViewModel.TeamDetailViewState.findKeyPlayerId(from: players)
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(players, id: \.id) { player in
-                        playerCardView(player: player)
+                        playerCardView(player: player, isKeyPlayer: player.id == keyPlayerId)
                     }
                 }
                 .padding(.horizontal, 15)
@@ -240,7 +258,7 @@ struct SafeModePowerRankingDetailView: View {
     }
     
     @ViewBuilder
-    func playerCardView(player: PlayerModel) -> some View {
+    func playerCardView(player: PlayerModel, isKeyPlayer: Bool = false) -> some View {
         ZStack(alignment: .topLeading) {
             VStack(alignment: .leading, spacing: 0) {
                 // 선수 정보 (이미지 없음)
@@ -260,7 +278,7 @@ struct SafeModePowerRankingDetailView: View {
                                     .foregroundColor(.white.opacity(0.6))
                                 Text(ppg)
                                     .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(isKeyPlayer ? .yellow : .white) // Highlight PPG
                             }
                         }
                         
@@ -326,6 +344,19 @@ struct SafeModePowerRankingDetailView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .offset(x: -8, y: -8)
             }
+            
+            // Key Player Badge
+            if isKeyPlayer {
+                Text("KEY PLAYER")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundColor(.black)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.yellow)
+                    .cornerRadius(4)
+                    .frame(maxWidth: .infinity, alignment: .topTrailing)
+                    .offset(x: -8, y: 8)
+            }
         }
         .frame(width: 140)
         .background(
@@ -333,8 +364,8 @@ struct SafeModePowerRankingDetailView: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.12),
-                            Color.white.opacity(0.06)
+                            isKeyPlayer ? Color.yellow.opacity(0.15) : Color.white.opacity(0.12),
+                            isKeyPlayer ? Color.yellow.opacity(0.05) : Color.white.opacity(0.06)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -346,16 +377,16 @@ struct SafeModePowerRankingDetailView: View {
                 .stroke(
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.2),
-                            Color.white.opacity(0.05)
+                            isKeyPlayer ? Color.yellow.opacity(0.8) : Color.white.opacity(0.2),
+                            isKeyPlayer ? Color.yellow.opacity(0.3) : Color.white.opacity(0.05)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 1
+                    lineWidth: isKeyPlayer ? 2 : 1
                 )
         )
-        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: isKeyPlayer ? Color.yellow.opacity(0.2) : .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
     
     // MARK: - Recent Games View (No Navigation, Form Guide Added)
