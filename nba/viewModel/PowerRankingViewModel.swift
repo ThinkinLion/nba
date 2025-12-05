@@ -21,27 +21,27 @@ final class PowerRankingViewModel: ObservableObject {
     @Published var isLoadingGames: Bool = false
     @Published var shouldUseOfficialTeamData: Bool = false
     
-    private var db = Firestore.firestore()
+    private let repository: PowerRankingRepository
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
-        fetchRemoteConfig()
+    init(repository: PowerRankingRepository = FirestorePowerRankingRepository()) {
+        self.repository = repository
         
         // Remote Config 변경 감지하여 뷰 갱신 트리거
         RemoteConfigManager.shared.$shouldUseOfficialTeamData
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
+                self?.updateViewState()
             }
             .store(in: &cancellables)
     }
     
-    private func fetchRemoteConfig() {
-        RemoteConfigManager.shared.fetchConfig { [weak self] success in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.shouldUseOfficialTeamData = RemoteConfigManager.shared.shouldUseOfficialTeamData
-            }
+    private func updateViewState() {
+        self.shouldUseOfficialTeamData = RemoteConfigManager.shared.shouldUseOfficialTeamData
+        // 필요한 경우, 현재 선택된 주차의 랭킹을 다시 로드하거나 뷰를 갱신
+        if let currentWeek = selectedWeek {
+            fetchPowerRankingByWeek(currentWeek)
         }
     }
     
@@ -49,68 +49,63 @@ final class PowerRankingViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        db.collection("powerRankings.2025")
-            .order(by: "week", descending: true)
-            .limit(to: 10)
-            .getDocuments() { [weak self] (snapshot, error) in
-                guard let self = self else { return }
-                
-                if let error = error {
+        Task {
+            do {
+                let rankings = try await repository.fetchPowerRankings()
+                await MainActor.run {
+                    // items가 있고 비어있지 않은 경우만 필터링
+                    self.powerRankings = rankings.filter { ($0.items?.count ?? 0) > 0 }
+                    self.isLoading = false
+                    
+                    // 데이터 로드 후 초기 선택 설정
+                    if self.selectedWeek == nil, let firstRanking = self.powerRankings.first {
+                        self.currentPowerRanking = firstRanking
+                        self.selectedWeek = firstRanking.week
+                    } else if let currentWeek = self.selectedWeek,
+                              let existingRanking = self.powerRankings.first(where: { $0.week == currentWeek }) {
+                        // 이미 선택된 주차가 있다면 해당 랭킹으로 업데이트
+                        self.currentPowerRanking = existingRanking
+                    } else if let firstRanking = self.powerRankings.first {
+                        // 선택된 주차가 없거나, 기존 선택된 주차의 랭킹이 더 이상 존재하지 않으면 최신 랭킹으로 설정
+                        self.currentPowerRanking = firstRanking
+                        self.selectedWeek = firstRanking.week
+                    }
+                    self.errorMessage = nil
+                }
+            } catch {
+                await MainActor.run {
                     self.errorMessage = "Error fetching power rankings: \(error.localizedDescription)"
                     self.isLoading = false
-                    return
                 }
-                
-                self.powerRankings = snapshot?.documents.compactMap { documentSnapshot in
-                    let result = Result { try documentSnapshot.data(as: PowerRankingModel.self) }
-                    switch result {
-                    case .success(let powerRanking):
-                        // items가 있고 비어있지 않은 경우만 반환
-                        return (powerRanking.items?.count ?? 0) > 0 ? powerRanking : nil
-                    case .failure(let error):
-                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-                        return nil
-                    }
-                } ?? []
-                
-                // 가장 최신 랭킹을 currentPowerRanking으로 설정
-                if let firstRanking = self.powerRankings.first {
-                    self.currentPowerRanking = firstRanking
-                    self.selectedWeek = firstRanking.week
-                }
-                self.isLoading = false
             }
+        }
     }
     
     func fetchPowerRankingByWeek(_ week: String) {
         isLoading = true
         errorMessage = nil
         
-        db.collection("powerRankings.2024")
-            .whereField("week", isEqualTo: week)
-            .limit(to: 1)
-            .getDocuments() { [weak self] (snapshot, error) in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    self.errorMessage = "Error fetching power ranking: \(error.localizedDescription)"
-                    self.isLoading = false
-                    return
-                }
-                
-                if let document = snapshot?.documents.first {
-                    let result = Result { try document.data(as: PowerRankingModel.self) }
-                    switch result {
-                    case .success(let powerRanking):
-                        self.currentPowerRanking = powerRanking
-                        self.errorMessage = nil
-                    case .failure(let error):
-                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+        Task {
+            do {
+                if let ranking = try await repository.fetchPowerRanking(week: week) {
+                    await MainActor.run {
+                        self.currentPowerRanking = ranking
+                        self.selectedWeek = ranking.week
+                        self.isLoading = false
+                    }
+                } else {
+                    await MainActor.run {
+                        self.errorMessage = "No ranking found for week \(week)"
+                        self.isLoading = false
                     }
                 }
-                
-                self.isLoading = false
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Error fetching power ranking: \(error.localizedDescription)"
+                    self.isLoading = false
+                }
             }
+        }
     }
     
     func selectPowerRanking(_ powerRanking: PowerRankingModel) {
@@ -136,36 +131,20 @@ final class PowerRankingViewModel: ObservableObject {
         guard !teamId.isEmpty else { return }
         isLoadingGames = true
         
-        db.collection("games")
-            .order(by: "date", descending: true)
-            .limit(to: 10)
-            .getDocuments() { [weak self] (snapshot, error) in
-                guard let self = self else { return }
-                guard let documents = snapshot?.documents else {
+        Task {
+            do {
+                let games = try await repository.fetchRecentGames(teamId: teamId)
+                await MainActor.run {
+                    self.recentGames = games
                     self.isLoadingGames = false
-                    return
                 }
-                
-                var allGames: [HomeAway] = []
-                
-                for document in documents {
-                    let result = Result { try document.data(as: GamesModel.self) }
-                    switch result {
-                    case .success(let gamesModel):
-                        // 해당 팀이 참여한 경기만 필터링
-                        let teamGames = gamesModel.items.filter { game in
-                            game.home.teamId == teamId || game.away.teamId == teamId
-                        }
-                        allGames.append(contentsOf: teamGames)
-                    case .failure:
-                        continue
-                    }
+            } catch {
+                await MainActor.run {
+                    print("Error fetching recent games: \(error.localizedDescription)")
+                    self.isLoadingGames = false
                 }
-                
-                // 최근 5경기만
-                self.recentGames = Array(allGames.prefix(5))
-                self.isLoadingGames = false
             }
+        }
     }
     
     func extractMentionedPlayers(from text: String, roster: [PlayerModel]) -> [PlayerModel] {

@@ -17,74 +17,74 @@ final class TeamViewModel: ObservableObject {
     @Published var centersInRoster = [PlayerModel]()
     var errorMessage: String?
     
-    private var db = Firestore.firestore()
+    private let repository: TeamRepository
+    
+    init(repository: TeamRepository = FirestoreTeamRepository()) {
+        self.repository = repository
+    }
 }
 
 extension TeamViewModel {
     func fetchTeam(documentId: String) {
         guard !documentId.isEmpty else { return }
-        db.collection("teams").document(documentId).getDocument(as: TeamModel.self) { result in
-            switch result {
-            case .success(let team):
-                print("team: \(team)")
-                self.team = team
-                self.errorMessage = nil
-            case .failure(let error):
-                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+        
+        Task {
+            do {
+                let team = try await repository.fetchTeam(documentId: documentId)
+                await MainActor.run {
+                    self.team = team
+                    self.errorMessage = nil
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Error fetching team: \(error.localizedDescription)"
+                }
             }
         }
     }
     
     func fetchCountry(country: String) {
         guard !country.isEmpty else { return }
-        let seasonYear = SeasonProvider.shared.seasonYear()
-        db.collection("players.\(seasonYear)").whereField("country", isEqualTo: country)
-            .whereField("retired", isEqualTo: false)
-  //            .whereField("pie", isGreaterThanOrEqualTo: 5)
-  //            .whereField("position", isEqualTo: "Guard")
-            .getDocuments() { (snapshot, error) in
-                self.roster = snapshot?.documents.compactMap { documentSnapshot in
-                    let result = Result { try documentSnapshot.data(as: PlayerModel.self) }
-                    switch result {
-                    case .success(let playerModel):
-                        self.errorMessage = nil
-                      print("country: \(playerModel.lastName ?? ""), retired: \(String(describing: playerModel.retired)),  pie: \(String(describing: playerModel.advanced?.first?.pie))")
-                        return playerModel
-                    case .failure(let error):
-                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-                        return nil
-                    }
-                } ?? []
-                self.guardsInRoster = self.classifyByPosition(postion: "G", roster: self.roster)
-                self.forwardsInRoster = self.classifyByPosition(postion: "F", roster: self.roster)
-                self.centersInRoster = self.classifyByPosition(postion: "C", roster: self.roster)
+        
+        Task {
+            do {
+                let players = try await repository.fetchPlayersByCountry(country: country)
+                await MainActor.run {
+                    self.roster = players
+                    self.updateRosterByPosition()
+                    self.errorMessage = nil
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Error fetching players by country: \(error.localizedDescription)"
+                }
+            }
         }
     }
   
     func fetchRoster(teamId: String) {
         guard !teamId.isEmpty else { return }
-        let seasonYear = SeasonProvider.shared.seasonYear()
-        db.collection("players.\(seasonYear)").whereField("teamId", isEqualTo: teamId)
-            .whereField("retired", isEqualTo: false)
-//            .whereField("pie", isGreaterThanOrEqualTo: 5)
-//            .whereField("position", isEqualTo: "Guard")
-            .getDocuments() { (snapshot, error) in
-                self.roster = snapshot?.documents.compactMap { documentSnapshot in
-                    let result = Result { try documentSnapshot.data(as: PlayerModel.self) }
-                    switch result {
-                    case .success(let playerModel):
-                        self.errorMessage = nil
-                      print("roster: \(playerModel.lastName ?? ""), retired: \(String(describing: playerModel.retired)),  pie: \(String(describing: playerModel.advanced?.first?.pie))")
-                        return playerModel
-                    case .failure(let error):
-                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-                        return nil
-                    }
-                } ?? []
-                self.guardsInRoster = self.classifyByPosition(postion: "G", roster: self.roster)
-                self.forwardsInRoster = self.classifyByPosition(postion: "F", roster: self.roster)
-                self.centersInRoster = self.classifyByPosition(postion: "C", roster: self.roster)
+        
+        Task {
+            do {
+                let players = try await repository.fetchRoster(teamId: teamId)
+                await MainActor.run {
+                    self.roster = players
+                    self.updateRosterByPosition()
+                    self.errorMessage = nil
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Error fetching roster: \(error.localizedDescription)"
+                }
+            }
         }
+    }
+    
+    private func updateRosterByPosition() {
+        self.guardsInRoster = self.classifyByPosition(postion: "G", roster: self.roster)
+        self.forwardsInRoster = self.classifyByPosition(postion: "F", roster: self.roster)
+        self.centersInRoster = self.classifyByPosition(postion: "C", roster: self.roster)
     }
     
     func classifyByPosition(postion: String, roster: [PlayerModel]) -> [PlayerModel] {

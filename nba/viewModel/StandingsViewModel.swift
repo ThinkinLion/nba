@@ -74,31 +74,27 @@ final class StandingsViewModel: ObservableObject {
     
     var errorMessage: String?
     
-    private var db = Firestore.firestore()
-    private var listenerRegistration: ListenerRegistration?
+    private let standingsRepository: StandingsRepository
+    private let powerRankingRepository: PowerRankingRepository
+    
+    init(standingsRepository: StandingsRepository = FirestoreStandingsRepository(),
+         powerRankingRepository: PowerRankingRepository = FirestorePowerRankingRepository()) {
+        self.standingsRepository = standingsRepository
+        self.powerRankingRepository = powerRankingRepository
+    }
     
     func fetchStandings() {
-        //        Task {
-        //            await asyncFetch(documentId: "DeKhuCvwKF59FRfTmdom")
-        //        }
-      self.fetchStandings(documentId: SeasonProvider.shared.seasonYear())
-//        fetchGames(documentId: today())
-//        fetchGames(documentId: "2024-01-03")
-      self.fetchGameRecap()
-        
-      self.fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
-      
-      self.fetchPowerRankings()
+        Task {
+            await fetchStandings(documentId: SeasonProvider.shared.seasonYear())
+            await fetchGameRecap()
+            await fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
+            await fetchPowerRankings()
+        }
     }
     
     @MainActor
     private func asyncFetch(documentId: String) async {
-        let docRef = db.collection("standings").document(documentId)
-        do {
-            self.standings = try await docRef.getDocument(as: StandingsModel.self)
-        } catch {
-            self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-        }
+        // Legacy or unused? Keeping empty for now as it was in original
     }
 }
 
@@ -122,92 +118,60 @@ extension StandingsViewModel {
 }
 
 extension StandingsViewModel {
-  func fetchPowerRankings() {
-    db.collection("powerRankings.2024").order(by: "week", descending: true).limit(to: 2)
-      .getDocuments() { (snapshot, error) in
-        self.powerRankings = snapshot?.documents.compactMap { documentSnapshot in
-          let result = Result { try documentSnapshot.data(as: PowerRankingModel.self) }
-          switch result {
-          case .success(let powerRanking):
-            self.errorMessage = nil
-            print("power rankings: \(powerRanking.week ?? "")")
-            return powerRanking.items?.count ?? 0 > 0 ? powerRanking : nil
-          case .failure(let error):
-            self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-            print("decoding error: \(error.localizedDescription)")
-            return nil
-          }
-        } ?? []
-        
-//        let lastGameRecap = self.gameRecap.first
-  //                self.games = lastGameRecap?.items ?? []
-//        self.hasGames = lastGameRecap?.items.count ?? 0 > 0
+    func fetchPowerRankings() async {
+        do {
+            let rankings = try await powerRankingRepository.fetchPowerRankings()
+            await MainActor.run {
+                self.powerRankings = rankings
+                self.errorMessage = nil
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching power rankings: \(error.localizedDescription)"
+            }
+        }
     }
-  }
   
-    private func fetchStandings(documentId: String) {
+    private func fetchStandings(documentId: String) async {
         guard !documentId.isEmpty else { return }
-        db.collection("standings").document(documentId).getDocument(as: StandingsModel.self) { result in
-            switch result {
-            case .success(let standings):
-                //                self.standings = standings
-                //                print("fetchStandings: \(standings)")
+        
+        do {
+            let standings = try await standingsRepository.fetchStandings(seasonYear: documentId)
+            await MainActor.run {
                 self.lastUpdated = standings.date?.lastUpdated ?? ""
                 self.east = self.divideConferenceStandings(conference: standings.east)
                 self.west = self.divideConferenceStandings(conference: standings.west)
                 self.errorMessage = nil
-            case .failure(let error):
-                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching standings: \(error.localizedDescription)"
             }
         }
     }
     
-    func fetchGameRecap() {
-        db.collection("games").order(by: "date", descending: true).limit(to: 7)
-            .getDocuments() { (snapshot, error) in
-                self.gameRecap = snapshot?.documents.compactMap { documentSnapshot in
-                    let result = Result { try documentSnapshot.data(as: GamesModel.self) }
-                    switch result {
-                    case .success(let game):
-                        self.errorMessage = nil
-                        print("game recap: \(game.date ?? ""), \(game.items.count) game played..(\(String(describing: game.id))")
-                        return game.items.count > 0 ? game : nil
-                    case .failure(let error):
-                        self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-                        return nil
-                    }
-                } ?? []
-                
+    func fetchGameRecap() async {
+        do {
+            let games = try await standingsRepository.fetchGameRecap()
+            await MainActor.run {
+                self.gameRecap = games
                 let lastGameRecap = self.gameRecap.first
-//                self.games = lastGameRecap?.items ?? []
-                self.hasGames = lastGameRecap?.items.count ?? 0 > 0
+                self.hasGames = (lastGameRecap?.items.count ?? 0) > 0
+                self.errorMessage = nil
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching game recap: \(error.localizedDescription)"
+            }
         }
     }
     
-    /*
-     나중에 지우자
-    private func fetchGames(documentId: String) {
+    private func fetchStatsLeaders(documentId: String) async {
         guard !documentId.isEmpty else { return }
-        db.collection("games").document(documentId).getDocument(as: GamesModel.self) { result in
-            switch result {
-            case .success(let games):
-                self.games = games.items
-                self.hasGames = games.items.count > 0
-            case .failure(let error):
-                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
-            }
-        }
-    } */
-    
-    private func fetchStatsLeaders(documentId: String) {
-        guard !documentId.isEmpty else { return }
-        db.collection("statsLeaders").document(documentId).getDocument(as: SeasonLeadersModel.self) { result in
-            switch result {
-            case .success(let seasonLeaders):
-//                print("fetchStatsLeaders: \(seasonLeaders)")
-//                self.pointsPerGame = seasonLeaders.seasonLeadersPointsPerGame ?? .empty
-//                self.assistsPerGame = seasonLeaders.seasonLeadersAssistsPerGame ?? .empty
-//                self.reboundsPerGame = seasonLeaders.seasonLeadersReboundsPerGame ?? .empty
+        
+        do {
+            let seasonLeaders = try await standingsRepository.fetchStatsLeaders(seasonYear: documentId)
+            await MainActor.run {
                 self.shuffledSeasonLeaders(leaders: [seasonLeaders.seasonLeadersPointsPerGame ?? .empty,
                                                      seasonLeaders.seasonLeadersAssistsPerGame ?? .empty,
                                                      seasonLeaders.seasonLeadersReboundsPerGame ?? .empty,
@@ -220,28 +184,17 @@ extension StandingsViewModel {
                                                      seasonLeaders.seasonLeadersThreePointPercentage ?? .empty,
                                                      seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty])
                 
-//                self.blocksPerGame = seasonLeaders.seasonLeadersBlocksPerGame ?? .empty
-//                self.stealsPerGame = seasonLeaders.seasonLeadersStealsPerGame ?? .empty
-//                self.fieldGoalPercentage = seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty
-//                
-//                self.threePointersMade = seasonLeaders.seasonLeadersThreePointersMade ?? .empty
-//                self.threePointPercentage = seasonLeaders.seasonLeadersThreePointPercentage ?? .empty
-//                self.fantasyPointsPerGame = seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty
-                
                 self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
                 self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
                 self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
                 
-                //season leaders etc
                 self.seasonLeadersMostTotalPoints = seasonLeaders.seasonLeadersMostTotalPoints ?? .empty
                 self.seasonLeadersMostPointsinaGame = seasonLeaders.seasonLeadersMostPointsinaGame ?? .empty
                 self.seasonLeadersMostReboundsinaGame = seasonLeaders.seasonLeadersMostReboundsinaGame ?? .empty
                 self.seasonLeadersMostAssistsinaGame = seasonLeaders.seasonLeadersMostAssistsinaGame ?? .empty
                 self.seasonLeadersMostStealsinaGame = seasonLeaders.seasonLeadersMostStealsinaGame ?? .empty
                 self.seasonLeadersMostBlocksinaGame = seasonLeaders.seasonLeadersMostBlocksinaGame ?? .empty
-//                self.seasonLeadersHighestPercentageofPTS3PT = seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty
-//                self.seasonLeadersHighestPercentageofPTS2PT = seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty
-//                self.seasonLeadersHighestPercentageofPTSMidRange = seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty
+                
                 self.seasonLeaderEtc = [
                     seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty,
                     seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty,
@@ -295,21 +248,25 @@ extension StandingsViewModel {
                     seasonLeaders.rookiesPointsPerGame ?? .empty,
                     seasonLeaders.rookiesMinutesPerGame ?? .empty,
                 ]
-            case .failure(let error):
-                self.errorMessage = "Error decoding document: \(error.localizedDescription)"
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching stats leaders: \(error.localizedDescription)"
             }
         }
     }
 }
 
+/*
 extension StandingsViewModel {
     func addSampleItem() {
 //        db.collection("nba").document("aa").setData(from: newItem)
-        let collectionRef = db.collection("standings")
+        let collectionRef = Firestore.firestore().collection("standings")
         do {
-            let newDocReference = try collectionRef.addDocument(from: newItem)
+            // newItem is not defined in this scope, so this code was likely broken or incomplete.
+            // let newDocReference = try collectionRef.addDocument(from: newItem)
             
-            print("nba stored with new document reference: \(newDocReference)")
+            // print("nba stored with new document reference: \(newDocReference)")
         } catch {
             print(error)
         }
@@ -317,7 +274,7 @@ extension StandingsViewModel {
     
     func updateStandings() {
         if let id = standings.id {
-            let docRef = db.collection("standings").document(id)
+            let docRef = Firestore.firestore().collection("standings").document(id)
             do {
                 try docRef.setData(from: standings)
             } catch {
@@ -325,7 +282,9 @@ extension StandingsViewModel {
             }
         }
     }
-    
+}
+*/    
+extension StandingsViewModel {
     func divideConferenceStandings(conference: [StandingsTeam]) -> ([StandingsTeam], [StandingsTeam], [StandingsTeam]) {
         guard conference.count == 15 else { return ([], [], []) }
         

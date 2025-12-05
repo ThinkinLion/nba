@@ -43,6 +43,9 @@
 		C2AC6EE02CCD06FE00E5DF61 /* Usage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC6EDF2CCD06FE00E5DF61 /* Usage.swift */; };
 		C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ACBA3A2CC7B0CC00B5B409 /* StatsGeneratable.swift */; };
 		C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B7E0F52B1F04B200988259 /* PlayerView.swift */; };
+		C2BA7EAF2EE3050700A71348 /* TeamRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAD2EE3050700A71348 /* TeamRepository.swift */; };
+		C2BA7EB02EE3050700A71348 /* StandingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */; };
+		C2BA7EB12EE3050700A71348 /* PowerRankingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAB2EE3050700A71348 /* PowerRankingRepository.swift */; };
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
@@ -121,6 +124,9 @@
 		C2AC6EDF2CCD06FE00E5DF61 /* Usage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usage.swift; sourceTree = "<group>"; };
 		C2ACBA3A2CC7B0CC00B5B409 /* StatsGeneratable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGeneratable.swift; sourceTree = "<group>"; };
 		C2B7E0F52B1F04B200988259 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		C2BA7EAB2EE3050700A71348 /* PowerRankingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingRepository.swift; sourceTree = "<group>"; };
+		C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsRepository.swift; sourceTree = "<group>"; };
+		C2BA7EAD2EE3050700A71348 /* TeamRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepository.swift; sourceTree = "<group>"; };
 		C2C794F82AFE140D00D72531 /* StandingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -196,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				C2FDA6B32B19C28D00E2B3D7 /* common */,
+				C2BA7EAE2EE3050700A71348 /* repository */,
 				C2C795032AFF9EF100D72531 /* view */,
 				C2C794FE2AFE146200D72531 /* viewModel */,
 				C2C794F72AFE140D00D72531 /* model */,
@@ -250,6 +257,16 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C2BA7EAE2EE3050700A71348 /* repository */ = {
+			isa = PBXGroup;
+			children = (
+				C2BA7EAB2EE3050700A71348 /* PowerRankingRepository.swift */,
+				C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */,
+				C2BA7EAD2EE3050700A71348 /* TeamRepository.swift */,
+			);
+			path = repository;
 			sourceTree = "<group>";
 		};
 		C2C794F72AFE140D00D72531 /* model */ = {
@@ -499,6 +516,9 @@
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
 				C2E591F22EE02F4D00A88D97 /* PowerRankingDetailComponents.swift in Sources */,
+				C2BA7EAF2EE3050700A71348 /* TeamRepository.swift in Sources */,
+				C2BA7EB02EE3050700A71348 /* StandingsRepository.swift in Sources */,
+				C2BA7EB12EE3050700A71348 /* PowerRankingRepository.swift in Sources */,
 				C2E591F32EE02F4D00A88D97 /* SafeModePowerRankingDetailView.swift in Sources */,
 				C2E591F42EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift in Sources */,
 				C22634972B639F2500692248 /* PlayerStatsItemViewModel.swift in Sources */,
