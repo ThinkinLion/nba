@@ -43,7 +43,7 @@ struct PowerRankingView: View {
                         // 랭킹 리스트
                         if !currentRanking.teams.isEmpty {
                             rankingListView(items: currentRanking.teams)
-                                .padding(.top, 20)
+                                .padding(.top, 40) // Increased padding to prevent header overlap
                         }
                         
                         BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10)
@@ -234,7 +234,7 @@ extension PowerRankingView {
 extension PowerRankingView {
     @ViewBuilder
     func rankingListView(items: [PowerRankingViewModel.TeamState]) -> some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 16) {
             ForEach(items) { team in
                 NavigationLink(destination: PowerRankingDetailView(teamState: team, viewModel: viewModel)) {
                     rankingCardView(team: team)
@@ -244,94 +244,195 @@ extension PowerRankingView {
         .padding(.horizontal, 15)
     }
     
+    
     @ViewBuilder
     func rankingCardView(team: PowerRankingViewModel.TeamState) -> some View {
         let baseColor = Color(team.backgroundColorName)
         
-        ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            baseColor,
-                            baseColor.opacity(0.75),
-                            baseColor.opacity(0.55)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+        ZStack(alignment: .leading) {
+            // 1. Background with Gradient & Watermark
+            ZStack(alignment: .trailing) {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                baseColor,
+                                baseColor.opacity(0.8),
+                                Color.black.opacity(0.4)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                     )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                )
-                .shadow(color: baseColor.opacity(0.28), radius: 10, x: 0, y: 8)
+                
+                // Watermark Logo
+                if viewModel.shouldUseOfficialTeamData, let triCode = team.triCode {
+                    Image(triCode)
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150, height: 150)
+                        .foregroundColor(.white.opacity(0.05))
+                        .rotationEffect(.degrees(-15))
+                        .offset(x: 40, y: 10)
+                        .clipped()
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(0.3), .white.opacity(0.05)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: baseColor.opacity(0.3), radius: 8, x: 0, y: 4)
             
-            HStack(alignment: .center, spacing: 10) {
-                // 순위
-                VStack(spacing: 5) {
+            // Content
+            HStack(spacing: 0) {
+                // Rank Section
+                ZStack {
+                    // Shadow Text
                     Text("\(team.displayRank)")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                        .font(.system(size: team.displayRank <= 3 ? 52 : (team.displayRank <= 9 ? 44 : 38), weight: .black, design: .rounded))
+                        .italic()
+                        .foregroundColor(.black.opacity(0.2))
+                        .offset(x: 3, y: 3)
                     
-                    Text(team.rankChangeText)
-                        .font(.system(size: 11, weight: .semibold))
+                    // Main Text
+                    Text("\(team.displayRank)")
+                        .font(.system(size: team.displayRank <= 3 ? 52 : (team.displayRank <= 9 ? 44 : 38), weight: .black, design: .rounded))
+                        .italic()
+                        .foregroundStyle(
+                            rankGradient(for: team.displayRank)
+                        )
+                        .shadow(color: rankShadowColor(for: team.displayRank), radius: 10, x: 0, y: 0)
+                }
+                .frame(width: 70)
+                .padding(.leading, 5)
+                
+                // Team Info Section
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(alignment: .top, spacing: 8) {
+                        Text(team.name.uppercased())
+                            .font(.system(size: 16, weight: .heavy, design: .default))
+                            .foregroundColor(.white)
+                            .lineLimit(2)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        // Rank Change Badge
+                        HStack(spacing: 2) {
+                            Text(team.rankChangeText)
+                                .font(.system(size: 11, weight: .bold))
+                            
+                            if team.rankChangeStyle != .same {
+                                Image(systemName: team.rankChangeStyle == .up ? "arrow.up" : "arrow.down")
+                                    .font(.system(size: 7, weight: .bold))
+                            }
+                        }
                         .foregroundColor(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(
                             Capsule()
-                                .fill(Color.white.opacity(0.1))
+                                .fill(Color.black.opacity(0.3))
+                                .overlay(
+                                    Capsule()
+                                        .stroke(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle).opacity(0.3), lineWidth: 1)
+                                )
                         )
-                }
-                .frame(width: 48)
-                
-                // 팀 정보
-                VStack(alignment: .leading, spacing: 6) {
-                    if !team.name.isEmpty {
-                        Text(team.name)
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
-                    HStack(spacing: 8) {
-                        if let record = team.record {
-                            Label {
-                                Text(record)
-                                    .font(.system(size: 13, weight: .medium))
-                            } icon: {
-                                Image(systemName: "chart.bar.fill")
-                                    .font(.system(size: 11, weight: .semibold))
-                            }
-                            .foregroundColor(.white.opacity(0.85))
+                    if let record = team.record {
+                        HStack(spacing: 4) {
+                            Image(systemName: "trophy.fill")
+                                .font(.system(size: 10))
+                                .foregroundColor(.white.opacity(0.6))
+                            
+                            Text(record)
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.white.opacity(0.8))
                         }
                     }
                 }
+                .padding(.leading, 10)
+                .padding(.trailing, 8)
                 
-                Spacer()
+                // Official Logo (Right side)
+                if viewModel.shouldUseOfficialTeamData, let triCode = team.triCode {
+                    Image(triCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                        .padding(.trailing, 12)
+                }
             }
-            .padding(.top, 16)
-            .padding(.bottom, 14)
-            .padding(.leading, 44)
-            .padding(.trailing, 16)
+            .padding(.vertical, 16)
         }
-        .overlay(alignment: .topLeading) {
-            if viewModel.shouldUseOfficialTeamData, let triCode = team.triCode {
-                Image(triCode)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 62, height: 62)
-                    .shadow(color: .black.opacity(0.25), radius: 9, x: 0, y: 6)
-                    .offset(x: -20, y: -20)
-            }
-        }
-        .padding(.top, 16)
+        .frame(height: 95)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 2)
-        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
     
+    // 랭크별 그라디언트
+    func rankGradient(for rank: Int) -> LinearGradient {
+        switch rank {
+        case 1: // Gold
+            return LinearGradient(
+                colors: [
+                    Color(red: 1.0, green: 0.95, blue: 0.6), // Light Gold
+                    Color(red: 1.0, green: 0.84, blue: 0.0), // Gold
+                    Color(red: 0.8, green: 0.6, blue: 0.0)   // Dark Gold
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        case 2: // Silver
+            return LinearGradient(
+                colors: [
+                    Color(white: 0.95),
+                    Color(white: 0.8),
+                    Color(white: 0.6)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        case 3: // Bronze
+            return LinearGradient(
+                colors: [
+                    Color(red: 1.0, green: 0.8, blue: 0.6),
+                    Color(red: 0.8, green: 0.5, blue: 0.3),
+                    Color(red: 0.6, green: 0.3, blue: 0.1)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        default: // White/Blueish
+            return LinearGradient(
+                colors: [
+                    .white,
+                    .white.opacity(0.7)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
+    }
+    
+    // 랭크별 그림자 색상 (Glow 효과)
+    func rankShadowColor(for rank: Int) -> Color {
+        switch rank {
+        case 1: return Color.yellow.opacity(0.6)
+        case 2: return Color.white.opacity(0.5)
+        case 3: return Color.orange.opacity(0.5)
+        default: return Color.clear
+        }
+    }
 }
 
 // MARK: - Scroll Offset Preference Key
