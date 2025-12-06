@@ -33,10 +33,15 @@ struct RankingHistoryView: View {
                             y: .value("Rank", -item.rank) // 1위가 위로 가도록 음수 변환
                         )
                         .foregroundStyle(teamColor)
+                        .lineStyle(StrokeStyle(lineWidth: 3))
                         .symbol {
                             Circle()
                                 .fill(teamColor)
                                 .frame(width: 8, height: 8)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 1.5) // 흰색 테두리 추가
+                                )
                         }
                         .interpolationMethod(.catmullRom) // 부드러운 곡선
                     }
