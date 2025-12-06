@@ -40,10 +40,14 @@ struct PowerRankingView: View {
                             .padding(.horizontal, 15)
                             .padding(.top, 15)
                         
+                        // 컨퍼런스 탭
+                        conferenceTabView()
+                            .padding(.top, 20)
+                        
                         // 랭킹 리스트
                         if !currentRanking.teams.isEmpty {
-                            rankingListView(items: currentRanking.teams)
-                                .padding(.top, 40) // Increased padding to prevent header overlap
+                            rankingListView(items: viewModel.filteredTeams(currentRanking.teams))
+                                .padding(.top, 20)
                         }
                         
                         BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10)
@@ -227,6 +231,41 @@ extension PowerRankingView {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Conference Tab View
+extension PowerRankingView {
+    @ViewBuilder
+    func conferenceTabView() -> some View {
+        HStack(spacing: 0) {
+            ForEach(Conference.allCases, id: \.self) { conference in
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.selectedConference = conference
+                    }
+                }) {
+                    VStack(spacing: 8) {
+                        Text(conference.rawValue)
+                            .font(.system(size: 15, weight: viewModel.selectedConference == conference ? .bold : .semibold))
+                            .foregroundColor(viewModel.selectedConference == conference ? .white : .white.opacity(0.5))
+                            .padding(.bottom, 6)
+                            .background(
+                                GeometryReader { geometry in
+                                    VStack {
+                                        Spacer()
+                                        Rectangle()
+                                            .fill(viewModel.selectedConference == conference ? Color.white : Color.clear)
+                                            .frame(width: geometry.size.width, height: 2)
+                                    }
+                                }
+                            )
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.horizontal, 15)
     }
 }
 

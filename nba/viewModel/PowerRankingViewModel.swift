@@ -11,6 +11,13 @@ import FirebaseFirestore
 import Firebase
 import Combine
 
+// MARK: - Conference Enum
+enum Conference: String, CaseIterable {
+    case league = "LEAGUE"
+    case eastern = "EASTERN"
+    case western = "WESTERN"
+}
+
 final class PowerRankingViewModel: ObservableObject {
     @Published var powerRankings: [PowerRankingModel] = []
     @Published var currentPowerRanking: PowerRankingModel?
@@ -20,6 +27,7 @@ final class PowerRankingViewModel: ObservableObject {
     @Published var recentGames: [HomeAway] = []
     @Published var isLoadingGames: Bool = false
     @Published var shouldUseOfficialTeamData: Bool = false
+    @Published var selectedConference: Conference = .league
     
     private let repository: PowerRankingRepository
     private var cancellables = Set<AnyCancellable>()
@@ -772,6 +780,26 @@ extension PowerRankingViewModel {
         }
         
         return "UNKNOWN TEAM"
+    }
+    
+    // MARK: - Conference Filtering
+    
+    /// Filter teams based on selected conference
+    func filteredTeams(_ teams: [TeamState]) -> [TeamState] {
+        switch selectedConference {
+        case .league:
+            return teams
+        case .eastern:
+            return teams.filter { isEasternConference($0.triCode ?? "") }
+        case .western:
+            return teams.filter { !isEasternConference($0.triCode ?? "") }
+        }
+    }
+    
+    /// Determine if team is in Eastern Conference
+    private func isEasternConference(_ teamCode: String) -> Bool {
+        let easternTeams = ["ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DET", "IND", "MIA", "MIL", "NYK", "ORL", "PHI", "TOR", "WAS"]
+        return easternTeams.contains(teamCode)
     }
 }
 
