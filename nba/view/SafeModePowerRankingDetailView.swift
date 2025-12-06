@@ -172,7 +172,7 @@ struct SafeModePowerRankingDetailView: View {
                             .padding(.top, 4)
                     }
                     
-                    MomentumView(momentum: viewState.momentum)
+
                 }
                 .padding(.top, 10)
             }

@@ -17,6 +17,9 @@ struct nbaApp: App {
     }
     FirebaseApp.configure()
     
+    // Remote Config Fetch
+    RemoteConfigManager.shared.fetchConfig { _ in }
+    
     //admob
     GADMobileAds.sharedInstance().start(completionHandler: nil)
     if Auth.isDeveloper() {

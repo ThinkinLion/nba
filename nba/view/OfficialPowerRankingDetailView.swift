@@ -144,7 +144,7 @@ struct OfficialPowerRankingDetailView: View {
                         PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
                     }
                     
-                    MomentumView(momentum: viewState.momentum)
+
                 }
             }
             .frame(maxWidth: .infinity)
