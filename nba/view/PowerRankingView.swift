@@ -239,73 +239,71 @@ extension PowerRankingView {
 extension PowerRankingView {
     @ViewBuilder
     func conferenceTabView() -> some View {
-        VStack(spacing: 12) {
-            // Conference Tabs
-            HStack(spacing: 0) {
-                ForEach(Conference.allCases, id: \.self) { conference in
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            viewModel.selectedConference = conference
-                        }
-                    }) {
-                        VStack(spacing: 8) {
-                            Text(conference.rawValue)
-                                .font(.system(size: 15, weight: viewModel.selectedConference == conference ? .bold : .semibold))
-                                .foregroundColor(viewModel.selectedConference == conference ? .white : .white.opacity(0.5))
-                                .padding(.bottom, 6)
-                                .background(
-                                    GeometryReader { geometry in
-                                        VStack {
-                                            Spacer()
-                                            Rectangle()
-                                                .fill(viewModel.selectedConference == conference ? Color.white : Color.clear)
-                                                .frame(width: geometry.size.width, height: 2)
-                                        }
-                                    }
-                                )
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-            }
-            
-            // Favorites Filter Toggle
-            if viewModel.hasFavorites {
+        HStack(spacing: 0) {
+            ForEach(Conference.allCases, id: \.self) { conference in
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.2)) {
-                        viewModel.showOnlyFavorites.toggle()
+                        viewModel.selectedConference = conference
                     }
                 }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: viewModel.showOnlyFavorites ? "star.fill" : "star")
-                            .font(.system(size: 13, weight: .bold))
-                        
-                        Text(viewModel.showOnlyFavorites ? "Showing Favorites" : "Show Favorites Only")
-                            .font(.system(size: 13, weight: .semibold))
-                        
-                        Text("(\(viewModel.favoritesCount))")
-                            .font(.system(size: 12, weight: .medium))
-                            .opacity(0.7)
-                    }
-                    .foregroundColor(viewModel.showOnlyFavorites ? .black : .white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(
-                        Capsule()
-                            .fill(viewModel.showOnlyFavorites ? 
-                                Color(red: 1.0, green: 0.84, blue: 0.0) : // NBA Gold
-                                Color.white.opacity(0.15))
+                    VStack(spacing: 8) {
+                        Text(conference.rawValue)
+                            .font(.system(size: 13, weight: viewModel.selectedConference == conference ? .bold : .semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                             .overlay(
-                                Capsule()
-                                    .stroke(viewModel.showOnlyFavorites ? 
-                                        Color.clear :
-                                        Color.white.opacity(0.3), lineWidth: 1)
+                                // Badge with count for FAVORITES (top-right corner)
+                                Group {
+                                    if conference == .favorites && viewModel.hasFavorites {
+                                        Text("\(viewModel.favoritesCount)")
+                                            .font(.system(size: 9, weight: .bold))
+                                            .foregroundColor(.white)
+                                            .padding(.horizontal, 5)
+                                            .padding(.vertical, 3)
+                                            .background(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color(red: 1.0, green: 0.84, blue: 0.0), // NBA Gold
+                                                        Color(red: 1.0, green: 0.6, blue: 0.0)   // Orange
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                )
+                                            )
+                                            .clipShape(Circle())
+                                            .shadow(color: Color(red: 1.0, green: 0.84, blue: 0.0).opacity(0.5), radius: 4, x: 0, y: 2)
+                                            .offset(x: 8, y: -8)
+                                    }
+                                },
+                                alignment: .topTrailing
                             )
-                    )
+                        
+                        // Underline indicator
+                        Rectangle()
+                            .fill(viewModel.selectedConference == conference ? Color.white : Color.clear)
+                            .frame(height: 2)
+                    }
+                    .padding(.bottom, 6)
+                    .foregroundColor(viewModel.selectedConference == conference ? .white : .white.opacity(0.5))
                 }
+                .frame(maxWidth: .infinity)
+                .disabled(conference == .favorites && !viewModel.hasFavorites)
+                .opacity(conference == .favorites && !viewModel.hasFavorites ? 0.3 : 1.0)
             }
         }
         .padding(.horizontal, 15)
+    }
+}
+
+// Helper extension for conditional modifiers
+extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
     }
 }
 
@@ -396,12 +394,26 @@ extension PowerRankingView {
                 
                 // Team Info Section
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(alignment: .top, spacing: 8) {
-                        Text(team.name.uppercased())
-                            .font(.system(size: 16, weight: .heavy, design: .default))
-                            .foregroundColor(.white)
-                            .lineLimit(2)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    // Team Name (left-aligned)
+                    Text(team.name.uppercased())
+                        .font(.system(size: 16, weight: .heavy, design: .default))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    // Record and Rank Change Badge Row
+                    HStack(spacing: 8) {
+                        if let record = team.record {
+                            HStack(spacing: 4) {
+                                Image(systemName: "trophy.fill")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.white.opacity(0.6))
+                                
+                                Text(record)
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.8))
+                            }
+                        }
                         
                         // Rank Change Badge
                         HStack(spacing: 2) {
@@ -424,18 +436,6 @@ extension PowerRankingView {
                                         .stroke(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle).opacity(0.3), lineWidth: 1)
                                 )
                         )
-                    }
-                    
-                    if let record = team.record {
-                        HStack(spacing: 4) {
-                            Image(systemName: "trophy.fill")
-                                .font(.system(size: 10))
-                                .foregroundColor(.white.opacity(0.6))
-                            
-                            Text(record)
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
                     }
                 }
                 .padding(.leading, 10)

@@ -16,6 +16,7 @@ enum Conference: String, CaseIterable {
     case league = "LEAGUE"
     case eastern = "EASTERN"
     case western = "WESTERN"
+    case favorites = "FAVORITES"
 }
 
 final class PowerRankingViewModel: ObservableObject {
@@ -43,6 +44,16 @@ final class PowerRankingViewModel: ObservableObject {
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
                 self?.updateViewState()
+            }
+            .store(in: &cancellables)
+        
+        // Auto-disable favorites filter when no favorites remain
+        favoritesManager.$favoriteTeamCodes
+            .receive(on: RunLoop.main)
+            .sink { [weak self] favorites in
+                if favorites.isEmpty && self?.showOnlyFavorites == true {
+                    self?.showOnlyFavorites = false
+                }
             }
             .store(in: &cancellables)
     }
@@ -798,10 +809,8 @@ extension PowerRankingViewModel {
             result = result.filter { isEasternConference($0.triCode ?? "") }
         case .western:
             result = result.filter { !isEasternConference($0.triCode ?? "") }
-        }
-        
-        // Apply favorites filter if enabled
-        if showOnlyFavorites {
+        case .favorites:
+            // Show only favorites (all conferences)
             result = result.filter { team in
                 guard let triCode = team.triCode else { return false }
                 return favoritesManager.isFavorite(triCode)
