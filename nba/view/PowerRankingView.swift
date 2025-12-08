@@ -41,6 +41,13 @@ struct PowerRankingView: View {
                             .padding(.horizontal, 15)
                             .padding(.top, 15)
                         
+                        // Weekly Highlights Section
+//                        if let highlights = viewModel.weeklyHighlights {
+//                            WeeklyHighlightsView(highlights: highlights)
+//                                .padding(.top, 12)
+//                                .padding(.bottom, 8)
+//                        }
+                        
                         // 컨퍼런스 탭
                         conferenceTabView()
                             .padding(.top, 20)

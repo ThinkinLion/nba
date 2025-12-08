@@ -477,6 +477,18 @@ extension PowerRankingViewModel {
         let backgroundColorName: String
         let model: PowerRankingTeamModel
         
+        var rankChange: Int? {
+            guard let lastWeek = model.lastWeek, !lastWeek.isEmpty else { return nil }
+            
+            // Remove arrows and other non-numeric characters
+            let numericString = lastWeek.filter { $0.isNumber }
+            
+            if let lastRank = Int(numericString) {
+                return lastRank - displayRank // Positive = moved up, Negative = moved down
+            }
+            return nil
+        }
+        
         var detailViewState: TeamDetailViewState {
             let rankChange = PowerRankingViewModel.makeRankChange(from: model.lastWeek)
             return TeamDetailViewState(
@@ -834,6 +846,147 @@ extension PowerRankingViewModel {
     /// Get count of favorite teams
     var favoritesCount: Int {
         return favoritesManager.favoritesCount
+    }
+    
+    // MARK: - Weekly Highlights
+    
+    struct TeamHighlight: Identifiable {
+        let id: String
+        let teamCode: String
+        let teamName: String
+        let currentRank: Int
+        let previousRank: Int
+        let rankChange: Int
+        let record: String?
+        
+        var rankChangeText: String {
+            if rankChange > 0 {
+                return "↑\(rankChange)"
+            } else if rankChange < 0 {
+                return "↓\(abs(rankChange))"
+            } else {
+                return "→"
+            }
+        }
+    }
+    
+    struct WeeklyHighlights {
+        let biggestMover: TeamHighlight?
+        let biggestFaller: TeamHighlight?
+        let newNumberOne: TeamHighlight?
+    }
+    
+    var weeklyHighlights: WeeklyHighlights? {
+        guard let current = currentPowerRanking else {
+            return nil
+        }
+        
+        guard let currentIndex = powerRankings.firstIndex(where: { $0.week == current.week }) else {
+            return nil
+        }
+        
+        guard currentIndex + 1 < powerRankings.count else {
+            return nil
+        }
+        
+        let previous = powerRankings[currentIndex + 1]
+        
+        // Convert current items to TeamState
+        let currentTeams: [TeamState] = (current.items ?? [])
+            .enumerated()
+            .map { index, team in
+                let triCode = Self.makeTriCode(from: team.teamCode)
+                let backgroundColorName = Self.makeBackgroundColorName(from: team.teamCode)
+                let rankChange = Self.makeRankChange(from: team.lastWeek)
+                
+                return TeamState(
+                    id: team.id?.isEmpty == false ? team.id! : "\(index)",
+                    displayRank: index + 1,
+                    name: Self.makeDisplayName(from: team),
+                    record: team.record?.isEmpty == false ? team.record : nil,
+                    rankChangeText: rankChange.text,
+                    rankChangeStyle: rankChange.style,
+                    triCode: triCode.isEmpty ? nil : triCode,
+                    backgroundColorName: backgroundColorName,
+                    model: team
+                )
+            }
+        
+        // Convert previous items to TeamState
+        let previousTeams: [TeamState] = (previous.items ?? [])
+            .enumerated()
+            .map { index, team in
+                let triCode = Self.makeTriCode(from: team.teamCode)
+                let backgroundColorName = Self.makeBackgroundColorName(from: team.teamCode)
+                let rankChange = Self.makeRankChange(from: team.lastWeek)
+                
+                return TeamState(
+                    id: team.id?.isEmpty == false ? team.id! : "\(index)",
+                    displayRank: index + 1,
+                    name: Self.makeDisplayName(from: team),
+                    record: team.record?.isEmpty == false ? team.record : nil,
+                    rankChangeText: rankChange.text,
+                    rankChangeStyle: rankChange.style,
+                    triCode: triCode.isEmpty ? nil : triCode,
+                    backgroundColorName: backgroundColorName,
+                    model: team
+                )
+            }
+        
+        // Find biggest mover (up)
+        var biggestMover: TeamHighlight? = nil
+        let moversUp = currentTeams.filter { ($0.rankChange ?? 0) > 0 }
+        if let team = moversUp.max(by: { ($0.rankChange ?? 0) < ($1.rankChange ?? 0) }) {
+            biggestMover = TeamHighlight(
+                id: team.triCode ?? UUID().uuidString,
+                teamCode: team.triCode ?? "",
+                teamName: team.name,
+                currentRank: team.displayRank,
+                previousRank: team.displayRank - (team.rankChange ?? 0),
+                rankChange: team.rankChange ?? 0,
+                record: team.record
+            )
+        }
+        
+        // Find biggest faller (down)
+        var biggestFaller: TeamHighlight? = nil
+        let moversDown = currentTeams.filter { ($0.rankChange ?? 0) < 0 }
+        if let team = moversDown.min(by: { ($0.rankChange ?? 0) < ($1.rankChange ?? 0) }) {
+            biggestFaller = TeamHighlight(
+                id: team.triCode ?? UUID().uuidString,
+                teamCode: team.triCode ?? "",
+                teamName: team.name,
+                currentRank: team.displayRank,
+                previousRank: team.displayRank - (team.rankChange ?? 0),
+                rankChange: team.rankChange ?? 0,
+                record: team.record
+            )
+        }
+        
+        // Check if #1 changed
+        let currentNumberOne = currentTeams.first { $0.displayRank == 1 }
+        let previousNumberOne = previousTeams.first { $0.displayRank == 1 }
+        
+        var newNumberOne: TeamHighlight? = nil
+        if let current = currentNumberOne,
+           let previous = previousNumberOne,
+           current.triCode != previous.triCode {
+            newNumberOne = TeamHighlight(
+                id: current.triCode ?? UUID().uuidString,
+                teamCode: current.triCode ?? "",
+                teamName: current.name,
+                currentRank: 1,
+                previousRank: current.displayRank - (current.rankChange ?? 0),
+                rankChange: current.rankChange ?? 0,
+                record: current.record
+            )
+        }
+        
+        return WeeklyHighlights(
+            biggestMover: biggestMover,
+            biggestFaller: biggestFaller,
+            newNumberOne: newNumberOne
+        )
     }
 }
 
