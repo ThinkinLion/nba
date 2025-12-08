@@ -350,7 +350,7 @@ extension PowerRankingView {
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 150, height: 150)
+                        .frame(width: 90, height: 90)
                         .foregroundColor(.white.opacity(0.05))
                         .rotationEffect(.degrees(-15))
                         .offset(x: 40, y: 10)
