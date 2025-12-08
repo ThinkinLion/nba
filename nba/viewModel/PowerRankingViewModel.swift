@@ -28,9 +28,11 @@ final class PowerRankingViewModel: ObservableObject {
     @Published var isLoadingGames: Bool = false
     @Published var shouldUseOfficialTeamData: Bool = false
     @Published var selectedConference: Conference = .league
+    @Published var showOnlyFavorites: Bool = false
     
     private let repository: PowerRankingRepository
     private var cancellables = Set<AnyCancellable>()
+    let favoritesManager = FavoritesManager.shared
     
     init(repository: PowerRankingRepository = FirestorePowerRankingRepository()) {
         self.repository = repository
@@ -784,22 +786,45 @@ extension PowerRankingViewModel {
     
     // MARK: - Conference Filtering
     
-    /// Filter teams based on selected conference
+    /// Filter teams based on selected conference and favorites
     func filteredTeams(_ teams: [TeamState]) -> [TeamState] {
+        var result = teams
+        
+        // Apply conference filter
         switch selectedConference {
         case .league:
-            return teams
+            break // Show all
         case .eastern:
-            return teams.filter { isEasternConference($0.triCode ?? "") }
+            result = result.filter { isEasternConference($0.triCode ?? "") }
         case .western:
-            return teams.filter { !isEasternConference($0.triCode ?? "") }
+            result = result.filter { !isEasternConference($0.triCode ?? "") }
         }
+        
+        // Apply favorites filter if enabled
+        if showOnlyFavorites {
+            result = result.filter { team in
+                guard let triCode = team.triCode else { return false }
+                return favoritesManager.isFavorite(triCode)
+            }
+        }
+        
+        return result
     }
     
     /// Determine if team is in Eastern Conference
     private func isEasternConference(_ teamCode: String) -> Bool {
         let easternTeams = ["ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DET", "IND", "MIA", "MIL", "NYK", "ORL", "PHI", "TOR", "WAS"]
         return easternTeams.contains(teamCode)
+    }
+    
+    /// Check if user has any favorites
+    var hasFavorites: Bool {
+        return favoritesManager.hasFavorites
+    }
+    
+    /// Get count of favorite teams
+    var favoritesCount: Int {
+        return favoritesManager.favoritesCount
     }
 }
 

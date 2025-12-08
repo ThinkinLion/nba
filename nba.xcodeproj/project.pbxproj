@@ -47,6 +47,7 @@
 		C2BA7EB02EE3050700A71348 /* StandingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */; };
 		C2BA7EB12EE3050700A71348 /* PowerRankingRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAB2EE3050700A71348 /* PowerRankingRepository.swift */; };
 		C2BA7EB32EE324FE00A71348 /* RankingHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EB22EE324FE00A71348 /* RankingHistoryView.swift */; };
+		C2BA7EB52EE4FF0F00A71348 /* FavoritesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EB42EE4FF0F00A71348 /* FavoritesManager.swift */; };
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
@@ -129,6 +130,7 @@
 		C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsRepository.swift; sourceTree = "<group>"; };
 		C2BA7EAD2EE3050700A71348 /* TeamRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamRepository.swift; sourceTree = "<group>"; };
 		C2BA7EB22EE324FE00A71348 /* RankingHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingHistoryView.swift; sourceTree = "<group>"; };
+		C2BA7EB42EE4FF0F00A71348 /* FavoritesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesManager.swift; sourceTree = "<group>"; };
 		C2C794F82AFE140D00D72531 /* StandingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				C2A995822CC53387009A4C55 /* ModelFactory.swift */,
 				C2ACBA3A2CC7B0CC00B5B409 /* StatsGeneratable.swift */,
 				C2E591C82EDFCDA600A88D97 /* RemoteConfigManager.swift */,
+				C2BA7EB42EE4FF0F00A71348 /* FavoritesManager.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -511,6 +514,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
+				C2BA7EB52EE4FF0F00A71348 /* FavoritesManager.swift in Sources */,
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2E591CB2EDFCDC700A88D97 /* GenericTeamData.swift in Sources */,
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,

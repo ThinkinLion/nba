@@ -10,6 +10,7 @@ import FirebaseAnalytics
 
 struct PowerRankingView: View {
     @StateObject var viewModel = PowerRankingViewModel()
+    @ObservedObject private var favoritesManager = FavoritesManager.shared
     @State private var hasAppeared = false
     @State private var scrollOffset: CGFloat = 0
     
@@ -238,31 +239,70 @@ extension PowerRankingView {
 extension PowerRankingView {
     @ViewBuilder
     func conferenceTabView() -> some View {
-        HStack(spacing: 0) {
-            ForEach(Conference.allCases, id: \.self) { conference in
+        VStack(spacing: 12) {
+            // Conference Tabs
+            HStack(spacing: 0) {
+                ForEach(Conference.allCases, id: \.self) { conference in
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            viewModel.selectedConference = conference
+                        }
+                    }) {
+                        VStack(spacing: 8) {
+                            Text(conference.rawValue)
+                                .font(.system(size: 15, weight: viewModel.selectedConference == conference ? .bold : .semibold))
+                                .foregroundColor(viewModel.selectedConference == conference ? .white : .white.opacity(0.5))
+                                .padding(.bottom, 6)
+                                .background(
+                                    GeometryReader { geometry in
+                                        VStack {
+                                            Spacer()
+                                            Rectangle()
+                                                .fill(viewModel.selectedConference == conference ? Color.white : Color.clear)
+                                                .frame(width: geometry.size.width, height: 2)
+                                        }
+                                    }
+                                )
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+            
+            // Favorites Filter Toggle
+            if viewModel.hasFavorites {
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.2)) {
-                        viewModel.selectedConference = conference
+                        viewModel.showOnlyFavorites.toggle()
                     }
                 }) {
-                    VStack(spacing: 8) {
-                        Text(conference.rawValue)
-                            .font(.system(size: 15, weight: viewModel.selectedConference == conference ? .bold : .semibold))
-                            .foregroundColor(viewModel.selectedConference == conference ? .white : .white.opacity(0.5))
-                            .padding(.bottom, 6)
-                            .background(
-                                GeometryReader { geometry in
-                                    VStack {
-                                        Spacer()
-                                        Rectangle()
-                                            .fill(viewModel.selectedConference == conference ? Color.white : Color.clear)
-                                            .frame(width: geometry.size.width, height: 2)
-                                    }
-                                }
-                            )
+                    HStack(spacing: 6) {
+                        Image(systemName: viewModel.showOnlyFavorites ? "star.fill" : "star")
+                            .font(.system(size: 13, weight: .bold))
+                        
+                        Text(viewModel.showOnlyFavorites ? "Showing Favorites" : "Show Favorites Only")
+                            .font(.system(size: 13, weight: .semibold))
+                        
+                        Text("(\(viewModel.favoritesCount))")
+                            .font(.system(size: 12, weight: .medium))
+                            .opacity(0.7)
                     }
+                    .foregroundColor(viewModel.showOnlyFavorites ? .black : .white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(viewModel.showOnlyFavorites ? 
+                                Color(red: 1.0, green: 0.84, blue: 0.0) : // NBA Gold
+                                Color.white.opacity(0.15))
+                            .overlay(
+                                Capsule()
+                                    .stroke(viewModel.showOnlyFavorites ? 
+                                        Color.clear :
+                                        Color.white.opacity(0.3), lineWidth: 1)
+                            )
+                    )
                 }
-                .frame(maxWidth: .infinity)
             }
         }
         .padding(.horizontal, 15)

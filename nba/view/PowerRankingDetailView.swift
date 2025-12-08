@@ -13,6 +13,7 @@ struct PowerRankingDetailView: View {
     @State var hideNavigationBar: Bool = true
     @StateObject private var playerViewModel = PlayerViewModel()
     @ObservedObject var viewModel: PowerRankingViewModel
+    @ObservedObject private var favoritesManager = FavoritesManager.shared
     @State private var hasAppeared = false
     
     private var viewState: PowerRankingViewModel.TeamDetailViewState {
@@ -46,8 +47,27 @@ struct PowerRankingDetailView: View {
                     Image(triCode)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
+                        .frame(width: 26, height: 26)
                         .opacity(hideNavigationBar ? 0.0 : 1.0)
+                } else {
+                    Text(teamState.name)
+                        .font(.headline)
+                        .opacity(hideNavigationBar ? 0.0 : 1.0)
+                }
+            }
+            
+            // Favorite Star Button
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    if let triCode = teamState.triCode {
+                        favoritesManager.toggleFavorite(triCode)
+                    }
+                }) {
+                    Image(systemName: favoritesManager.isFavorite(teamState.triCode ?? "") ? "star.fill" : "star")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(favoritesManager.isFavorite(teamState.triCode ?? "") ?
+                            Color(red: 1.0, green: 0.84, blue: 0.0) : // NBA Gold
+                            .white)
                 }
             }
         }
