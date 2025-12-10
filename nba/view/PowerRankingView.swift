@@ -53,12 +53,7 @@ struct PowerRankingView: View {
                                 .padding(.top, 20)
                         }
                         
-                        // Weekly Highlights Section (Deprecated/Commented out as per plan)
-//                        if let highlights = viewModel.weeklyHighlights {
-//                            WeeklyHighlightsView(highlights: highlights)
-//                                .padding(.top, 12)
-//                                .padding(.bottom, 8)
-//                        }
+
                         
                         // 컨퍼런스 탭
                         conferenceTabView()

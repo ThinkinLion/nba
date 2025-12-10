@@ -19,7 +19,7 @@ struct TeamsOfTheWeekView: View {
                 .padding(.horizontal, 15)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 15) {
+                HStack(alignment: .top, spacing: 15) {
                     ForEach(teams, id: \.self) { team in
                         if let teamName = team.team,
                            let teamState = viewModel.getTeamState(for: teamName) {
