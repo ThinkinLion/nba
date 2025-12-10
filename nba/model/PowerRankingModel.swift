@@ -35,6 +35,8 @@ struct PowerRankingModel: Codable, Hashable {
     let imageDesc: String?
     
     let items: [PowerRankingTeamModel]?
+    let movement: PowerRankingMovementModel?
+    let teamsOfTheWeek: [PowerRankingTeamOfTheWeekModel]?
 }
 
 extension PowerRankingModel {
@@ -48,7 +50,7 @@ extension PowerRankingModel {
 }
 
 extension PowerRankingModel {
-  static var empty = PowerRankingModel(id: "", week: "", title: "", subTitle: "", image: "", imageDesc: "", items: [])
+  static var empty = PowerRankingModel(id: "", week: "", title: "", subTitle: "", image: "", imageDesc: "", items: [], movement: nil, teamsOfTheWeek: [])
 }
 
 struct PowerRankingTeamModel: Codable, Hashable {
@@ -85,5 +87,23 @@ struct PowerRankingAdvancedItemModel: Codable {
   let title: String?
   let value: String?
   let rank: String?
-  //test
+}
+
+// MARK: - New Features Data Models
+
+struct PowerRankingMovementModel: Codable, Hashable {
+    let highJumps: [PowerRankingMovementItemModel]?
+    let freeFalls: [PowerRankingMovementItemModel]?
+}
+
+struct PowerRankingMovementItemModel: Codable, Hashable {
+    let team: String?
+    let change: String?
+}
+
+struct PowerRankingTeamOfTheWeekModel: Codable, Hashable {
+    let category: String?
+    let team: String?
+    let record: String?
+    let description: String?
 }

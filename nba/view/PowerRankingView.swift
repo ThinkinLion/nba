@@ -41,7 +41,19 @@ struct PowerRankingView: View {
                             .padding(.horizontal, 15)
                             .padding(.top, 15)
                         
-                        // Weekly Highlights Section
+                        // Teams of the Week Section
+                        if let teamsOfTheWeek = currentRanking.teamsOfTheWeek, !teamsOfTheWeek.isEmpty {
+                          TeamsOfTheWeekView(teams: teamsOfTheWeek, viewModel: viewModel)
+                                .padding(.top, 20)
+                        }
+                        
+                        // Movement Section
+                        if let movement = currentRanking.movement {
+                            MovementView(movement: movement, viewModel: viewModel)
+                                .padding(.top, 20)
+                        }
+                        
+                        // Weekly Highlights Section (Deprecated/Commented out as per plan)
 //                        if let highlights = viewModel.weeklyHighlights {
 //                            WeeklyHighlightsView(highlights: highlights)
 //                                .padding(.top, 12)
@@ -50,7 +62,7 @@ struct PowerRankingView: View {
                         
                         // 컨퍼런스 탭
                         conferenceTabView()
-                            .padding(.top, 20)
+                            .padding(.top, 40)
                         
                         // 랭킹 리스트
                         if !currentRanking.teams.isEmpty {

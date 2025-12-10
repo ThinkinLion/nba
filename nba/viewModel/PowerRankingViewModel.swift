@@ -411,6 +411,8 @@ extension PowerRankingViewModel {
         let imageURL: URL?
         let imageDesc: String?
         let teams: [TeamState]
+        let movement: PowerRankingMovementModel?
+        let teamsOfTheWeek: [PowerRankingTeamOfTheWeekModel]?
         
         // "Power Rankings, WeekX:" 접두어를 제거한 title
         var cleanedTitle: String? {
@@ -500,8 +502,8 @@ extension PowerRankingViewModel {
                 rankChangeStyle: rankChange.style,
                 overview: model.overview,
                 takeaways: model.takeaways,
-                advanced: model.advanced,
                 upcoming: model.upcomming,
+                advanced: model.advanced,
                 backgroundColorName: backgroundColorName
             )
         }
@@ -516,37 +518,30 @@ extension PowerRankingViewModel {
         let rankChangeStyle: RankChangeStyle
         let overview: String?
         let takeaways: [String]?
-        let advanced: PowerRankingAdvancedModel?
         let upcoming: String?
+        let advanced: PowerRankingAdvancedModel?
         let backgroundColorName: String
         
         var teamId: String {
             guard let triCode = triCode else { return "" }
             return triCode.triCodeToTeamId
         }
-        
+      
         var backgroundColor: Color {
-            return Color(backgroundColorName + ".light")
+            Color(backgroundColorName + ".light")
         }
         
         var darkBackgroundColor: Color {
-            return Color(backgroundColorName + ".dark")
+            Color(backgroundColorName + ".dark")
         }
         
+        // 팀 컬러를 기반으로 한 그라디언트 (타이틀용)
         var titleGradientColors: [Color] {
-            guard let triCode = triCode, !triCode.isEmpty else {
-                return [.white, .weekCarouselBlue, .weekCarouselBlueDark]
-            }
-            
-            let nickName = triCode.triCodeToNickName
-            let backgroundColorName = nickName.isEmpty ? triCode.lowercased() : nickName
-            let teamColor = Color(backgroundColorName)
-            
-            // 가독성을 위해 White 비중을 높이고, 팀 컬러는 끝부분에 은은하게 적용
+            let base = backgroundColor
             return [
                 .white,
                 .white,
-                teamColor.opacity(0.6)
+                base.opacity(0.8)
             ]
         }
         
@@ -686,7 +681,9 @@ extension PowerRankingViewModel {
             subTitle: powerRanking.subTitle?.isEmpty == false ? powerRanking.subTitle : nil,
             imageURL: powerRanking.image?.isEmpty == false ? URL(string: powerRanking.image!) : nil,
             imageDesc: powerRanking.imageDesc?.isEmpty == false ? powerRanking.imageDesc : nil,
-            teams: teams
+            teams: teams,
+            movement: powerRanking.movement,
+            teamsOfTheWeek: powerRanking.teamsOfTheWeek
         )
     }
     
@@ -987,6 +984,31 @@ extension PowerRankingViewModel {
             biggestFaller: biggestFaller,
             newNumberOne: newNumberOne
         )
+    }
+    
+    // MARK: - Helper for Navigation
+    func getTeamState(for teamNameOrCode: String) -> TeamState? {
+        guard let currentViewState = currentViewState else { return nil }
+        
+        // 1. Try matching by TriCode (exact match)
+        if let match = currentViewState.teams.first(where: { $0.triCode == teamNameOrCode }) {
+            return match
+        }
+        
+        // 2. Try matching by Name (case insensitive)
+        if let match = currentViewState.teams.first(where: { $0.name.lowercased() == teamNameOrCode.lowercased() }) {
+            return match
+        }
+        
+        // 3. Try matching by Nickname -> TriCode
+        let triCode = teamNameOrCode.nickNameToTriCode
+        if !triCode.isEmpty {
+             if let match = currentViewState.teams.first(where: { $0.triCode == triCode }) {
+                return match
+            }
+        }
+        
+        return nil
     }
 }
 
