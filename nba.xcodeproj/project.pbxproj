@@ -42,6 +42,10 @@
 		C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C32262B220DD00054B189 /* CustomCorner.swift */; };
 		C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */; };
 		C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C322E2B26F4690054B189 /* PlayerModel.swift */; };
+		C2A277B32EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A277B02EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift */; };
+		C2A277B42EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A277B12EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift */; };
+		C2A277B52EEAD0F90088DC7F /* PlayerHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A277AF2EEAD0F90088DC7F /* PlayerHeaderView.swift */; };
+		C2A277B62EEAD0F90088DC7F /* PlayerBioGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A277AE2EEAD0F90088DC7F /* PlayerBioGridView.swift */; };
 		C2A995442CB21305009A4C55 /* SeasonProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A995432CB21305009A4C55 /* SeasonProvider.swift */; };
 		C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A995822CC53387009A4C55 /* ModelFactory.swift */; };
 		C2AC6ED82CCCD1CE00E5DF61 /* Traditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC6ED72CCCD1CE00E5DF61 /* Traditional.swift */; };
@@ -133,6 +137,10 @@
 		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		C28C322E2B26F4690054B189 /* PlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerModel.swift; sourceTree = "<group>"; };
+		C2A277AE2EEAD0F90088DC7F /* PlayerBioGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerBioGridView.swift; sourceTree = "<group>"; };
+		C2A277AF2EEAD0F90088DC7F /* PlayerHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHeaderView.swift; sourceTree = "<group>"; };
+		C2A277B02EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSeasonSummaryView.swift; sourceTree = "<group>"; };
+		C2A277B12EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerYearlyStatsCardView.swift; sourceTree = "<group>"; };
 		C2A995432CB21305009A4C55 /* SeasonProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonProvider.swift; sourceTree = "<group>"; };
 		C2A995822CC53387009A4C55 /* ModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFactory.swift; sourceTree = "<group>"; };
 		C2AC6ED72CCCD1CE00E5DF61 /* Traditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Traditional.swift; sourceTree = "<group>"; };
@@ -292,6 +300,18 @@
 			path = common;
 			sourceTree = "<group>";
 		};
+		C2A277B22EEAD0F90088DC7F /* player */ = {
+			isa = PBXGroup;
+			children = (
+				C2A277AE2EEAD0F90088DC7F /* PlayerBioGridView.swift */,
+				C2A277AF2EEAD0F90088DC7F /* PlayerHeaderView.swift */,
+				C2A277B02EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift */,
+				C2A277B12EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift */,
+				C2B7E0F52B1F04B200988259 /* PlayerView.swift */,
+			);
+			path = player;
+			sourceTree = "<group>";
+		};
 		C2A9957F2CC32FEA009A4C55 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -350,8 +370,8 @@
 			isa = PBXGroup;
 			children = (
 				C2628F1B2B401B80005E044B /* common */,
+				C2A277B22EEAD0F90088DC7F /* player */,
 				C2C7950C2B02389300D72531 /* StandingsView.swift */,
-				C2B7E0F52B1F04B200988259 /* PlayerView.swift */,
 				C22B99992B33EF9400A1152E /* TeamView.swift */,
 				C2628F192B401B7B005E044B /* GameRecapView.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
@@ -575,6 +595,10 @@
 				C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */,
 				C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */,
 				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,
+				C2A277B32EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift in Sources */,
+				C2A277B42EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift in Sources */,
+				C2A277B52EEAD0F90088DC7F /* PlayerHeaderView.swift in Sources */,
+				C2A277B62EEAD0F90088DC7F /* PlayerBioGridView.swift in Sources */,
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C2AC6EDE2CCCF13B00E5DF61 /* Scoring.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
