@@ -193,17 +193,17 @@ struct VisualAdvancedStatRow: View {
 
 struct PowerRankingDetailRankChangeBadge: View {
     let text: String
-    let style: PowerRankingViewModel.RankChangeStyle
+    let style: RankChangeStyle
     
     var body: some View {
         Text(text)
             .font(.system(size: 20, weight: .semibold))
-            .foregroundColor(PowerRankingViewModel.rankChangeColor(for: style))
+            .foregroundColor(PowerRankingFormatter.rankChangeColor(for: style))
     }
 }
 
 struct MomentumView: View {
-    let momentum: PowerRankingViewModel.TeamDetailViewState.MomentumState
+    let momentum: TeamDetailViewState.MomentumState
     
     var body: some View {
         VStack(spacing: 6) {

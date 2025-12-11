@@ -200,7 +200,7 @@ extension PowerRankingView {
 // MARK: - Header View
 extension PowerRankingView {
     @ViewBuilder
-    func headerView(powerRanking: PowerRankingViewModel.PowerRankingViewState) -> some View {
+    func headerView(powerRanking: PowerRankingViewState) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             if let cleanedTitle = powerRanking.cleanedTitle {
                 Text(cleanedTitle)
@@ -324,7 +324,7 @@ extension View {
 // MARK: - Ranking List View
 extension PowerRankingView {
     @ViewBuilder
-    func rankingListView(items: [PowerRankingViewModel.TeamState]) -> some View {
+    func rankingListView(items: [TeamState]) -> some View {
         VStack(spacing: 16) {
             ForEach(items) { team in
                 NavigationLink(destination: PowerRankingDetailView(teamState: team, viewModel: viewModel)) {
@@ -337,7 +337,7 @@ extension PowerRankingView {
     
     
     @ViewBuilder
-    func rankingCardView(team: PowerRankingViewModel.TeamState) -> some View {
+    func rankingCardView(team: TeamState) -> some View {
         let baseColor = Color(team.backgroundColorName)
         
         ZStack(alignment: .leading) {
@@ -439,7 +439,8 @@ extension PowerRankingView {
                                     .font(.system(size: 7, weight: .bold))
                             }
                         }
-                        .foregroundColor(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle))
+
+                        .foregroundColor(PowerRankingFormatter.rankChangeColor(for: team.rankChangeStyle))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(
@@ -447,7 +448,7 @@ extension PowerRankingView {
                                 .fill(Color.black.opacity(0.3))
                                 .overlay(
                                     Capsule()
-                                        .stroke(PowerRankingViewModel.rankChangeColor(for: team.rankChangeStyle).opacity(0.3), lineWidth: 1)
+                                        .stroke(PowerRankingFormatter.rankChangeColor(for: team.rankChangeStyle).opacity(0.3), lineWidth: 1)
                                 )
                         )
                     }

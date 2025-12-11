@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PowerRankingDetailView: View {
-    let teamState: PowerRankingViewModel.TeamState
+    let teamState: TeamState
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
     @StateObject private var playerViewModel = PlayerViewModel()
@@ -16,7 +16,7 @@ struct PowerRankingDetailView: View {
     @ObservedObject private var favoritesManager = FavoritesManager.shared
     @State private var hasAppeared = false
     
-    private var viewState: PowerRankingViewModel.TeamDetailViewState {
+    private var viewState: TeamDetailViewState {
         teamState.detailViewState
     }
     
@@ -99,31 +99,29 @@ struct PowerRankingDetailView: View {
 struct PowerRankingDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PowerRankingDetailView(
-                teamState: PowerRankingViewModel.TeamState(
+            let teamState: TeamState = TeamState(
+                id: "1",
+                displayRank: 1,
+                name: "MILWAUKEE BUCKS",
+                record: "30-12",
+                rankChangeText: "↑1",
+                rankChangeStyle: .up,
+                triCode: "MIL",
+                backgroundColorName: "bucks",
+                model: PowerRankingTeamModel(
                     id: "1",
-                    displayRank: 1,
-                    name: "MILWAUKEE BUCKS",
+                    rank: "1",
                     record: "30-12",
-                    rankChangeText: "↑1",
-                    rankChangeStyle: .up,
-                    triCode: "MIL",
-                    backgroundColorName: "bucks",
-                    model: PowerRankingTeamModel(
-                        id: "1",
-                        rank: "1",
-                        record: "30-12",
-                        teamName: "Milwaukee Bucks",
-                        teamCode: "MIL",
-                        lastWeek: "1",
-                        advanced: nil,
-                        overview: "The Bucks are playing great basketball...",
-                        takeaways: ["Takeaway 1", "Takeaway 2"],
-                        upcomming: "Next 5 games..."
-                    )
-                ),
-                viewModel: PowerRankingViewModel()
+                    teamName: "Milwaukee Bucks",
+                    teamCode: "MIL",
+                    lastWeek: "1",
+                    advanced: nil,
+                    overview: "The Bucks are playing great basketball...",
+                    takeaways: ["Takeaway 1", "Takeaway 2"],
+                    upcomming: "Next 5 games..."
+                )
             )
+            PowerRankingDetailView(teamState: teamState, viewModel: PowerRankingViewModel())
         }
         .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
     }

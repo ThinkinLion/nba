@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct SafeModePowerRankingDetailView: View {
-    let teamState: PowerRankingViewModel.TeamState
+    let teamState: TeamState
     @ObservedObject var viewModel: PowerRankingViewModel
     @ObservedObject var playerViewModel: PlayerViewModel
     @Binding var scrollOffset: CGFloat
     @Binding var hideNavigationBar: Bool
     
-    private var viewState: PowerRankingViewModel.TeamDetailViewState {
+    // Computed property for easy access to detail view state
+    private var viewState: TeamDetailViewState {
         teamState.detailViewState
     }
     
@@ -250,7 +251,7 @@ struct SafeModePowerRankingDetailView: View {
                 .padding(.horizontal, 15)
             
             // Find Key Player
-            let keyPlayerId = PowerRankingViewModel.TeamDetailViewState.findKeyPlayerId(from: players)
+            let keyPlayerId = TeamDetailViewState.findKeyPlayerId(from: players)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
@@ -319,8 +320,8 @@ struct SafeModePowerRankingDetailView: View {
             
             // 포지션 태그 (오른쪽 하단)
             if let position = player.position {
-                let abbreviatedPosition = PowerRankingViewModel.abbreviatePosition(position)
-                let gradientColors = PowerRankingViewModel.positionGradientColors(for: position)
+                let abbreviatedPosition = PowerRankingFormatter.abbreviatePosition(position)
+                let gradientColors = PowerRankingFormatter.positionGradientColors(for: position)
                 let startColor = gradientColors.0
                 let endColor = gradientColors.1
                 
@@ -409,7 +410,7 @@ struct SafeModePowerRankingDetailView: View {
                 // Form Guide (Last 5)
                 HStack(spacing: 4) {
                     ForEach(games.prefix(5), id: \.gameId) { game in
-                        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
+                        let gameInfo = GameInfo.from(game: game, teamId: viewState.teamId)
                         Circle()
                             .fill(gameInfo.teamWon ? Color.green : Color.red)
                             .frame(width: 8, height: 8)
@@ -429,11 +430,11 @@ struct SafeModePowerRankingDetailView: View {
     
     @ViewBuilder
     func recentGameCardView(game: HomeAway) -> some View {
-        let gameInfo = PowerRankingViewModel.GameInfo.from(game: game, teamId: viewState.teamId)
+        let gameInfo = GameInfo.from(game: game, teamId: viewState.teamId)
         
         HStack(spacing: 12) {
             if let date = game.date {
-                Text(PowerRankingViewModel.formatGameDate(date))
+                Text(PowerRankingFormatter.formatGameDate(date))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.white.opacity(0.6))
                     .frame(width: 50, alignment: .leading)
