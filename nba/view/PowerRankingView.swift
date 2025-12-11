@@ -325,7 +325,7 @@ extension View {
 extension PowerRankingView {
     @ViewBuilder
     func rankingListView(items: [TeamState]) -> some View {
-        VStack(spacing: 16) {
+        LazyVStack(spacing: 16) {
             ForEach(items) { team in
                 NavigationLink(destination: PowerRankingDetailView(teamState: team, viewModel: viewModel)) {
                     rankingCardView(team: team)
