@@ -26,17 +26,28 @@ struct BannerView: View {
     var paddingHorizontal: CGFloat = 0
     var height: CGFloat = 50
     var idiom : UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
-    var body: some View{
-        HStack{
+    
+    @State private var isAdLoaded: Bool = false // Default to hidden/false until loaded
+    
+    var body: some View {
+        HStack {
             Spacer()
-//            if idiom == .phone {
-                AdView(adUnitId: adUnitId, paddingHorizontal: paddingHorizontal)
-                .frame(height: height)
-//                    .frame(width: 320, height: 50, alignment: .center)
-//            }
+            if isAdLoaded {
+                AdView(adUnitId: adUnitId, paddingHorizontal: paddingHorizontal, isAdLoaded: $isAdLoaded)
+                    .frame(height: height)
+            } else {
+                // Load in background/overlay with minimal size to prompt request
+                Color.clear
+                    .frame(height: 0)
+                    .overlay(
+                        AdView(adUnitId: adUnitId, paddingHorizontal: paddingHorizontal, isAdLoaded: $isAdLoaded)
+                            .frame(height: 1) // 1px height to satisfy AdMob
+                            .opacity(0)
+                    )
+            }
             Spacer()
         }
-        .padding(.top, paddingTop)
+        .padding(.top, isAdLoaded ? paddingTop : 0)
         .padding(.horizontal, paddingHorizontal)
     }
 }
@@ -44,10 +55,12 @@ struct BannerView: View {
 struct AdView : UIViewRepresentable {
     var adUnitId: BannerUnitID = .powerRanking
     var paddingHorizontal: CGFloat = 15
+    @Binding var isAdLoaded: Bool
     
     func makeUIView(context: UIViewRepresentableContext<AdView>) -> GADBannerView {
-//        let banner = GADBannerView(adSize: GADAdSizeLargeBanner)
         let banner = GADBannerView(adSize: GADPortraitAnchoredAdaptiveBannerAdSizeWithWidth(UIScreen.main.bounds.width))
+        
+        banner.delegate = context.coordinator // Set delegate
         
         guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
             return banner
@@ -65,5 +78,31 @@ struct AdView : UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: GADBannerView, context: UIViewRepresentableContext<AdView>) {
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+    
+    class Coordinator: NSObject, GADBannerViewDelegate {
+        let parent: AdView
+        
+        init(parent: AdView) {
+            self.parent = parent
+        }
+        
+        func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
+            print("Banner loaded")
+            withAnimation {
+                parent.isAdLoaded = true
+            }
+        }
+        
+        func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
+            print("Banner failed: \(error)")
+            withAnimation {
+                parent.isAdLoaded = false
+            }
+        }
     }
 }
