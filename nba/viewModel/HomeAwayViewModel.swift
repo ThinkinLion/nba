@@ -118,6 +118,40 @@ struct HomeAwayViewModel {
         homeAway.home.leader?.playerId ?? ""
     }
     
+    var awayLeaderName: String {
+        homeAway.away.leader?.lastName ?? ""
+    }
+    
+    var awayLeaderFirstName: String {
+        homeAway.away.leader?.firstName ?? ""
+    }
+    
+    var homeLeaderName: String {
+        homeAway.home.leader?.lastName ?? ""
+    }
+    
+    var homeLeaderFirstName: String {
+        homeAway.home.leader?.firstName ?? ""
+    }
+    
+    var awayLeaderPosition: String {
+        homeAway.away.leader?.position ?? ""
+    }
+    
+    var homeLeaderPosition: String {
+        homeAway.home.leader?.position ?? ""
+    }
+    
+    var awayLeaderJersey: String {
+        guard let jersey = homeAway.away.leader?.jersey else { return "" }
+        return jersey
+    }
+    
+    var homeLeaderJersey: String {
+        guard let jersey = homeAway.home.leader?.jersey else { return "" }
+        return jersey
+    }
+    
     //pts
     var ptsTitie: String {
         "PTS"
