@@ -245,6 +245,12 @@ struct PlayerSummaryViewModel {
         player.country ?? ""
     }
     
+    var countryWithFlag: String {
+        let name = country
+        let flag = name.flagEmoji
+        return flag.isEmpty ? name : "\(flag) \(name)"
+    }
+    
     var lastAttendedTitle: String {
         "LAST ATTENDED"
     }

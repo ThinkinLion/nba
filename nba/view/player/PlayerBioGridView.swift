@@ -23,7 +23,7 @@ struct PlayerBioGridView: View {
             BioItemView(title: player.birthdateTitle, value: player.birthdate)
             BioItemView(title: player.experienceTitle, value: player.experience)
             BioItemView(title: player.draftTitle, value: player.draft)
-            BioItemView(title: player.countryTitle, value: player.country)
+            BioItemView(title: player.countryTitle, value: player.countryWithFlag)
             BioItemView(title: player.lastAttendedTitle, value: player.lastAttended)
         }
         .padding(15)
