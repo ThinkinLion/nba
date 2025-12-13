@@ -62,8 +62,8 @@ struct GameRecapView: View {
                         }
                         
                         // 6. Other Games
-                        OtherGamesCarouselView(gameRecap: gameRecap)
-                            .padding(.bottom, 60)
+//                        OtherGamesCarouselView(gameRecap: gameRecap)
+//                            .padding(.bottom, 60)
                     }
                     .padding(.top, 0) // Removed spacing (was 20)
                 }

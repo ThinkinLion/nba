@@ -17,26 +17,47 @@ struct BoxScoreTableView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Team Header
-            HStack {
-                Rectangle()
-                    .fill(Color(teamName.nickNameToTriCode.triCodeToTeamId + ".light")) // Dynamic neon color
-                    .frame(width: 4, height: 16)
-                
-                Text(teamName.uppercased())
-                    .font(.system(size: 14, weight: .bold, design: .monospaced))
-                    .foregroundColor(.white)
-                    .tracking(1)
-                
-                Spacer()
-                
+            HStack(spacing: 10) {
+                // Team Logo
                 Image(teamName.nickNameToTriCode)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 20, height: 20)
-                    .opacity(0.8)
+                    .frame(width: 24, height: 24)
+                    .shadow(color: .white.opacity(0.3), radius: 2)
+                
+                // Team Name
+                Text(teamName.uppercased())
+                    .font(.system(size: 16, weight: .heavy, design: .monospaced)) // Larger font
+                    .foregroundColor(.white)
+                    .tracking(2) // Wider tracking
+                
+                Spacer()
+                
+                // Neon Accent Line (Vertical) at end
+                Rectangle()
+                     .fill(Color(teamName.lowercased() + ".light"))
+                     .frame(width: 4, height: 24)
+                     .shadow(color: Color(teamName.lowercased() + ".light"), radius: 4)
             }
+            .padding(.vertical, 12)
             .padding(.horizontal, 15)
-            .padding(.bottom, 8)
+            .background(
+                LinearGradient(
+                    colors: [
+                        Color(teamName.lowercased() + ".dark").opacity(0.6),
+                        Color.black.opacity(0.0)
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .overlay(
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(Color(teamName.lowercased() + ".light").opacity(0.3)),
+                alignment: .top
+            )
+            .padding(.bottom, 0) // Remove bottom padding to attach to table
             
             // Terminal Container
             HStack(alignment: .top, spacing: 0) {
