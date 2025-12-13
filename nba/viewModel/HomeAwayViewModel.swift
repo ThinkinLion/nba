@@ -24,11 +24,18 @@ struct HomeAwayViewModel {
     
     //tri code
     var awayTriCode: String {
-        homeAway.away.teamCode.nickNameToTriCode
+        getTriCode(from: homeAway.away.teamCode)
     }
     
     var homeTriCode: String {
-        homeAway.home.teamCode.nickNameToTriCode
+        getTriCode(from: homeAway.home.teamCode)
+    }
+    
+    private func getTriCode(from code: String) -> String {
+        let trimmed = code.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.count == 3 { return trimmed.uppercased() }
+        let mapped = trimmed.nickNameToTriCode
+        return mapped.isEmpty ? trimmed : mapped
     }
     
     //team name
