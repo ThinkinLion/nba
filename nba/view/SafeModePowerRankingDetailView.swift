@@ -256,7 +256,9 @@ struct SafeModePowerRankingDetailView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(players, id: \.id) { player in
-                        playerCardView(player: player, isKeyPlayer: player.id == keyPlayerId)
+                        NavigationLink(destination: PlayerView(playerId: player.playerId ?? "", teamId: player.teamId ?? "")) {
+                            playerCardView(player: player, isKeyPlayer: player.id == keyPlayerId)
+                        }
                     }
                 }
                 .padding(.horizontal, 15)
