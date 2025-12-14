@@ -40,10 +40,12 @@ struct PlayerHeaderView: View {
                         
                         // Team Logo and TriCode
                         HStack(spacing: 8) {
-                            Image(player.teamTriCode)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 30, height: 30)
+                            if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                                Image(player.teamTriCode)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 30, height: 30)
+                            }
                             
                             Text(player.teamNickName.uppercased())
                                 .font(.system(size: 14, weight: .bold))
@@ -89,27 +91,29 @@ struct PlayerHeaderView: View {
                     
                     Spacer()
                     
-                    // Right Side: Player Cutout Image
-                    AsyncImage(url: URL(string: player.playerId.imageUrl)) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 80))
-                            .foregroundColor(.white.opacity(0.3))
-                    }
-                    .frame(height: 280)
-                    .mask(
-                        LinearGradient(
-                            colors: [.black, .black, .black.opacity(0)],
-                            startPoint: .center,
-                            endPoint: .bottom
+                    if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                        // Right Side: Player Cutout Image
+                        AsyncImage(url: URL(string: player.playerId.imageUrl)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 80))
+                                .foregroundColor(.white.opacity(0.3))
+                        }
+                        .frame(height: 280)
+                        .mask(
+                            LinearGradient(
+                                colors: [.black, .black, .black.opacity(0)],
+                                startPoint: .center,
+                                endPoint: .bottom
+                            )
                         )
-                    )
-                    .padding(.trailing, -20) // Push to edge
-                    .padding(.bottom, 0)
-                    .zIndex(0)
+                        .padding(.trailing, -20) // Push to edge
+                        .padding(.bottom, 0)
+                        .zIndex(0)
+                    }
                 }
             }
         }

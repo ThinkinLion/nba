@@ -85,10 +85,12 @@ struct PlayerView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 4) {
-                    Image(self.teamId.teamIdToTriCode)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 28, height: 28)
+                    if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                        Image(self.teamId.teamIdToTriCode)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 28, height: 28)
+                    }
                     
                     Text(player.fullName.uppercased())
                         .font(.system(size: 14, weight: .bold))
