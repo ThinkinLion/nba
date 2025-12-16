@@ -7,6 +7,83 @@
 
 import SwiftUI
 
+// MARK: - Safe Mode Placeholder
+struct PlayerPlaceholderView: View {
+    let jerseyNumber: String
+    let color: Color
+    let size: CGFloat
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(
+                    LinearGradient(
+                        colors: [color.opacity(0.3), color.opacity(0.1)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(Circle().stroke(color.opacity(0.3), lineWidth: 1))
+            
+            Text(jerseyNumber)
+                .font(.system(size: size * 0.4, weight: .heavy))
+                .foregroundColor(.white.opacity(0.8))
+                .shadow(color: color.opacity(0.5), radius: 5)
+        }
+        .frame(width: size, height: size)
+    }
+}
+
+// MARK: - Enums
+enum PowerRankingTab: Int, CaseIterable, Identifiable {
+    case analysis = 0
+    case stats = 1
+    case roster = 2
+    
+    var id: Int { self.rawValue }
+    
+    var title: String {
+        switch self {
+        case .analysis: return "WEEKLY INSIGHTS"
+        case .stats: return "TEAM STATS"
+        case .roster: return "ROSTER"
+        }
+    }
+}
+
+// MARK: - Tab Picker
+struct PowerRankingTabPicker: View {
+    @Binding var selection: PowerRankingTab
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(PowerRankingTab.allCases) { tab in
+                VStack(spacing: 8) {
+                    Text(tab.title)
+                        .font(.system(size: 14, weight: selection == tab ? .bold : .medium))
+                        .foregroundColor(selection == tab ? .white : .white.opacity(0.5))
+                        .frame(maxWidth: .infinity)
+                    
+                    // Indicator
+                    Rectangle()
+                        .fill(selection == tab ? Color.white : Color.clear)
+                        .frame(height: 2)
+                }
+                .contentShape(Rectangle()) // Make clickable area better
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selection = tab
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 15)
+        .padding(.top, 10)
+        .padding(.bottom, 0)
+        .background(Color.clear) // Transparent background
+    }
+}
+
 // MARK: - Shared Components for PowerRankingDetailView
 
 struct PowerRankingDetailSectionView: View {
@@ -71,19 +148,19 @@ struct PowerRankingDetailAdvancedStatsView: View {
             
             VStack(spacing: 12) {
                 if let offRtg = advanced.offRtg {
-                    AdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "")
+                    VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
                 }
               
                 if let defRtg = advanced.defRtg {
-                    AdvancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "")
+                    VisualAdvancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "", color: .red)
                 }
                 
                 if let netRtg = advanced.netRtg {
-                    AdvancedStatRow(title: netRtg.title ?? "Net Rtg", value: netRtg.value ?? "", rank: netRtg.rank ?? "")
+                    VisualAdvancedStatRow(title: netRtg.title ?? "Net Rtg", value: netRtg.value ?? "", rank: netRtg.rank ?? "", color: .orange)
                 }
                 
                 if let pace = advanced.pace {
-                    AdvancedStatRow(title: pace.title ?? "Pace", value: pace.value ?? "", rank: pace.rank ?? "")
+                    VisualAdvancedStatRow(title: pace.title ?? "Pace", value: pace.value ?? "", rank: pace.rank ?? "", color: .blue)
                 }
             }
             .padding(.horizontal, 15)
@@ -421,5 +498,344 @@ struct RadarDataPolygon: Shape {
         }
         path.closeSubpath()
         return path
+    }
+}
+// MARK: - Team Stats View
+
+
+struct TeamStatsView: View {
+    let viewState: TeamDetailViewState
+    let advanced: PowerRankingAdvancedModel?
+    let roster: [PlayerModel]
+    let teamColor: Color
+    
+    var body: some View {
+        VStack(spacing: 30) {
+            
+            // 1. Radar Chart Section
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Team Identity".uppercased())
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white.opacity(0.7))
+                    .padding(.horizontal, 15)
+                
+                HStack {
+                    Spacer()
+                    RadarChartView(
+                        data: viewState.radarChartData,
+                        labels: ["OFF", "DEF", "NET", "PACE"],
+                        color: teamColor
+                    )
+                    .frame(width: 220, height: 220)
+                    Spacer()
+                }
+            }
+            
+            // 2. Advanced Stats Table
+            if let advanced = advanced {
+                PowerRankingDetailAdvancedStatsView(advanced: advanced)
+            }
+            
+            // 3. Stat Kings (Leaders)
+            if !roster.isEmpty {
+                TeamLeadersView(roster: roster, teamColor: teamColor)
+            }
+        }
+        .padding(.top, 20)
+        .padding(.bottom, 40)
+    }
+}
+
+struct TeamLeadersView: View {
+    let roster: [PlayerModel]
+    let teamColor: Color
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 25) {
+            Text("STAT LEADERS")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            LeaderRow(title: "POINTS", roster: roster, type: .points, color: .green)
+            LeaderRow(title: "REBOUNDS", roster: roster, type: .rebounds, color: .blue)
+            LeaderRow(title: "ASSISTS", roster: roster, type: .assists, color: .orange)
+        }
+    }
+}
+
+struct LeaderRow: View {
+    let title: String
+    let roster: [PlayerModel]
+    let type: LeaderType
+    let color: Color
+    
+    enum LeaderType {
+        case points, rebounds, assists
+    }
+    
+    var leaders: [PlayerModel] {
+        let sorted: [PlayerModel]
+        switch type {
+        case .points:
+            sorted = roster.sorted { ($0.ppg?.doubleValue ?? 0) > ($1.ppg?.doubleValue ?? 0) }
+        case .rebounds:
+            sorted = roster.sorted { ($0.rpg?.doubleValue ?? 0) > ($1.rpg?.doubleValue ?? 0) }
+        case .assists:
+            sorted = roster.sorted { ($0.apg?.doubleValue ?? 0) > ($1.apg?.doubleValue ?? 0) }
+        }
+        return Array(sorted.prefix(5))
+    }
+    
+    func getValue(for player: PlayerModel) -> String {
+        switch type {
+        case .points: return player.ppg ?? "0.0"
+        case .rebounds: return player.rpg ?? "0.0"
+        case .assists: return player.apg ?? "0.0"
+        }
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Circle().fill(color).frame(width: 6, height: 6)
+                Text(title)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal, 15)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Array(leaders.enumerated()), id: \.element.id) { index, player in
+                        LeaderCard(
+                            rank: index + 1,
+                            player: player,
+                            value: getValue(for: player),
+                            color: color
+                        )
+                    }
+                }
+                .padding(.horizontal, 15)
+            }
+        }
+    }
+}
+
+struct LeaderCard: View {
+    let rank: Int
+    let player: PlayerModel
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        NavigationLink(destination: PlayerView(playerId: player.playerId ?? "", teamId: player.teamId ?? "")) {
+            ZStack(alignment: .bottomLeading) {
+                // Background
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.white.opacity(0.05))
+                
+                // Image (Enlarged & Background)
+                GeometryReader { geo in
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            if RemoteConfigManager.shared.shouldUseOfficialTeamData, let playerId = player.playerId {
+                                AsyncImage(url: URL(string: playerId.smallImageUrl)) { image in
+                                    image.resizable().aspectRatio(contentMode: .fit)
+                                } placeholder: {
+                                    Color.clear
+                                }
+                                .frame(height: 90) // Slightly smaller than RosterCard (100)
+                                .offset(x: 10, y: 15)
+                            } else {
+                                PlayerPlaceholderView(jerseyNumber: player.jersey ?? "00", color: color, size: 70)
+                                    .offset(x: 15, y: 15)
+                            }
+                        }
+                    }
+                }
+                
+                // Content
+                VStack(alignment: .leading, spacing: 0) {
+                    // Header (Rank & Value)
+                    HStack(alignment: .top) {
+                        Text("#\(rank)")
+                            .font(.system(size: 14, weight: .black))
+                            .foregroundColor(color.opacity(0.8))
+                        
+                        Spacer()
+                        
+                        Text(value)
+                            .font(.system(size: 18, weight: .bold)) // Slightly smaller to fit
+                            .foregroundColor(.white)
+                    }
+                    .padding(10)
+                    
+                    Spacer()
+                    
+                    // Name Info
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(player.firstName?.uppercased() ?? "")
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundColor(.white.opacity(0.7))
+                        Text(player.lastName?.uppercased() ?? "")
+                            .font(.system(size: 12, weight: .heavy))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                    }
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        CustomCorner(corners: [.bottomLeft, .bottomRight], radius: 12)
+                            .fill(LinearGradient(colors: [.black.opacity(0.8), .clear], startPoint: .bottom, endPoint: .top))
+                    )
+                }
+            }
+            .frame(width: 130, height: 110)
+            .background(Color.white.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(LinearGradient(colors: [color.opacity(0.5), color.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+            )
+        }
+    }
+}
+
+// Float conversion helper
+extension String {
+    var doubleValue: Double {
+        Double(self) ?? 0.0
+    }
+}
+// MARK: - Team Roster View
+
+
+struct TeamRosterView: View {
+    let roster: [PlayerModel]
+    
+    // Sort Roster: Key Players first (if any logic), then by PPG descending
+    var sortedRoster: [PlayerModel] {
+        roster.sorted { ($0.ppg?.doubleValue ?? 0) > ($1.ppg?.doubleValue ?? 0) }
+    }
+    
+    let columns = [
+        GridItem(.adaptive(minimum: 150), spacing: 15)
+    ]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text("Full Roster".uppercased())
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.horizontal, 15)
+            
+            LazyVGrid(columns: columns, spacing: 15) {
+                ForEach(sortedRoster, id: \.id) { player in
+                    NavigationLink(destination: PlayerView(playerId: player.playerId ?? "", teamId: player.teamId ?? "")) {
+                        RosterPlayerCard(player: player)
+                    }
+                }
+            }
+            .padding(.horizontal, 15)
+            .padding(.bottom, 40)
+        }
+        .padding(.top, 20)
+    }
+}
+
+struct RosterPlayerCard: View {
+    let player: PlayerModel
+    
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            // Background
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white.opacity(0.05))
+            
+            // Image (Positioned absolutely in ZStack to allow overlap and larger size)
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        if RemoteConfigManager.shared.shouldUseOfficialTeamData, let playerId = player.playerId {
+                            AsyncImage(url: URL(string: playerId.smallImageUrl)) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                Color.clear
+                            }
+                            .frame(height: 100) // Enlarged Image
+                            .offset(x: 10, y: 10) // Push slightly right/down
+                        } else {
+                            PlayerPlaceholderView(jerseyNumber: player.jersey ?? "00", color: .white.opacity(0.3), size: 80)
+                                 .offset(x: 20, y: 20)
+                        }
+                    }
+                }
+            }
+            
+            // Content
+            VStack(alignment: .leading, spacing: 0) {
+                // Header (Number & Pos)
+                HStack {
+                    Text(player.jersey ?? "#")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white.opacity(0.5))
+                    Spacer()
+                    Text(player.position ?? "")
+                        .font(.system(size: 10, weight: .bold))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(4)
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .padding(10)
+                
+                Spacer()
+                
+                // Info
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(player.firstName ?? "")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(.white.opacity(0.7))
+                    Text(player.lastName ?? "")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                    
+                    // Key Stats
+                    HStack(spacing: 4) {
+                        Text("P: \(player.ppg ?? "-")")
+                        Text("•")
+                            .opacity(0.3)
+                        Text("R: \(player.rpg ?? "-")")
+                        Text("•")
+                            .opacity(0.3)
+                        Text("A: \(player.apg ?? "-")")
+                    }
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundColor(.white.opacity(0.5))
+                    .padding(.top, 2)
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    CustomCorner(corners: [.bottomLeft, .bottomRight], radius: 12)
+                        .fill(LinearGradient(colors: [.black.opacity(0.8), .clear], startPoint: .bottom, endPoint: .top))
+                )
+            }
+        }
+        .frame(height: 140)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
     }
 }

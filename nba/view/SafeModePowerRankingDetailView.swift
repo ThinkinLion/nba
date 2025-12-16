@@ -27,11 +27,43 @@ struct SafeModePowerRankingDetailView: View {
         return .blue
     }
     
+    @State private var selectedTab: PowerRankingTab = .analysis
+    
     var body: some View {
         ObservableScrollView(scrollOffset: $scrollOffset) {
             // 헤더 섹션 (로고 없음, 기하학적 패턴 추가)
             headerView()
             
+            // Tab Picker
+            PowerRankingTabPicker(selection: $selectedTab)
+                .padding(.top, 10)
+            
+            // Content based on Tab
+            switch selectedTab {
+            case .analysis:
+                analysisContentView()
+            case .stats:
+                TeamStatsView(
+                    viewState: viewState,
+                    advanced: teamState.model.advanced,
+                    roster: playerViewModel.roster,
+                    teamColor: teamColor
+                )
+            case .roster:
+                TeamRosterView(roster: playerViewModel.roster)
+            }
+            
+            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
+                .padding(.bottom, 30)
+        }
+        .background(viewState.darkBackgroundColor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    // MARK: - Analysis Content
+    @ViewBuilder
+    func analysisContentView() -> some View {
+        VStack(spacing: 0) {
             // Overview 섹션
             if let overview = viewState.overview, !overview.isEmpty {
                 PowerRankingDetailSectionView(title: "Overview", content: overview)
@@ -59,12 +91,6 @@ struct SafeModePowerRankingDetailView: View {
                 }
             }
             
-            // Advanced Stats 섹션 (Visual)
-            if let advanced = viewState.advanced {
-                visualAdvancedStatsView(advanced: advanced)
-                    .padding(.top, 20)
-            }
-            
             // Ranking History 섹션
             if !viewModel.rankingHistory.isEmpty {
                 RankingHistoryView(history: viewModel.rankingHistory, teamColor: teamColor)
@@ -82,12 +108,7 @@ struct SafeModePowerRankingDetailView: View {
                 recentGamesView(games: viewModel.recentGames)
                     .padding(.top, 20)
             }
-            
-            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
-                .padding(.bottom, 30)
         }
-        .background(viewState.darkBackgroundColor)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     // MARK: - Header View (Geometric Pattern)
@@ -198,48 +219,7 @@ struct SafeModePowerRankingDetailView: View {
             .padding(.top, -19)
     }
     
-    // MARK: - Visual Advanced Stats View
-    @ViewBuilder
-    func visualAdvancedStatsView(advanced: PowerRankingAdvancedModel) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Advanced Stats".uppercased())
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white.opacity(0.7))
-                .padding(.horizontal, 15)
-            
-            // Radar Chart
-            HStack {
-                Spacer()
-                RadarChartView(
-                    data: viewState.radarChartData,
-                    labels: ["OFF", "DEF", "NET", "PACE"],
-                    color: teamColor
-                )
-                .frame(width: 200, height: 200)
-                Spacer()
-            }
-            .padding(.bottom, 10)
-            
-            VStack(spacing: 12) {
-                if let offRtg = advanced.offRtg {
-                    VisualAdvancedStatRow(title: offRtg.title ?? "Off Rtg", value: offRtg.value ?? "", rank: offRtg.rank ?? "", color: .green)
-                }
-              
-                if let defRtg = advanced.defRtg {
-                    VisualAdvancedStatRow(title: defRtg.title ?? "Def Rtg", value: defRtg.value ?? "", rank: defRtg.rank ?? "", color: .red)
-                }
-                
-                if let netRtg = advanced.netRtg {
-                    VisualAdvancedStatRow(title: netRtg.title ?? "Net Rtg", value: netRtg.value ?? "", rank: netRtg.rank ?? "", color: .orange)
-                }
-                
-                if let pace = advanced.pace {
-                    VisualAdvancedStatRow(title: pace.title ?? "Pace", value: pace.value ?? "", rank: pace.rank ?? "", color: .blue)
-                }
-            }
-            .padding(.horizontal, 15)
-        }
-    }
+
     
     // MARK: - Mentioned Players View (No Navigation, No Images)
     @ViewBuilder
