@@ -508,35 +508,32 @@ struct TeamStatsView: View {
     let advanced: PowerRankingAdvancedModel?
     let roster: [PlayerModel]
     let teamColor: Color
+    let teamModel: TeamModel? // Restored
+
+    // Helper to get stats
+    private var currentSeasonStats: [TeamStats] {
+        guard let teamModel = teamModel else { return [] }
+        let targetSeason = "2025-26"
+        
+        if let seasonalStats = teamModel.seasonalStats,
+           let currentSeason = seasonalStats.first(where: { $0.season == targetSeason }) {
+            return currentSeason.stats
+        } else if let legacyStats = teamModel.stats {
+            return legacyStats
+        }
+        return []
+    }
     
     var body: some View {
         VStack(spacing: 30) {
             
-            // 1. Radar Chart Section
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Team Identity".uppercased())
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white.opacity(0.7))
-                    .padding(.horizontal, 15)
-                
-                HStack {
-                    Spacer()
-                    RadarChartView(
-                        data: viewState.radarChartData,
-                        labels: ["OFF", "DEF", "NET", "PACE"],
-                        color: teamColor
-                    )
-                    .frame(width: 220, height: 220)
-                    Spacer()
-                }
+            // 1. Detailed Season Stats (Categorized)
+            let stats = currentSeasonStats
+            if !stats.isEmpty {
+                CategorizedTeamStatsView(stats: stats, teamColor: teamColor)
             }
             
-            // 2. Advanced Stats Table
-            if let advanced = advanced {
-                PowerRankingDetailAdvancedStatsView(advanced: advanced)
-            }
-            
-            // 3. Stat Kings (Leaders)
+            // 2. Stat Kings (Leaders)
             if !roster.isEmpty {
                 TeamLeadersView(roster: roster, teamColor: teamColor)
             }

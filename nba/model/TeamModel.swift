@@ -23,6 +23,17 @@ struct TeamModel: Identifiable, Codable, Hashable {
     let oppg: String?
     let oppgRank: String?
     let stats: [TeamStats]?
+    let seasonalStats: [SeasonalStats]?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, teamId, teamCode, teamName, conference, confRank, ppg, ppgRank, apg, apgRank, rpg, rpgRank, oppg, oppgRank, stats
+        case seasonalStats = "seasonal_stats"
+    }
+}
+
+struct SeasonalStats: Codable, Hashable {
+    let season: String
+    let stats: [TeamStats]
 }
 
 extension TeamModel {
@@ -36,7 +47,7 @@ extension TeamModel {
 }
 
 extension TeamModel {
-    static var empty = TeamModel(id: "", teamId: "", teamCode: "", teamName: "", conference: "", confRank: "", ppg: "", ppgRank: "", apg: "", apgRank: "", rpg: "", rpgRank: "", oppg: "", oppgRank: "", stats: [])
+    static var empty = TeamModel(id: "", teamId: "", teamCode: "", teamName: "", conference: "", confRank: "", ppg: "", ppgRank: "", apg: "", apgRank: "", rpg: "", rpgRank: "", oppg: "", oppgRank: "", stats: [], seasonalStats: [])
 }
 
 struct TeamStats: Codable, Hashable {

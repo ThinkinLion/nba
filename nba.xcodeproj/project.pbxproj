@@ -36,6 +36,7 @@
 		C2628F1A2B401B7B005E044B /* GameRecapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F192B401B7B005E044B /* GameRecapView.swift */; };
 		C2628F1D2B452C5A005E044B /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F1C2B452C5A005E044B /* ViewModifiers.swift */; };
 		C2628F212B4576B3005E044B /* BoxScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */; };
+		C26A109C2EF29B3500624C87 /* CategorizedTeamStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A109B2EF29B3500624C87 /* CategorizedTeamStatsView.swift */; };
 		C26B8F492B37120100BE185E /* TeamModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8F482B37120100BE185E /* TeamModel.swift */; };
 		C274D9812D06B26B009D360B /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C274D9802D06B26B009D360B /* FirebaseAnalytics */; };
 		C274D9832D06B27B009D360B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C274D9822D06B27B009D360B /* FirebaseFirestore */; };
@@ -138,6 +139,7 @@
 		C2628F192B401B7B005E044B /* GameRecapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecapView.swift; sourceTree = "<group>"; };
 		C2628F1C2B452C5A005E044B /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreViewModel.swift; sourceTree = "<group>"; };
+		C26A109B2EF29B3500624C87 /* CategorizedTeamStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedTeamStatsView.swift; sourceTree = "<group>"; };
 		C26B8F482B37120100BE185E /* TeamModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamModel.swift; sourceTree = "<group>"; };
 		C28C32262B220DD00054B189 /* CustomCorner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCorner.swift; sourceTree = "<group>"; };
 		C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 				C2BA7EB22EE324FE00A71348 /* RankingHistoryView.swift */,
 				C21ECE302EE80DCB00791B0D /* MovementView.swift */,
 				C21ECE312EE80DCB00791B0D /* TeamsOfTheWeekView.swift */,
+				C26A109B2EF29B3500624C87 /* CategorizedTeamStatsView.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -596,6 +599,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C26A109C2EF29B3500624C87 /* CategorizedTeamStatsView.swift in Sources */,
 				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
 				C2BA7EB52EE4FF0F00A71348 /* FavoritesManager.swift in Sources */,
 				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,

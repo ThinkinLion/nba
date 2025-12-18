@@ -19,7 +19,9 @@ struct OfficialPowerRankingDetailView: View {
     }
     
     @State private var selectedTab: PowerRankingTab = .analysis
-
+    @State private var teamModel: TeamModel? // New State
+    private let teamRepository = FirestoreTeamRepository() // Repository
+    
     var body: some View {
         ObservableScrollView(scrollOffset: $scrollOffset) {
             // 헤더 섹션
@@ -38,7 +40,8 @@ struct OfficialPowerRankingDetailView: View {
                     viewState: viewState,
                     advanced: teamState.model.advanced,
                     roster: playerViewModel.roster,
-                    teamColor: viewState.backgroundColor
+                    teamColor: viewState.backgroundColor,
+                    teamModel: teamModel
                 )
             case .roster:
                 TeamRosterView(roster: playerViewModel.roster)
@@ -49,6 +52,16 @@ struct OfficialPowerRankingDetailView: View {
         }
         .background(viewState.darkBackgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task {
+            // Fetch Team Model
+            if let teamId = viewState.triCode?.triCodeToTeamId {
+                 do {
+                     self.teamModel = try await teamRepository.fetchTeam(documentId: teamId)
+                 } catch {
+                     print("Error fetching team stats: \(error)")
+                 }
+            }
+        }
     }
     
     // MARK: - Analysis Content (Existing Content)
@@ -66,6 +79,27 @@ struct OfficialPowerRankingDetailView: View {
                     mentionedPlayersView(players: mentionedPlayers)
                         .padding(.top, 15)
                 }
+            }
+            
+            // Radar Chart Section (Moved from Stats)
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Spacer()
+                    RadarChartView(
+                        data: viewState.radarChartData,
+                        labels: ["OFF", "DEF", "NET", "PACE"],
+                        color: viewState.backgroundColor
+                    )
+                    .frame(width: 220, height: 220)
+                    Spacer()
+                }
+            }
+            .padding(.top, 20)
+
+            // Advanced Stats Table (Moved from Stats)
+            if let advanced = teamState.model.advanced {
+                PowerRankingDetailAdvancedStatsView(advanced: advanced)
+                    .padding(.top, 10)
             }
             
             // Takeaways 섹션
