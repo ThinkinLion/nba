@@ -23,7 +23,7 @@ struct nbaApp: App {
     //admob
     GADMobileAds.sharedInstance().start(completionHandler: nil)
     if Auth.isDeveloper() {
-//      GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [ "fa144699d13077c7e0b5d8c2d008e311" ]
+      GADMobileAds.sharedInstance().requestConfiguration.testDeviceIdentifiers = [ "838570ef2bf4d08fc725db87ed957edf" ]
     }
   }
   
