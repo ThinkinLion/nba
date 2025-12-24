@@ -30,8 +30,20 @@ struct StyledBannerContainer: View {
                 .padding(.bottom, 12)
         }
         .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(white: 0.12)) // Dark card background
+            ZStack {
+                // Glassmorphism effect that adapts to parent
+                if #available(iOS 15.0, *) {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .opacity(0.9)
+                } else {
+                    Color.black.opacity(0.4)
+                }
+                
+                // Subtle tint
+                Color.white.opacity(0.03)
+            }
+            .mask(RoundedRectangle(cornerRadius: 16, style: .continuous))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
