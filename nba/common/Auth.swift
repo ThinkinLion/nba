@@ -18,6 +18,7 @@ class Auth {
             "CC857344-35A5-4C63-B5E5-03868B9797CF" == uuid || //iPhone 14 Pro max
             "8C8AE870-C801-43F6-9333-C679D7E6B47E" == uuid || //iPhone 16 Pro max
             Platform.isSimulator {
+            print("개발자 폰이다.")
             return true
         } else {
             return false

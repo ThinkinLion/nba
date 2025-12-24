@@ -36,19 +36,28 @@ struct OfficialPowerRankingDetailView: View {
             case .analysis:
                 analysisContentView()
             case .stats:
-                TeamStatsView(
-                    viewState: viewState,
-                    advanced: teamState.model.advanced,
-                    roster: playerViewModel.roster,
-                    teamColor: viewState.backgroundColor,
-                    teamModel: teamModel
-                )
+                VStack(spacing: 0) {
+                    TeamStatsView(
+                        viewState: viewState,
+                        advanced: teamState.model.advanced,
+                        roster: playerViewModel.roster,
+                        teamColor: viewState.backgroundColor,
+                        teamModel: teamModel
+                    )
+                    StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
+                        .padding(.top, 20)
+                        .padding(.bottom, 30)
+                }
             case .roster:
-                TeamRosterView(roster: playerViewModel.roster)
+                VStack(spacing: 0) {
+                    TeamRosterView(roster: playerViewModel.roster)
+                    StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
+                        .padding(.top, 20)
+                        .padding(.bottom, 30)
+                }
             }
             
-            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
-                .padding(.bottom, 30)
+
         }
         .background(viewState.darkBackgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -127,6 +136,10 @@ struct OfficialPowerRankingDetailView: View {
                 PowerRankingDetailSectionView(title: "Upcoming", content: upcoming)
                     .padding(.top, 20)
             }
+            
+            // In-Feed Banner
+            StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
+                .padding(.vertical, 20)
             
             // Recent Games 섹션
             if !viewModel.recentGames.isEmpty {

@@ -65,8 +65,7 @@ struct PowerRankingView: View {
                                 .padding(.top, 20)
                         }
                         
-                        BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10)
-                            .padding(.top, 20)
+
                     } else if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")
                             .foregroundColor(.red)
@@ -326,9 +325,14 @@ extension PowerRankingView {
     @ViewBuilder
     func rankingListView(items: [TeamState]) -> some View {
         LazyVStack(spacing: 16) {
-            ForEach(items) { team in
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, team in
                 NavigationLink(destination: PowerRankingDetailView(teamState: team, viewModel: viewModel)) {
                     rankingCardView(team: team)
+                }
+                
+                // Banner after Top 4 (Index 3)
+                if index == 3 {
+                    StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 0)
                 }
             }
         }

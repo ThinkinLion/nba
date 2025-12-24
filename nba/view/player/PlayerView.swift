@@ -42,6 +42,10 @@ struct PlayerView: View {
                     // 3. Bio Grid
                     PlayerBioGridView(player: player)
                         .padding(.top, 10)
+
+                    // In-Feed Banner
+                    StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
+                        .padding(.top, 20)
                     
                     // 4. Yearly Stats Sections
                     VStack(spacing: 20) {
@@ -68,9 +72,7 @@ struct PlayerView: View {
                     .padding(.top, 20)
                     .padding(.bottom, 40)
                     
-                    // 5. Ad Banner
-                    BannerView(adUnitId: .playerView, paddingTop: 10)
-                        .padding(.bottom, 30)
+
                 }
             }
             .background(Color.clear)

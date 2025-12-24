@@ -79,7 +79,7 @@ struct TeamView: View {
                 .padding(.top, 10)
             
             if !viewModel.roster.isEmpty {
-                BannerView(adUnitId: .teamView, paddingTop: 10, height: 100)
+                BannerView(adUnitId: .powerRanking, paddingTop: 10, height: 100)
                     .padding(.bottom, 30)
             }
         }

@@ -55,6 +55,7 @@
 		C2AC6EDE2CCCF13B00E5DF61 /* Scoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC6EDD2CCCF13B00E5DF61 /* Scoring.swift */; };
 		C2AC6EE02CCD06FE00E5DF61 /* Usage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC6EDF2CCD06FE00E5DF61 /* Usage.swift */; };
 		C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ACBA3A2CC7B0CC00B5B409 /* StatsGeneratable.swift */; };
+		C2AF5CF02EFB72D10025022F /* StyledBannerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */; };
 		C2B7E0F62B1F04B200988259 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B7E0F52B1F04B200988259 /* PlayerView.swift */; };
 		C2BA7EAF2EE3050700A71348 /* TeamRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAD2EE3050700A71348 /* TeamRepository.swift */; };
 		C2BA7EB02EE3050700A71348 /* StandingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */; };
@@ -156,6 +157,7 @@
 		C2AC6EDD2CCCF13B00E5DF61 /* Scoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scoring.swift; sourceTree = "<group>"; };
 		C2AC6EDF2CCD06FE00E5DF61 /* Usage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usage.swift; sourceTree = "<group>"; };
 		C2ACBA3A2CC7B0CC00B5B409 /* StatsGeneratable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGeneratable.swift; sourceTree = "<group>"; };
+		C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledBannerContainer.swift; sourceTree = "<group>"; };
 		C2B7E0F52B1F04B200988259 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		C2BA7EAB2EE3050700A71348 /* PowerRankingRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingRepository.swift; sourceTree = "<group>"; };
 		C2BA7EAC2EE3050700A71348 /* StandingsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsRepository.swift; sourceTree = "<group>"; };
@@ -308,6 +310,8 @@
 				C21EF4702B099989005D87D2 /* LineView.swift */,
 				C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */,
 				C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */,
+				C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */,
+				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -386,7 +390,6 @@
 				C2FCDCBE2EEAFAD2006748C6 /* game */,
 				C22B99992B33EF9400A1152E /* TeamView.swift */,
 				C2C7950C2B02389300D72531 /* StandingsView.swift */,
-				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 				C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */,
 				C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */,
 				C2E591EF2EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift */,
@@ -664,6 +667,7 @@
 				C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */,
 				C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */,
 				C2A995442CB21305009A4C55 /* SeasonProvider.swift in Sources */,
+				C2AF5CF02EFB72D10025022F /* StyledBannerContainer.swift in Sources */,
 				C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */,
 				C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */,
 				C2AC6EE02CCD06FE00E5DF61 /* Usage.swift in Sources */,

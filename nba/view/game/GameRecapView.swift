@@ -49,7 +49,7 @@ struct GameRecapView: View {
                             //.padding(.horizontal, 15) // Removed to span full width
                         
                         // 3. Ad Banner
-                        BannerView(adUnitId: .gameView, paddingTop: 0)
+                        StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
                         
                         // 4. Away Box Score
                         if viewModel.hasAwayBoxscore {

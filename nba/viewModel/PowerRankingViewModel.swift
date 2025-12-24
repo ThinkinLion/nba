@@ -74,8 +74,14 @@ final class PowerRankingViewModel: ObservableObject {
             do {
                 let rankings = try await repository.fetchPowerRankings()
                 await MainActor.run {
-                    // items가 있고 비어있지 않은 경우만 필터링
-                    self.powerRankings = rankings.filter { ($0.items?.count ?? 0) > 0 }
+                    // items가 있고 비어있지 않은 경우만 필터링 후 주차별 정렬 (숫자 기준 내림차순)
+                    self.powerRankings = rankings
+                        .filter { ($0.items?.count ?? 0) > 0 }
+                        .sorted { lhs, rhs in
+                            let lhsNum = Int(lhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
+                            let rhsNum = Int(rhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
+                            return lhsNum > rhsNum
+                        }
                     self.isLoading = false
                     
                     // 데이터 로드 후 초기 선택 설정

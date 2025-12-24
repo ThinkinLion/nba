@@ -55,9 +55,6 @@ struct SafeModePowerRankingDetailView: View {
             case .roster:
                 TeamRosterView(roster: playerViewModel.roster)
             }
-            
-            BannerView(adUnitId: .powerRanking, paddingTop: 20, height: 100)
-                .padding(.bottom, 30)
         }
         .background(viewState.darkBackgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

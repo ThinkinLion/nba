@@ -45,7 +45,7 @@ struct StandingsView: View {
                            backgroundColor: Color("#821E26"))
             .padding(.top, 15)
             
-            BannerView(adUnitId: .standingsView, paddingTop: 15, paddingHorizontal: 10)
+            BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10)
             
             seasonLeadersCardView(leaders: viewModel.secondCardViewSlot)
             .padding(.top, 15)
@@ -75,7 +75,7 @@ struct StandingsView: View {
             horizontalScrollView(leaders: viewModel.playerTrackingPassing)
             .padding(.top, 25)
             
-            BannerView(adUnitId: .standingsView2, paddingTop: 15, paddingHorizontal: 10, height: 100)
+            BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10, height: 100)
             
             //seasonLeader VStack
             seasonLeadersVStackView(leaders: viewModel.fourthVStackSlot)
@@ -126,7 +126,7 @@ struct StandingsView: View {
             seasonLeadersVStackView(leaders: viewModel.seasonLeadersMostAssistsinaGame)
             .padding(.top, 15)
             
-            BannerView(adUnitId: .standingsView2, paddingTop: 15, paddingHorizontal: 10, height: 100)
+            BannerView(adUnitId: .powerRanking, paddingTop: 15, paddingHorizontal: 10, height: 100)
             
             //seasonLeaderEtc
             horizontalScrollView(leaders: viewModel.seasonLeaderEtc)
