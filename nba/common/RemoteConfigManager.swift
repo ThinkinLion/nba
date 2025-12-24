@@ -16,7 +16,7 @@ final class RemoteConfigManager: ObservableObject {
     @Published var shouldUseOfficialTeamData: Bool = true
     
     // MARK: - Debug Settings
-    // 개발 모드에서 서버 Fetch 없이 강제로 적용할 값 (true/false 변경하여 테스트)
+    // 개발 모드에서 서버 Fetch 없이 강제로 적용할 값 (true: use_official_team_data 사용 /false: use_official_team_data 사용안함)
     private let debugForceValue: Bool = true
     
     // MARK: - Config Key Logic
