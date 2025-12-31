@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseAnalytics
 
-struct StandingsView: View {
+struct StatsView: View {
     @StateObject var viewModel = StandingsViewModel()
     @State private var bannerVisible = false
     @State private var hasAppeared = false
@@ -158,12 +158,12 @@ struct StandingsView: View {
         }
         .onDisappear() {
         }
-        .analyticsScreen(name: "NBA-StandingView")
+        .analyticsScreen(name: "NBA-StatsView")
     }
 }
 
 //MARK: gamesView
-extension StandingsView {
+extension StatsView {
     @ViewBuilder
     func gameRecapItemView(viewModel: HomeAwayViewModel) -> some View {
         ZStack {
@@ -294,7 +294,7 @@ extension StandingsView {
 }
 
 //MARK: horizontalScrollView
-extension StandingsView {
+extension StatsView {
     @ViewBuilder
     func horizontalItemView(viewModel: SeasonLeaderViewModel) -> some View {
         HStack(spacing: 0) {
@@ -361,7 +361,7 @@ extension StandingsView {
 }
 
 //MARK: seasonLeadersVStackView
-extension StandingsView {
+extension StatsView {
     @ViewBuilder
     func seasonLeadersVStackView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
@@ -425,7 +425,7 @@ extension StandingsView {
 }
 
 //MARK: seasonLeaders CardView
-extension StandingsView {
+extension StatsView {
     @ViewBuilder
     func seasonLeadersCardView(leaders: SeasonLeaders) -> some View {
         VStack(alignment: .leading) {
@@ -494,7 +494,7 @@ extension StandingsView {
 }
 
 //MARK: conferenceView
-extension StandingsView {
+extension StatsView {
     @ViewBuilder
     func conferenceView(playoffs: [StandingsTeam],
                         playInTournament: [StandingsTeam],
@@ -585,9 +585,9 @@ extension StandingsView {
     }
 }
 
-struct StandingsView_Previews: PreviewProvider {
+struct StatsView_Previews: PreviewProvider {
     static var previews: some View {
-        StandingsView()
+        StatsView()
             .previewDevice(PreviewDevice(rawValue: "iPhone 14 pro"))
     }
 }

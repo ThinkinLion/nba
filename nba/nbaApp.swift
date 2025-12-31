@@ -29,9 +29,32 @@ struct nbaApp: App {
   
   var body: some Scene {
     WindowGroup {
-      NavigationView {
-        PowerRankingView()
+      TabView {
+        NavigationView {
+          PowerRankingView()
+        }
+        .tabItem {
+            Image(systemName: "bolt.fill")
+            Text("Power Ranking")
+        }
+        
+        NavigationView {
+          StandingsView()
+        }
+        .tabItem {
+            Image(systemName: "list.number")
+            Text("Standings")
+        }
+        
+//        NavigationView {
+//          StatsView()
+//        }
+//        .tabItem {
+//            Image(systemName: "chart.bar.fill")
+//            Text("Stats")
+//        }
       }
+      .accentColor(.white)
     }
   }
 }

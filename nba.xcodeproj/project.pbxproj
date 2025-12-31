@@ -14,6 +14,7 @@
 		C20EB63A2EE9A53100FC6711 /* TeamDetailViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20EB6342EE9A53100FC6711 /* TeamDetailViewState.swift */; };
 		C20EB63B2EE9A53100FC6711 /* PowerRankingFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20EB62F2EE9A53100FC6711 /* PowerRankingFormatter.swift */; };
 		C20EB63C2EE9A53100FC6711 /* RankChangeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20EB6332EE9A53100FC6711 /* RankChangeStyle.swift */; };
+		C210DB562F017A7500E33A98 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C210DB552F017A7500E33A98 /* StatsView.swift */; };
 		C21E6A022AFA421900307366 /* nbaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E6A012AFA421900307366 /* nbaApp.swift */; };
 		C21E6A062AFA421B00307366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C21E6A052AFA421B00307366 /* Assets.xcassets */; };
 		C21E6A0A2AFA421B00307366 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C21E6A092AFA421B00307366 /* Preview Assets.xcassets */; };
@@ -65,7 +66,6 @@
 		C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794F82AFE140D00D72531 /* StandingsModel.swift */; };
 		C2C795002AFE146200D72531 /* StandingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */; };
 		C2C795022AFE148F00D72531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2C795012AFE148F00D72531 /* GoogleService-Info.plist */; };
-		C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C7950C2B02389300D72531 /* StandingsView.swift */; };
 		C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFEC242BD0E80A0065871D /* Transform.swift */; };
 		C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E076682D77F28C00CE8ED3 /* PowerRankingModel.swift */; };
 		C2E591C92EDFCDA600A88D97 /* RemoteConfigManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E591C82EDFCDA600A88D97 /* RemoteConfigManager.swift */; };
@@ -74,6 +74,10 @@
 		C2E591F22EE02F4D00A88D97 /* PowerRankingDetailComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E591F02EE02F4D00A88D97 /* PowerRankingDetailComponents.swift */; };
 		C2E591F32EE02F4D00A88D97 /* SafeModePowerRankingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E591F12EE02F4D00A88D97 /* SafeModePowerRankingDetailView.swift */; };
 		C2E591F42EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E591EF2EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift */; };
+		C2EF47072F0508C900818956 /* SafeModeLogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47062F0508C900818956 /* SafeModeLogoView.swift */; };
+		C2EF470C2F050E6E00818956 /* GameScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47082F050E6E00818956 /* GameScoresView.swift */; };
+		C2EF470D2F050E6E00818956 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF470A2F050E6E00818956 /* StandingsView.swift */; };
+		C2EF470E2F050E6E00818956 /* PlayoffPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
 		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
 		C2FCDCBF2EEAFAD2006748C6 /* HeadToHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FCDCBC2EEAFAD2006748C6 /* HeadToHeadView.swift */; };
@@ -114,6 +118,7 @@
 		C20EB6332EE9A53100FC6711 /* RankChangeStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankChangeStyle.swift; sourceTree = "<group>"; };
 		C20EB6342EE9A53100FC6711 /* TeamDetailViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamDetailViewState.swift; sourceTree = "<group>"; };
 		C20EB6352EE9A53100FC6711 /* TeamState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamState.swift; sourceTree = "<group>"; };
+		C210DB552F017A7500E33A98 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		C21E69FE2AFA421900307366 /* nba.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = nba.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C21E6A012AFA421900307366 /* nbaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nbaApp.swift; sourceTree = "<group>"; };
 		C21E6A052AFA421B00307366 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -167,7 +172,6 @@
 		C2C794F82AFE140D00D72531 /* StandingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsModel.swift; sourceTree = "<group>"; };
 		C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandingsViewModel.swift; sourceTree = "<group>"; };
 		C2C795012AFE148F00D72531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		C2C7950C2B02389300D72531 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 		C2DFEC242BD0E80A0065871D /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
 		C2E076682D77F28C00CE8ED3 /* PowerRankingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingModel.swift; sourceTree = "<group>"; };
 		C2E591C82EDFCDA600A88D97 /* RemoteConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigManager.swift; sourceTree = "<group>"; };
@@ -175,6 +179,10 @@
 		C2E591EF2EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfficialPowerRankingDetailView.swift; sourceTree = "<group>"; };
 		C2E591F02EE02F4D00A88D97 /* PowerRankingDetailComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingDetailComponents.swift; sourceTree = "<group>"; };
 		C2E591F12EE02F4D00A88D97 /* SafeModePowerRankingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeModePowerRankingDetailView.swift; sourceTree = "<group>"; };
+		C2EF47062F0508C900818956 /* SafeModeLogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeModeLogoView.swift; sourceTree = "<group>"; };
+		C2EF47082F050E6E00818956 /* GameScoresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScoresView.swift; sourceTree = "<group>"; };
+		C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayoffPictureView.swift; sourceTree = "<group>"; };
+		C2EF470A2F050E6E00818956 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
 		C2FCDCBA2EEAFAD2006748C6 /* BoxScoreTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreTableView.swift; sourceTree = "<group>"; };
@@ -312,6 +320,7 @@
 				C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */,
 				C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
+				C2EF47062F0508C900818956 /* SafeModeLogoView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -388,8 +397,9 @@
 				C2628F1B2B401B80005E044B /* common */,
 				C2A277B22EEAD0F90088DC7F /* player */,
 				C2FCDCBE2EEAFAD2006748C6 /* game */,
+				C2EF470B2F050E6E00818956 /* standings */,
 				C22B99992B33EF9400A1152E /* TeamView.swift */,
-				C2C7950C2B02389300D72531 /* StandingsView.swift */,
+				C210DB552F017A7500E33A98 /* StatsView.swift */,
 				C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */,
 				C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */,
 				C2E591EF2EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift */,
@@ -401,6 +411,16 @@
 				C26A109B2EF29B3500624C87 /* CategorizedTeamStatsView.swift */,
 			);
 			path = view;
+			sourceTree = "<group>";
+		};
+		C2EF470B2F050E6E00818956 /* standings */ = {
+			isa = PBXGroup;
+			children = (
+				C2EF47082F050E6E00818956 /* GameScoresView.swift */,
+				C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */,
+				C2EF470A2F050E6E00818956 /* StandingsView.swift */,
+			);
+			path = standings;
 			sourceTree = "<group>";
 		};
 		C2FCDCBE2EEAFAD2006748C6 /* game */ = {
@@ -605,7 +625,6 @@
 				C26A109C2EF29B3500624C87 /* CategorizedTeamStatsView.swift in Sources */,
 				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
 				C2BA7EB52EE4FF0F00A71348 /* FavoritesManager.swift in Sources */,
-				C2C7950D2B02389300D72531 /* StandingsView.swift in Sources */,
 				C2E591CB2EDFCDC700A88D97 /* GenericTeamData.swift in Sources */,
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
 				C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */,
@@ -625,13 +644,18 @@
 				C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */,
 				C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */,
 				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,
+				C2EF470C2F050E6E00818956 /* GameScoresView.swift in Sources */,
+				C2EF470D2F050E6E00818956 /* StandingsView.swift in Sources */,
+				C2EF470E2F050E6E00818956 /* PlayoffPictureView.swift in Sources */,
 				C2A277B32EEAD0F90088DC7F /* PlayerSeasonSummaryView.swift in Sources */,
 				C2A277B42EEAD0F90088DC7F /* PlayerYearlyStatsCardView.swift in Sources */,
 				C2A277B52EEAD0F90088DC7F /* PlayerHeaderView.swift in Sources */,
+				C210DB562F017A7500E33A98 /* StatsView.swift in Sources */,
 				C2A277B62EEAD0F90088DC7F /* PlayerBioGridView.swift in Sources */,
 				C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */,
 				C2AC6EDE2CCCF13B00E5DF61 /* Scoring.swift in Sources */,
 				C21EF4712B099989005D87D2 /* LineView.swift in Sources */,
+				C2EF47072F0508C900818956 /* SafeModeLogoView.swift in Sources */,
 				C21E6A022AFA421900307366 /* nbaApp.swift in Sources */,
 				C26B8F492B37120100BE185E /* TeamModel.swift in Sources */,
 				C2AC6ED82CCCD1CE00E5DF61 /* Traditional.swift in Sources */,
@@ -858,7 +882,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 1.02;
+				MARKETING_VERSION = 1.03;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nbaPowerRanking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -902,7 +926,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.2;
-				MARKETING_VERSION = 1.02;
+				MARKETING_VERSION = 1.03;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spearhead.nbaPowerRanking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
