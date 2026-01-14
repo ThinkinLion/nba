@@ -9,47 +9,13 @@ import SwiftUI
 
 struct GameScoresView: View {
     let games: [GamesModel]
-    @State private var selectedIndex: Int = 0
+    @Binding var selectedIndex: Int
     
     var body: some View {
         VStack(spacing: 20) {
             
-            // 1. Date Selector (Horizontal Scroll)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(Array(games.enumerated()), id: \.element) { index, gameModel in
-                        let isSelected = index == selectedIndex
-                        
-                        Button(action: {
-                            withAnimation {
-                                selectedIndex = index
-                            }
-                        }) {
-                            VStack(spacing: 4) {
-                                // Day of Week (e.g., "SUN")
-                                Text(getDayOfWeek(from: gameModel.date))
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(isSelected ? .black : .gray)
-                                
-                                // Day Number (e.g., "28")
-                                Text(getDayNumber(from: gameModel.date))
-                                    .font(.system(size: 20, weight: .bold))
-                                    .foregroundColor(isSelected ? .black : .white)
-                            }
-                            .frame(width: 50, height: 60)
-                            .background(isSelected ? Color.white : Color(white: 0.1))
-                            .cornerRadius(12)
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
-            .onAppear {
-                // Default to first item if available (usually latest date)
-                if !games.isEmpty {
-                    selectedIndex = 0
-                }
-            }
+            // 1. Date Selector (Shared Component)
+            DateSelectorView(games: games, selectedIndex: $selectedIndex)
             
             // 2. Games List for Selected Date
             if games.indices.contains(selectedIndex) {

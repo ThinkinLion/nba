@@ -78,6 +78,9 @@
 		C2EF470C2F050E6E00818956 /* GameScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47082F050E6E00818956 /* GameScoresView.swift */; };
 		C2EF470D2F050E6E00818956 /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF470A2F050E6E00818956 /* StandingsView.swift */; };
 		C2EF470E2F050E6E00818956 /* PlayoffPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */; };
+		C2EF47312F08EB6D00818956 /* DailyPerformerCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47302F08EB6D00818956 /* DailyPerformerCardView.swift */; };
+		C2EF47D82F0BE38500818956 /* DailyCandidateCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF47D72F0BE38500818956 /* DailyCandidateCardView.swift */; };
+		C2EF483D2F0CF9BD00818956 /* DateSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF483C2F0CF9BD00818956 /* DateSelectorView.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
 		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
 		C2FCDCBF2EEAFAD2006748C6 /* HeadToHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FCDCBC2EEAFAD2006748C6 /* HeadToHeadView.swift */; };
@@ -183,6 +186,9 @@
 		C2EF47082F050E6E00818956 /* GameScoresView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScoresView.swift; sourceTree = "<group>"; };
 		C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayoffPictureView.swift; sourceTree = "<group>"; };
 		C2EF470A2F050E6E00818956 /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
+		C2EF47302F08EB6D00818956 /* DailyPerformerCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyPerformerCardView.swift; sourceTree = "<group>"; };
+		C2EF47D72F0BE38500818956 /* DailyCandidateCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCandidateCardView.swift; sourceTree = "<group>"; };
+		C2EF483C2F0CF9BD00818956 /* DateSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorView.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
 		C2FCDCBA2EEAFAD2006748C6 /* BoxScoreTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreTableView.swift; sourceTree = "<group>"; };
@@ -418,6 +424,9 @@
 			children = (
 				C2EF47082F050E6E00818956 /* GameScoresView.swift */,
 				C2EF47092F050E6E00818956 /* PlayoffPictureView.swift */,
+				C2EF47302F08EB6D00818956 /* DailyPerformerCardView.swift */,
+				C2EF47D72F0BE38500818956 /* DailyCandidateCardView.swift */,
+				C2EF483C2F0CF9BD00818956 /* DateSelectorView.swift */,
 				C2EF470A2F050E6E00818956 /* StandingsView.swift */,
 			);
 			path = standings;
@@ -629,6 +638,7 @@
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
 				C2ACBA3B2CC7B0CC00B5B409 /* StatsGeneratable.swift in Sources */,
 				C24D07C22EC29E1500777BF1 /* PowerRankingViewModel.swift in Sources */,
+				C2EF47312F08EB6D00818956 /* DailyPerformerCardView.swift in Sources */,
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
 				C2E591F22EE02F4D00A88D97 /* PowerRankingDetailComponents.swift in Sources */,
@@ -644,6 +654,7 @@
 				C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */,
 				C24D07C02EC29E0A00777BF1 /* PowerRankingView.swift in Sources */,
 				C2DFEC252BD0E80A0065871D /* Transform.swift in Sources */,
+				C2EF483D2F0CF9BD00818956 /* DateSelectorView.swift in Sources */,
 				C2EF470C2F050E6E00818956 /* GameScoresView.swift in Sources */,
 				C2EF470D2F050E6E00818956 /* StandingsView.swift in Sources */,
 				C2EF470E2F050E6E00818956 /* PlayoffPictureView.swift in Sources */,
@@ -669,6 +680,7 @@
 				C28C32272B220DD00054B189 /* CustomCorner.swift in Sources */,
 				C2628F1D2B452C5A005E044B /* ViewModifiers.swift in Sources */,
 				C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */,
+				C2EF47D82F0BE38500818956 /* DailyCandidateCardView.swift in Sources */,
 				C2AC6EDC2CCCE62300E5DF61 /* Misc.swift in Sources */,
 				C2FDA6B72B19C9DA00E2B3D7 /* Auth.swift in Sources */,
 				C21ECE322EE80DCB00791B0D /* MovementView.swift in Sources */,

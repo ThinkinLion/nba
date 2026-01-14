@@ -12,8 +12,9 @@ struct StandingsView: View {
     @StateObject var viewModel = StandingsViewModel()
     @StateObject var powerRankingViewModel = PowerRankingViewModel()
     @State private var selectedConference: Conference = .east
-    @State private var displayMode: StandingsDisplayMode = .list
     @State private var hasAppeared = false
+    @State private var selectedGameDateIndex: Int = 0 // For Bottom Section (Game List)
+    @State private var selectedPerformerDateIndex: Int = 0 // For Top Section (Daily Performer)
     
     enum Conference: String, CaseIterable {
         case east = "Eastern"
@@ -27,55 +28,78 @@ struct StandingsView: View {
         }
     }
     
-    enum StandingsDisplayMode: String, CaseIterable {
-        case list = "List"
-        case playoff = "Playoff Picture"
-    }
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Header Timestamp
-                if !viewModel.lastUpdated.isEmpty {
-                    HStack {
-                        Spacer()
-                        Text("Updated: \(viewModel.lastUpdated)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 10)
-                }
-                
-                // Conference Toggle
-                HStack(spacing: 0) {
-                    ForEach(Conference.allCases, id: \.self) { conference in
-                        Button(action: {
-                            withAnimation(.spring()) {
-                                selectedConference = conference
-                            }
-                        }) {
-                            VStack(spacing: 10) {
-                                Text(conference.rawValue)
-                                    .font(.system(size: 16, weight: selectedConference == conference ? .bold : .semibold, design: .rounded))
-                                    .foregroundColor(selectedConference == conference ? .white : .white.opacity(0.5))
-                                
-                                Rectangle()
-                                    .fill(selectedConference == conference ? conference.color : Color.clear)
-                                    .frame(height: 3)
+                // List View Content
+                VStack(spacing: 0) {
+                    
+                    // --- TOP SECTION: DAILY PERFORMER ---
+                    if !viewModel.gameRecap.isEmpty {
+                        VStack(spacing: 12) {
+                            // Daily Top Performer Card (Includes independent date selector)
+                            if let bestPlayer = viewModel.dailyPerformer {
+                                DailyPerformerCardView(
+                                    performer: bestPlayer,
+                                    candidates: viewModel.dailyCandidates,
+                                    games: viewModel.gameRecap,
+                                    selectedIndex: $selectedPerformerDateIndex
+                                )
+                                .padding(.horizontal, 10)
                             }
                         }
-                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        // Update performer when TOP date changes
+                        .onChange(of: selectedPerformerDateIndex) { newIndex in
+                            if viewModel.gameRecap.indices.contains(newIndex) {
+                                let selectedGames = viewModel.gameRecap[newIndex]
+                                viewModel.updateDailyPerformers(for: selectedGames)
+                            }
+                        }
+                        // Initial load helper if needed (but ViewModel usually sets initial)
+                        .onAppear {
+                            // Ensure initial sync if needed, or just let ViewModel handle first load
+                        }
                     }
-                }
-                .padding(.top, 10)
-                .background(Color.black.opacity(0.85))
-                
-                // Display Mode Picker REMOVED - Moved to Toolbar
-                
-                if displayMode == .list {
-                    // List View Content
+                    
+                    // --- MIDDLE SECTION: STANDINGS TABLE ---
                     VStack(spacing: 0) {
+                        // Header Timestamp (Moved Here)
+                        if !viewModel.lastUpdated.isEmpty {
+                            HStack {
+                                Spacer()
+                                Text("Updated: \(viewModel.lastUpdated)")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 10)
+                        }
+                        
+                        // Conference Toggle (Moved Here)
+                        HStack(spacing: 0) {
+                            ForEach(Conference.allCases, id: \.self) { conference in
+                                Button(action: {
+                                    withAnimation(.spring()) {
+                                        selectedConference = conference
+                                    }
+                                }) {
+                                    VStack(spacing: 10) {
+                                        Text(conference.rawValue)
+                                            .font(.system(size: 16, weight: selectedConference == conference ? .bold : .semibold, design: .rounded))
+                                            .foregroundColor(selectedConference == conference ? .white : .white.opacity(0.5))
+                                        
+                                        Rectangle()
+                                            .fill(selectedConference == conference ? conference.color : Color.clear)
+                                            .frame(height: 3)
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .padding(.top, 10)
+                        .background(Color.black.opacity(0.85)) // Slight background for sticky feel if needed, usually StandingsView has black bg
+                        
                         // Table Header
                         HStack(spacing: 0) {
                             Text("")
@@ -109,59 +133,53 @@ struct StandingsView: View {
                         .padding(.vertical, 12)
                         .padding(.horizontal, 16)
                         .background(Color(white: 0.1))
+                    }
+                    
+                    // Table List
+                    LazyVStack(spacing: 0) {
+                        let teams = selectedConference == .east ? (viewModel.east.0 + viewModel.east.1 + viewModel.east.2) : (viewModel.west.0 + viewModel.west.1 + viewModel.west.2)
                         
-                        // Table List
-                        LazyVStack(spacing: 0) {
-                            let teams = selectedConference == .east ? (viewModel.east.0 + viewModel.east.1 + viewModel.east.2) : (viewModel.west.0 + viewModel.west.1 + viewModel.west.2)
-                            
-                            if teams.isEmpty {
-                                if viewModel.errorMessage != nil {
-                                    Text("Error loading data")
-                                            .foregroundColor(.red)
-                                            .padding(.top, 50)
-                                    } else {
-                                        ProgressView()
-                                            .scaleEffect(1.5)
-                                            .padding(.top, 50)
-                                    }
-                            } else {
-                                ForEach(teams, id: \.self) { team in
-                                    NavigationLink(destination: PowerRankingDetailView(teamState: createTeamState(from: team), viewModel: powerRankingViewModel)) {
-                                        ratingsRow(team: team)
-                                    }
-                                    Divider().background(Color.white.opacity(0.1))
+                        if teams.isEmpty {
+                            if viewModel.errorMessage != nil {
+                                Text("Error loading data")
+                                        .foregroundColor(.red)
+                                        .padding(.top, 50)
+                                } else {
+                                    ProgressView()
+                                        .scaleEffect(1.5)
+                                        .padding(.top, 50)
                                 }
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 20)
-                        
-                        // Recent Games Section
-                        if displayMode == .list && !viewModel.gameRecap.isEmpty {
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Text("Recent Games")
-                                        .font(.title3)
-                                        .bold()
-                                        .foregroundColor(.white)
-                                    Spacer()
+                        } else {
+                            ForEach(teams, id: \.self) { team in
+                                NavigationLink(destination: PowerRankingDetailView(teamState: viewModel.createTeamState(from: team, powerRankings: powerRankingViewModel.currentPowerRanking?.items), viewModel: powerRankingViewModel)) {
+                                    ratingsRow(team: team)
                                 }
-                                .padding(.horizontal, 16)
-                                .padding(.bottom, 12)
-                                
-                                GameScoresView(games: viewModel.gameRecap)
+                                Divider().background(Color.white.opacity(0.1))
                             }
-                            .padding(.top, 20)
-                            .padding(.bottom, 40)
                         }
                     }
-                } else {
-                    // Playoff Picture View
-                    PlayoffPictureView(
-                        eastTeams: (viewModel.east.0 + viewModel.east.1 + viewModel.east.2),
-                        westTeams: (viewModel.west.0 + viewModel.west.1 + viewModel.west.2),
-                        selectedConference: $selectedConference
-                    )
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 20)
+                    
+                    // --- BOTTOM SECTION: RECENT GAMES ---
+                    if !viewModel.gameRecap.isEmpty {
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text("Recent Games")
+                                    .font(.title3)
+                                    .bold()
+                                    .foregroundColor(.white)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 12)
+                            
+                            // GameScoresView (Includes its own Date Selector, bound to separate state)
+                            GameScoresView(games: viewModel.gameRecap, selectedIndex: $selectedGameDateIndex)
+                        }
+                        .padding(.top, 20)
+                        .padding(.bottom, 40)
+                    }
                 }
             }
         }
@@ -195,7 +213,7 @@ struct StandingsView: View {
             // Rank Indicator (Vertical Bar)
             if let rankInt = Int(team.confRank), rankInt <= 10 {
                 Capsule()
-                    .fill(rankIndicatorColor(rank: team.confRank))
+                    .fill(viewModel.rankIndicatorColor(rank: team.confRank))
                     .frame(width: 4, height: 24)
                     .padding(.trailing, 8)
             } else {
@@ -207,7 +225,7 @@ struct StandingsView: View {
             // Rank (App Store Style: Large # on left)
             Text(team.confRank)
                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundColor(rankColor(rank: team.confRank))
+                .foregroundColor(viewModel.rankColor(rank: team.confRank))
                 .frame(width: 30, alignment: .center)
             
             // Team Logo (Rounded Square App Icon Style)
@@ -266,83 +284,6 @@ struct StandingsView: View {
         }
         .padding(.vertical, 12)
         // No background, just clean Row
-    }
-    
-    func rankColor(rank: String) -> Color {
-        guard let rankInt = Int(rank) else { return .white }
-        if rankInt <= 10 { return .white } // Playoff & Play-in (Active)
-        return .gray.opacity(0.5) // Lottery (Faded)
-    }
-    
-    func rankIndicatorColor(rank: String) -> Color {
-        guard let rankInt = Int(rank) else { return .clear }
-        if rankInt <= 6 { return .green } // Guaranteed Playoff
-        if rankInt <= 10 { return .yellow } // Play-in Tournament
-        return .clear
-    }
-    
-    // Helper to create TeamState from StandingsTeam
-    func createTeamState(from team: StandingsTeam) -> TeamState {
-        let triCode = team.teamCode.nickNameToTriCode
-        let backgroundColorName = PowerRankingFormatter.makeBackgroundColorName(from: team.teamCode)
-        
-        // 1. Try to find the actual PowerRanking model for this team
-        var realModel: PowerRankingTeamModel? = nil
-        
-        if let currentItems = powerRankingViewModel.currentPowerRanking?.items {
-            // Match by ID
-            if let match = currentItems.first(where: { $0.id == team.teamId }) {
-                realModel = match
-            }
-            // Match by TriCode
-            else if !triCode.isEmpty, let match = currentItems.first(where: { $0.teamCode == triCode || $0.teamCode?.nickNameToTriCode == triCode }) {
-                realModel = match
-            }
-        }
-        
-        // 2. Use real model if found, otherwise fallback to dummy
-        if let model = realModel {
-            // Apply real data
-             let rankChange = PowerRankingFormatter.makeRankChange(from: model.lastWeek)
-             
-             return TeamState(
-                 id: model.id ?? team.teamId,
-                 displayRank: Int(model.rank ?? "") ?? Int(team.confRank) ?? 0,
-                 name: PowerRankingFormatter.makeDisplayName(from: model), // Use formatted name
-                 record: model.record, // Use record from power ranking (might differ slightly if PR is older) OR override with live standings? Let's use live standings record for consistency with the list.
-                 rankChangeText: rankChange.text,
-                 rankChangeStyle: rankChange.style,
-                 triCode: triCode.isEmpty ? nil : triCode,
-                 backgroundColorName: backgroundColorName,
-                 model: model
-             )
-        } else {
-            // Fallback Dummy
-            let dummyModel = PowerRankingTeamModel(
-                id: team.teamId,
-                rank: team.confRank,
-                record: "\(team.win)-\(team.loss)",
-                teamName: team.teamName,
-                teamCode: team.teamCode,
-                lastWeek: nil,
-                advanced: nil,
-                overview: nil,
-                takeaways: nil,
-                upcomming: nil
-            )
-            
-            return TeamState(
-                id: team.teamId,
-                displayRank: Int(team.confRank) ?? 0,
-                name: team.teamName,
-                record: "\(team.win)-\(team.loss)",
-                rankChangeText: "-",
-                rankChangeStyle: .same,
-                triCode: triCode.isEmpty ? nil : triCode,
-                backgroundColorName: backgroundColorName,
-                model: dummyModel
-            )
-        }
     }
 }
 

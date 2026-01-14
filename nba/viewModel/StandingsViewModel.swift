@@ -22,6 +22,8 @@ final class StandingsViewModel: ObservableObject {
 //    @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
     @Published var powerRankings: [PowerRankingModel] = []
+    @Published var dailyPerformer: DailyPerformer? = nil
+    @Published var dailyCandidates: [DailyPerformer] = []
     
     //Season Leaders
     @Published var firstCardViewSlot: SeasonLeaders = .empty
@@ -157,6 +159,9 @@ extension StandingsViewModel {
                 self.gameRecap = games
                 let lastGameRecap = self.gameRecap.first
                 self.hasGames = (lastGameRecap?.items.count ?? 0) > 0
+                if let firstRecap = lastGameRecap {
+                    self.updateDailyPerformers(for: firstRecap)
+                }
                 self.errorMessage = nil
             }
         } catch {
@@ -315,6 +320,166 @@ extension StandingsViewModel {
 }
 
 extension StandingsViewModel {
-    
-  
+
+    func updateDailyPerformers(for games: GamesModel) {
+        var performances: [DailyPerformer] = []
+        
+        for match in games.items {
+            // Helper to format score: "110 - 105"
+            let awayScore = Int(match.away.score ?? "0") ?? 0
+            let homeScore = Int(match.home.score ?? "0") ?? 0
+            let scoreText = "\(match.away.score ?? "0") - \(match.home.score ?? "0")"
+            
+            // Check Away Leader
+            if let leader = match.away.leader, let pts = Int(leader.pts ?? "0") {
+                let reb = Int(leader.reb ?? "0") ?? 0
+                let ast = Int(leader.ast ?? "0") ?? 0
+                let stl = Int(leader.stl ?? "0") ?? 0
+                let blk = Int(leader.blk ?? "0") ?? 0
+                let score = pts + reb + ast + stl + blk
+                
+                let isWin = awayScore > homeScore
+                let resultText = (isWin ? "W " : "L ") + scoreText
+                
+                performances.append(DailyPerformer(
+                    player: leader,
+                    teamCode: match.away.teamCode,
+                    opponentTriCode: match.home.teamCode.nickNameToTriCode,
+                    gameDate: games.date ?? "",
+                    score: score,
+                    gameScoreText: scoreText,
+                    gameResultText: resultText
+                ))
+            }
+            
+            // Check Home Leader
+            if let leader = match.home.leader, let pts = Int(leader.pts ?? "0") {
+                let reb = Int(leader.reb ?? "0") ?? 0
+                let ast = Int(leader.ast ?? "0") ?? 0
+                let stl = Int(leader.stl ?? "0") ?? 0
+                let blk = Int(leader.blk ?? "0") ?? 0
+                let score = pts + reb + ast + stl + blk
+                
+                let isWin = homeScore > awayScore
+                let resultText = (isWin ? "W " : "L ") + scoreText
+                
+                performances.append(DailyPerformer(
+                    player: leader,
+                    teamCode: match.home.teamCode,
+                    opponentTriCode: match.away.teamCode.nickNameToTriCode,
+                    gameDate: games.date ?? "",
+                    score: score,
+                    gameScoreText: scoreText,
+                    gameResultText: resultText
+                ))
+            }
+        }
+        
+        // Sort by score descending
+        let sorted = performances.sorted { $0.score > $1.score }
+        
+        if let best = sorted.first {
+            self.dailyPerformer = best
+            // Next 4 as candidates
+            self.dailyCandidates = Array(sorted.dropFirst().prefix(4))
+        } else {
+            self.dailyPerformer = nil
+            self.dailyCandidates = []
+        }
+    }
 }
+
+struct DailyPerformer: Identifiable {
+    var id: String { player.id.uuidString }
+    let player: BoxScore
+    let teamCode: String // Nickname
+    let opponentTriCode: String // VS Team
+    let gameDate: String
+    let score: Int // Efficiency Score
+    let gameScoreText: String // "110 - 105"
+    let gameResultText: String // "W 110 - 105"
+}
+
+import SwiftUI
+
+extension StandingsViewModel {
+    
+    // MARK: - Business Logic for View
+    
+    func rankColor(rank: String) -> Color {
+        guard let rankInt = Int(rank) else { return .white }
+        if rankInt <= 10 { return .white } // Playoff & Play-in (Active)
+        return .gray.opacity(0.5) // Lottery (Faded)
+    }
+    
+    func rankIndicatorColor(rank: String) -> Color {
+        guard let rankInt = Int(rank) else { return .clear }
+        if rankInt <= 6 { return .green } // Guaranteed Playoff
+        if rankInt <= 10 { return .yellow } // Play-in Tournament
+        return .clear
+    }
+    
+    func createTeamState(from team: StandingsTeam, powerRankings: [PowerRankingTeamModel]?) -> TeamState {
+        let triCode = team.teamCode.nickNameToTriCode
+        let backgroundColorName = PowerRankingFormatter.makeBackgroundColorName(from: team.teamCode)
+        
+        // 1. Try to find the actual PowerRanking model for this team
+        var realModel: PowerRankingTeamModel? = nil
+        
+        if let currentItems = powerRankings {
+            // Match by ID
+            if let match = currentItems.first(where: { $0.id == team.teamId }) {
+                realModel = match
+            }
+            // Match by TriCode
+            else if !triCode.isEmpty, let match = currentItems.first(where: { $0.teamCode == triCode || $0.teamCode?.nickNameToTriCode == triCode }) {
+                realModel = match
+            }
+        }
+        
+        // 2. Use real model if found, otherwise fallback to dummy
+        if let model = realModel {
+            // Apply real data
+             let rankChange = PowerRankingFormatter.makeRankChange(from: model.lastWeek)
+             
+             return TeamState(
+                 id: model.id ?? team.teamId,
+                 displayRank: Int(model.rank ?? "") ?? Int(team.confRank) ?? 0,
+                 name: PowerRankingFormatter.makeDisplayName(from: model), // Use formatted name
+                 record: model.record,
+                 rankChangeText: rankChange.text,
+                 rankChangeStyle: rankChange.style,
+                 triCode: triCode.isEmpty ? nil : triCode,
+                 backgroundColorName: backgroundColorName,
+                 model: model
+             )
+        } else {
+            // Fallback Dummy
+            let dummyModel = PowerRankingTeamModel(
+                id: team.teamId,
+                rank: team.confRank,
+                record: "\(team.win)-\(team.loss)",
+                teamName: team.teamName,
+                teamCode: team.teamCode,
+                lastWeek: nil,
+                advanced: nil,
+                overview: nil,
+                takeaways: nil,
+                upcomming: nil
+            )
+            
+            return TeamState(
+                id: team.teamId,
+                displayRank: Int(team.confRank) ?? 0,
+                name: team.teamName,
+                record: "\(team.win)-\(team.loss)",
+                rankChangeText: "-",
+                rankChangeStyle: .same,
+                triCode: triCode.isEmpty ? nil : triCode,
+                backgroundColorName: backgroundColorName,
+                model: dummyModel
+            )
+        }
+    }
+}
+
