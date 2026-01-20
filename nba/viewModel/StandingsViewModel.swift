@@ -348,7 +348,8 @@ extension StandingsViewModel {
                     gameDate: games.date ?? "",
                     score: score,
                     gameScoreText: scoreText,
-                    gameResultText: resultText
+                    gameResultText: resultText,
+                    game: match
                 ))
             }
             
@@ -370,7 +371,8 @@ extension StandingsViewModel {
                     gameDate: games.date ?? "",
                     score: score,
                     gameScoreText: scoreText,
-                    gameResultText: resultText
+                    gameResultText: resultText,
+                    game: match
                 ))
             }
         }
@@ -398,6 +400,7 @@ struct DailyPerformer: Identifiable {
     let score: Int // Efficiency Score
     let gameScoreText: String // "110 - 105"
     let gameResultText: String // "W 110 - 105"
+    let game: HomeAway // The Full Game Object for navigation
 }
 
 import SwiftUI

@@ -64,75 +64,89 @@ struct StandingsView: View {
                     
                     // --- MIDDLE SECTION: STANDINGS TABLE ---
                     VStack(spacing: 0) {
-                        // Header Timestamp (Moved Here)
-                        if !viewModel.lastUpdated.isEmpty {
-                            HStack {
-                                Spacer()
-                                Text("Updated: \(viewModel.lastUpdated)")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 10)
-                        }
                         
-                        // Conference Toggle (Moved Here)
-                        HStack(spacing: 0) {
-                            ForEach(Conference.allCases, id: \.self) { conference in
-                                Button(action: {
-                                    withAnimation(.spring()) {
-                                        selectedConference = conference
-                                    }
-                                }) {
-                                    VStack(spacing: 10) {
-                                        Text(conference.rawValue)
-                                            .font(.system(size: 16, weight: selectedConference == conference ? .bold : .semibold, design: .rounded))
-                                            .foregroundColor(selectedConference == conference ? .white : .white.opacity(0.5))
-                                        
-                                        Rectangle()
-                                            .fill(selectedConference == conference ? conference.color : Color.clear)
-                                            .frame(height: 3)
-                                    }
+                        // Section Title: STANDINGS
+                        HStack {
+                            Text("STANDINGS")
+                                .font(.system(size: 14, weight: .black, design: .rounded))
+                                .foregroundColor(.gray)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 14) // Match padding of DailyPerformer title
+                        .padding(.bottom, 8)
+                        
+                        // Header Timestamp & Toggle (Grouped)
+                        VStack(spacing: 0) {
+                            // Header Timestamp
+                            if !viewModel.lastUpdated.isEmpty {
+                                HStack {
+                                    Spacer()
+                                    Text("Updated: \(viewModel.lastUpdated)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
                                 }
-                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                                .padding(.top, 10)
                             }
-                        }
-                        .padding(.top, 10)
-                        .background(Color.black.opacity(0.85)) // Slight background for sticky feel if needed, usually StandingsView has black bg
-                        
-                        // Table Header
-                        HStack(spacing: 0) {
-                            Text("")
+                            
+                            // Conference Toggle
+                            HStack(spacing: 0) {
+                                ForEach(Conference.allCases, id: \.self) { conference in
+                                    Button(action: {
+                                        withAnimation(.spring()) {
+                                            selectedConference = conference
+                                        }
+                                    }) {
+                                        VStack(spacing: 10) {
+                                            Text(conference.rawValue)
+                                                .font(.system(size: 16, weight: selectedConference == conference ? .bold : .semibold, design: .rounded))
+                                                .foregroundColor(selectedConference == conference ? .white : .white.opacity(0.5))
+                                            
+                                            Rectangle()
+                                                .fill(selectedConference == conference ? conference.color : Color.clear)
+                                                .frame(height: 3)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .padding(.top, 10)
+                            .background(Color.black.opacity(0.85))
+                            
+                            // Table Header Row columns...
+                            HStack(spacing: 0) {
+                                Text("")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundColor(.gray)
+                                    .frame(width: 30, alignment: .center)
+                                
+                                // Logo Space
+                                Color.clear
+                                    .frame(width: 40, height: 1)
+                                
+                                Text("TEAM")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundColor(.gray)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 8)
+                                
+                                Group {
+                                    Text("W")
+                                        .frame(width: 35, alignment: .center)
+                                    Text("L")
+                                        .frame(width: 35, alignment: .center)
+                                    Text("WIN%")
+                                        .frame(width: 45, alignment: .center)
+                                    Text("GB")
+                                        .frame(width: 40, alignment: .center)
+                                }
                                 .font(.system(size: 11, weight: .bold, design: .rounded))
                                 .foregroundColor(.gray)
-                                .frame(width: 30, alignment: .center)
-                            
-                            // Logo Space
-                            Color.clear
-                                .frame(width: 40, height: 1)
-                            
-                            Text("TEAM")
-                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                                .foregroundColor(.gray)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 8)
-                            
-                            Group {
-                                Text("W")
-                                    .frame(width: 35, alignment: .center)
-                                Text("L")
-                                    .frame(width: 35, alignment: .center)
-                                Text("WIN%")
-                                    .frame(width: 45, alignment: .center)
-                                Text("GB")
-                                    .frame(width: 40, alignment: .center)
                             }
-                            .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .foregroundColor(.gray)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 16)
+                            .background(Color(white: 0.1))
                         }
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 16)
-                        .background(Color(white: 0.1))
                     }
                     
                     // Table List
@@ -165,13 +179,12 @@ struct StandingsView: View {
                     if !viewModel.gameRecap.isEmpty {
                         VStack(spacing: 0) {
                             HStack {
-                                Text("Recent Games")
-                                    .font(.title3)
-                                    .bold()
-                                    .foregroundColor(.white)
+                                Text("RECENT GAMES")
+                                    .font(.system(size: 14, weight: .black, design: .rounded))
+                                    .foregroundColor(.gray)
                                 Spacer()
                             }
-                            .padding(.horizontal, 16)
+                            .padding(.horizontal, 14) // Match padding
                             .padding(.bottom, 12)
                             
                             // GameScoresView (Includes its own Date Selector, bound to separate state)

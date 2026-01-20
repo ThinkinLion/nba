@@ -28,7 +28,7 @@ struct DailyPerformerCardView: View {
                     .foregroundColor(.gray)
                 Spacer()
                 
-                // Share Button
+                // Share Button (Outside Navigation Link to avoid conflict)
                 Button(action: {
                     shareCard()
                 }) {
@@ -38,7 +38,7 @@ struct DailyPerformerCardView: View {
             }
             .padding(.horizontal, 4)
             
-            // The Card
+            // The Card Content (Navigation is now internal)
             cardContent
                 .cornerRadius(12)
                 .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 5)
@@ -72,80 +72,96 @@ struct DailyPerformerCardView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 8)
                 
-                Divider()
-                     .background(Color.white.opacity(0.1))
-                
-                ZStack(alignment: .bottom) {
-                    // Player Image
-                    if let playerId = performer.player.playerId {
-                        AsyncImage(url: URL(string: playerId.imageUrl)) { phase in
-                            if let image = phase.image {
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                            } else {
-                                Color.clear.frame(height: 200)
-                            }
-                        }
-                        .frame(height: 300)
-                        .mask(LinearGradient(gradient: Gradient(colors: [.black, .black, .clear]), startPoint: .top, endPoint: .bottom))
-                    }
-                    
-                    // Header Info Overlay
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack(alignment: .top) {
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text(performer.player.firstName?.uppercased() ?? "")
-                                    .font(.system(size: 16, weight: .bold, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.7))
-                                
-                                Text(performer.player.lastName?.uppercased() ?? "")
-                                    .font(.system(size: 36, weight: .heavy, design: .rounded))
-                                    .foregroundColor(.white)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.8)
-                                    .shadow(color: .black.opacity(0.5), radius: 2, x: 1, y: 1)
-                                
-                                HStack(spacing: 8) {
-                                    Text("\(performer.teamCode.nickNameToTriCode) vs \(performer.opponentTriCode)")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Color.black.opacity(0.4))
-                                        .foregroundColor(.white)
-                                    
-                                    Text(performer.gameResultText)
-                                        .font(.caption)
-                                        .fontWeight(.heavy)
-                                        .foregroundColor(.white)
-                                        .shadow(color: .black.opacity(0.8), radius: 1)
+                NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: performer.game), gameRecap: games)) {
+                    ZStack(alignment: .bottom) {
+                        
+                        // --- PLAYER IMAGE ---
+                        if let playerId = performer.player.playerId {
+                            AsyncImage(url: URL(string: playerId.imageUrl)) { phase in
+                                if let image = phase.image {
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                } else {
+                                    Color.clear.frame(height: 200)
                                 }
-                                .padding(.top, 4)
                             }
+                            .frame(height: 300)
+                            .mask(LinearGradient(gradient: Gradient(colors: [.black, .black, .clear]), startPoint: .top, endPoint: .bottom))
+                        }
+                        
+                        // --- HEADER INFO OVERLAY (Team vs Team) ---
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(alignment: .top) {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text(performer.player.firstName?.uppercased() ?? "")
+                                        .font(.system(size: 16, weight: .bold, design: .monospaced))
+                                        .foregroundColor(.white.opacity(0.7))
+                                    
+                                    Text(performer.player.lastName?.uppercased() ?? "")
+                                        .font(.system(size: 36, weight: .heavy, design: .rounded))
+                                        .foregroundColor(.white)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.8)
+                                        .shadow(color: .black.opacity(0.5), radius: 2, x: 1, y: 1)
+                                    
+                                    HStack(spacing: 8) {
+                                        Text("\(performer.teamCode.nickNameToTriCode) vs \(performer.opponentTriCode)")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(Color.black.opacity(0.4))
+                                            .foregroundColor(.white)
+                                        
+                                        Text(performer.gameResultText)
+                                            .font(.caption)
+                                            .fontWeight(.heavy)
+                                            .foregroundColor(.white)
+                                            .shadow(color: .black.opacity(0.8), radius: 1)
+                                    }
+                                    .padding(.top, 4)
+                                }
+                                Spacer()
+                                
+                                // Team Logo
+                                SafeModeLogoView(originalCode: performer.teamCode, triCode: performer.teamCode.nickNameToTriCode)
+                                    .frame(width: 44, height: 44)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 1))
+                                    .shadow(radius: 4)
+                            }
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            
+                            Spacer()
+                        }
+                        
+                        // --- MAIN STATS OVERLAY ---
+                        HStack(alignment: .bottom, spacing: 20) {
+                            statBlock(value: performer.player.pts ?? "0", label: "PTS", isLarge: true)
+                            statBlock(value: performer.player.reb ?? "0", label: "REB", isLarge: false)
+                            statBlock(value: performer.player.ast ?? "0", label: "AST", isLarge: false)
                             Spacer()
                             
-                            // Team Logo
-                            SafeModeLogoView(originalCode: performer.teamCode, triCode: performer.teamCode.nickNameToTriCode)
-                                .frame(width: 44, height: 44)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 1))
-                                .shadow(radius: 4)
+                            // Game Score Text (Moved here for Game Context)
+                            VStack(alignment: .trailing) {
+    //                                     Text("\(performer.teamCode.nickNameToTriCode) vs \(performer.opponentTriCode)")
+    //                                         .font(.caption)
+    //                                         .fontWeight(.bold)
+    //                                         .foregroundColor(.white.opacity(0.8))
+    //
+    //                                     Text(performer.gameResultText)
+    //                                         .font(.caption)
+    //                                         .fontWeight(.heavy)
+    //                                         .foregroundColor(.white)
+                                // Only showing if needed, but redundant with top header. Removing to match clean look or keeping if user liked it?
+                                // User layout had Header at top. I will keep Header at top and stats at bottom.
+                                // The previous refactor added text here. I will remove it to avoid duplication if the Header is present.
+                            }
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.top, 24)
-                        
-                        Spacer()
+                        .padding(24)
                     }
-                    
-                    // Main Stats Overlay
-                    HStack(alignment: .bottom, spacing: 20) {
-                        statBlock(value: performer.player.pts ?? "0", label: "PTS", isLarge: true)
-                        statBlock(value: performer.player.reb ?? "0", label: "REB", isLarge: false)
-                        statBlock(value: performer.player.ast ?? "0", label: "AST", isLarge: false)
-                        Spacer()
-                    }
-                    .padding(24)
                 }
                 .frame(height: 350) // Top Section Height
                 
@@ -158,21 +174,23 @@ struct DailyPerformerCardView: View {
                         // 3-Column Grid, Full Bleed
                         HStack(spacing: 0) {
                             ForEach(Array(candidates.prefix(3))) { candidate in
-                                DailyCandidateCardView(performer: candidate)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 180)
-                                    .overlay(
-                                        // Right Divider for first 2 items
-                                        HStack {
-                                            Spacer()
-                                            if candidate.id != candidates.prefix(3).last?.id {
-                                                Rectangle()
-                                                    .fill(Color.white.opacity(0.1))
-                                                    .frame(width: 1)
-                                                    .padding(.vertical, 10)
+                                NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: candidate.game), gameRecap: games)) {
+                                    DailyCandidateCardView(performer: candidate)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 180)
+                                        .overlay(
+                                            // Right Divider for first 2 items
+                                            HStack {
+                                                Spacer()
+                                                if candidate.id != candidates.prefix(3).last?.id {
+                                                    Rectangle()
+                                                        .fill(Color.white.opacity(0.1))
+                                                        .frame(width: 1)
+                                                        .padding(.vertical, 10)
+                                                }
                                             }
-                                        }
-                                    )
+                                        )
+                                }
                             }
                             // Fill empty slots
                              if candidates.count < 3 {
