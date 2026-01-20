@@ -66,14 +66,8 @@ struct StandingsView: View {
                     VStack(spacing: 0) {
                         
                         // Section Title: STANDINGS
-                        HStack {
-                            Text("STANDINGS")
-                                .font(.system(size: 14, weight: .black, design: .rounded))
-                                .foregroundColor(.gray)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 14) // Match padding of DailyPerformer title
-                        .padding(.bottom, 8)
+                        SectionHeaderView(title: "STANDINGS")
+                          .padding(.top, 10)
                         
                         // Header Timestamp & Toggle (Grouped)
                         VStack(spacing: 0) {
@@ -178,19 +172,12 @@ struct StandingsView: View {
                     // --- BOTTOM SECTION: RECENT GAMES ---
                     if !viewModel.gameRecap.isEmpty {
                         VStack(spacing: 0) {
-                            HStack {
-                                Text("RECENT GAMES")
-                                    .font(.system(size: 14, weight: .black, design: .rounded))
-                                    .foregroundColor(.gray)
-                                Spacer()
-                            }
-                            .padding(.horizontal, 14) // Match padding
-                            .padding(.bottom, 12)
+                            SectionHeaderView(title: "RECENT GAMES")
                             
                             // GameScoresView (Includes its own Date Selector, bound to separate state)
                             GameScoresView(games: viewModel.gameRecap, selectedIndex: $selectedGameDateIndex)
                         }
-                        .padding(.top, 20)
+                        .padding(.top, 30)
                         .padding(.bottom, 40)
                     }
                 }

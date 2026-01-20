@@ -22,21 +22,23 @@ struct DailyPerformerCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             // Title
-            HStack {
-                Text("PERFORMANCE OF THE NIGHT")
-                    .font(.system(size: 14, weight: .black, design: .rounded))
-                    .foregroundColor(.gray)
-                Spacer()
-                
-                // Share Button (Outside Navigation Link to avoid conflict)
-                Button(action: {
-                    shareCard()
-                }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundColor(.white)
-                }
-            }
-            .padding(.horizontal, 4)
+            SectionHeaderView(title: "PERFORMANCE OF THE NIGHT")
+//            .overlay(
+//                 // Share Button (Aligned to header)
+//                 HStack {
+//                     Spacer()
+//                     Button(action: {
+//                         shareCard()
+//                     }) {
+//                         Image(systemName: "square.and.arrow.up")
+//                             .foregroundColor(.white) // Keep consistent
+//                             .padding(.trailing, 14) // Match header padding
+//                     }
+//                 }
+//            )
+            .padding(.horizontal, -8) // Counteract parent padding slightly if needed, or adjust
+            // Since DailyPerformerCardView has padding(8), internal padding of header (14) might be too much.
+            // Let's adjust usage to fit.
             
             // The Card Content (Navigation is now internal)
             cardContent

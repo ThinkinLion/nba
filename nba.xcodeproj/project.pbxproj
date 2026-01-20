@@ -83,6 +83,7 @@
 		C2EF483D2F0CF9BD00818956 /* DateSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF483C2F0CF9BD00818956 /* DateSelectorView.swift */; };
 		C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034A82B175DD4009B372F /* GamesModel.swift */; };
 		C2F034AB2B196B2B009B372F /* HomeAwayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */; };
+		C2F086962F1F1A5E005D16DF /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F086952F1F1A5E005D16DF /* SectionHeaderView.swift */; };
 		C2FCDCBF2EEAFAD2006748C6 /* HeadToHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FCDCBC2EEAFAD2006748C6 /* HeadToHeadView.swift */; };
 		C2FCDCC02EEAFAD2006748C6 /* GameHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FCDCBB2EEAFAD2006748C6 /* GameHeaderView.swift */; };
 		C2FCDCC12EEAFAD2006748C6 /* BoxScoreTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FCDCBA2EEAFAD2006748C6 /* BoxScoreTableView.swift */; };
@@ -191,6 +192,7 @@
 		C2EF483C2F0CF9BD00818956 /* DateSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorView.swift; sourceTree = "<group>"; };
 		C2F034A82B175DD4009B372F /* GamesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesModel.swift; sourceTree = "<group>"; };
 		C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAwayViewModel.swift; sourceTree = "<group>"; };
+		C2F086952F1F1A5E005D16DF /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		C2FCDCBA2EEAFAD2006748C6 /* BoxScoreTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxScoreTableView.swift; sourceTree = "<group>"; };
 		C2FCDCBB2EEAFAD2006748C6 /* GameHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHeaderView.swift; sourceTree = "<group>"; };
 		C2FCDCBC2EEAFAD2006748C6 /* HeadToHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadToHeadView.swift; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 				C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 				C2EF47062F0508C900818956 /* SafeModeLogoView.swift */,
+				C2F086952F1F1A5E005D16DF /* SectionHeaderView.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -642,6 +645,7 @@
 				C2F034A92B175DD4009B372F /* GamesModel.swift in Sources */,
 				C2A995832CC53387009A4C55 /* ModelFactory.swift in Sources */,
 				C2E591F22EE02F4D00A88D97 /* PowerRankingDetailComponents.swift in Sources */,
+				C2F086962F1F1A5E005D16DF /* SectionHeaderView.swift in Sources */,
 				C2BA7EAF2EE3050700A71348 /* TeamRepository.swift in Sources */,
 				C2BA7EB02EE3050700A71348 /* StandingsRepository.swift in Sources */,
 				C2BA7EB12EE3050700A71348 /* PowerRankingRepository.swift in Sources */,
