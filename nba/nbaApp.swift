@@ -11,11 +11,14 @@ import Firebase
 
 @main
 struct nbaApp: App {
+  @ObservedObject var remoteConfig: RemoteConfigManager
+  
   init() {
     if !Auth.isDeveloper() {
       print("isDeveloper not")
     }
     FirebaseApp.configure()
+    self._remoteConfig = ObservedObject(wrappedValue: RemoteConfigManager.shared)
     
     // Remote Config Fetch
     RemoteConfigManager.shared.fetchConfig { _ in }
@@ -29,32 +32,32 @@ struct nbaApp: App {
   
   var body: some Scene {
     WindowGroup {
-      TabView {
-        NavigationView {
-          PowerRankingView()
-        }
-        .tabItem {
-            Image(systemName: "bolt.fill")
-            Text("Power Ranking")
-        }
-        
-        NavigationView {
-          StandingsView()
-        }
-        .tabItem {
-            Image(systemName: "list.number")
-            Text("Standings")
-        }
-        
-//        NavigationView {
-//          StatsView()
-//        }
-//        .tabItem {
-//            Image(systemName: "chart.bar.fill")
-//            Text("Stats")
-//        }
+      if remoteConfig.shouldUseOfficialTeamData {
+          // Multi-tab Mode
+          TabView {
+            NavigationView {
+              PowerRankingView()
+            }
+            .tabItem {
+                Image(systemName: "bolt.fill")
+                Text("Power Ranking")
+            }
+            
+            NavigationView {
+              StandingsView()
+            }
+            .tabItem {
+                Image(systemName: "list.number")
+                Text("Standings")
+            }
+          }
+          .accentColor(.white)
+      } else {
+          // Single-view Mode (Legacy)
+          NavigationView {
+              PowerRankingView()
+          }
       }
-      .accentColor(.white)
     }
   }
 }

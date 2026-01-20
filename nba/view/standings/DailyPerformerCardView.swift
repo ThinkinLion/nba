@@ -58,14 +58,7 @@ struct DailyPerformerCardView: View {
             // Background: Team Color (Edgy)
             Color(performer.teamCode.lowercased() + ".dark")
             
-            // Watermark (Giant Initial)
-            GeometryReader { geo in
-                Text(String(performer.teamCode.nickNameToTriCode.prefix(1)))
-                    .font(.system(size: geo.size.width * 0.8, weight: .black, design: .rounded))
-                    .foregroundColor(Color.white.opacity(0.1))
-                    .rotationEffect(.degrees(-15))
-                    .position(x: geo.size.width * 0.8, y: geo.size.height * 0.4)
-            }
+
             
             VStack(spacing: 0) {
                 // --- TOP SECTION: DATE SELECTOR ---
@@ -125,13 +118,6 @@ struct DailyPerformerCardView: View {
                                     .padding(.top, 4)
                                 }
                                 Spacer()
-                                
-                                // Team Logo
-                                SafeModeLogoView(originalCode: performer.teamCode, triCode: performer.teamCode.nickNameToTriCode)
-                                    .frame(width: 44, height: 44)
-                                    .clipShape(Circle())
-                                    .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 1))
-                                    .shadow(radius: 4)
                             }
                             .padding(.horizontal, 24)
                             .padding(.top, 24)

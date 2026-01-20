@@ -15,13 +15,7 @@ struct DailyCandidateCardView: View {
             // Background: Team Color
             Color(performer.teamCode.lowercased() + ".dark")
             
-            // Watermark (Subtle)
-            GeometryReader { geo in
-                Text(String(performer.teamCode.nickNameToTriCode.prefix(1)))
-                    .font(.system(size: geo.size.width * 0.9, weight: .black, design: .rounded))
-                    .foregroundColor(Color.white.opacity(0.05))
-                    .position(x: geo.size.width * 0.6, y: geo.size.height * 0.4)
-            }
+
             
             VStack(spacing: 0) {
                 // Image Area
