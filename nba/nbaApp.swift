@@ -8,6 +8,7 @@
 import SwiftUI
 import GoogleMobileAds
 import Firebase
+import FirebaseAnalytics
 
 @main
 struct nbaApp: App {
@@ -18,6 +19,12 @@ struct nbaApp: App {
       print("isDeveloper not")
     }
     FirebaseApp.configure()
+    
+    // Disable Firebase Analytics when testing on a developer device
+    if Auth.isDeveloper() {
+        Analytics.setAnalyticsCollectionEnabled(false)
+    }
+    
     self._remoteConfig = ObservedObject(wrappedValue: RemoteConfigManager.shared)
     
     // Remote Config Fetch
