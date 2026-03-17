@@ -19,6 +19,7 @@ struct TeamDetailViewState {
     let upcoming: String?
     let advanced: PowerRankingAdvancedModel?
     let backgroundColorName: String
+    var isFromStandings: Bool = false
     
     var teamId: String {
         guard let triCode = triCode else { return "" }

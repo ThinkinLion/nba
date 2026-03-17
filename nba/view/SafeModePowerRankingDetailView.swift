@@ -211,20 +211,21 @@ struct SafeModePowerRankingDetailView: View {
                         }
                     }
                     
-                    VStack(spacing: 4) {
-                        Text("LAST WEEK")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(.white.opacity(0.7))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.white.opacity(0.1))
-                            .cornerRadius(4)
-                        
-                        PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
-                            .scaleEffect(1.2) // 배지 크기 증가
-                            .padding(.top, 4)
+                    if !viewState.isFromStandings {
+                        VStack(spacing: 4) {
+                            Text("LAST WEEK")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor(.white.opacity(0.7))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(4)
+                            
+                            PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
+                                .scaleEffect(1.2) // 배지 크기 증가
+                                .padding(.top, 4)
+                        }
                     }
-                    
 
                 }
                 .padding(.top, 10)

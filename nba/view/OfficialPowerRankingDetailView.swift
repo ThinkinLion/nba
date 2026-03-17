@@ -205,13 +205,14 @@ struct OfficialPowerRankingDetailView: View {
                         }
                     }
                     
-                    VStack(spacing: 4) {
-                        Text("LAST WEEK")
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundColor(.white.opacity(0.6))
-                        PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
+                    if !viewState.isFromStandings {
+                        VStack(spacing: 4) {
+                            Text("LAST WEEK")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.white.opacity(0.6))
+                            PowerRankingDetailRankChangeBadge(text: viewState.rankChangeText, style: viewState.rankChangeStyle)
+                        }
                     }
-                    
 
                 }
             }

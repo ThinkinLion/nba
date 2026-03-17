@@ -17,6 +17,7 @@ struct TeamState: Identifiable {
     let triCode: String?
     let backgroundColorName: String
     let model: PowerRankingTeamModel
+    var isFromStandings: Bool = false
     
     var rankChange: Int? {
         guard let lastWeek = model.lastWeek, !lastWeek.isEmpty else { return nil }
@@ -35,15 +36,16 @@ struct TeamState: Identifiable {
         return TeamDetailViewState(
             triCode: triCode,
             name: name,
-            rank: model.rank,
-            record: record,
+            rank: isFromStandings ? String(displayRank) : model.rank,
+            record: isFromStandings ? record : model.record,
             rankChangeText: rankChange.text,
             rankChangeStyle: rankChange.style,
             overview: model.overview,
             takeaways: model.takeaways,
             upcoming: model.upcomming,
             advanced: model.advanced,
-            backgroundColorName: backgroundColorName
+            backgroundColorName: backgroundColorName,
+            isFromStandings: isFromStandings
         )
     }
 }

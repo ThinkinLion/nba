@@ -447,14 +447,15 @@ extension StandingsViewModel {
              
              return TeamState(
                  id: model.id ?? team.teamId,
-                 displayRank: Int(model.rank ?? "") ?? Int(team.confRank) ?? 0,
+                 displayRank: Int(team.confRank) ?? 0,
                  name: PowerRankingFormatter.makeDisplayName(from: model), // Use formatted name
-                 record: model.record,
+                 record: "\(team.win)-\(team.loss)",
                  rankChangeText: rankChange.text,
                  rankChangeStyle: rankChange.style,
                  triCode: triCode.isEmpty ? nil : triCode,
                  backgroundColorName: backgroundColorName,
-                 model: model
+                 model: model,
+                 isFromStandings: true
              )
         } else {
             // Fallback Dummy
@@ -480,7 +481,8 @@ extension StandingsViewModel {
                 rankChangeStyle: .same,
                 triCode: triCode.isEmpty ? nil : triCode,
                 backgroundColorName: backgroundColorName,
-                model: dummyModel
+                model: dummyModel,
+                isFromStandings: true
             )
         }
     }
