@@ -45,7 +45,7 @@ final class PlayoffViewModel: ObservableObject {
     /// NBA 데이터는 대개 일 단위로 갱신되므로 recap 읽기를 하루에 한 번 수준으로 제한.
     private static let recapCacheTTL: TimeInterval = 24 * 60 * 60
     /// Bump when bracket filtering / round logic changes so stale rows aren’t reused forever.
-    private static let cacheSchemaVersion = 22
+    private static let cacheSchemaVersion = 24
     private static var cachedSchemaVersion: Int = 0
     
     private let repository: StandingsRepository
@@ -85,6 +85,7 @@ final class PlayoffViewModel: ObservableObject {
             } else {
                 games = try await repository.fetchGameRecap()
             }
+            
             let lookup = buildConferenceLookup(from: standings)
             let raw = backtrackSeries(from: games)
             let enriched = raw.map { s -> PlayoffSeries in
@@ -101,6 +102,7 @@ final class PlayoffViewModel: ObservableObject {
                 )
             }
             .filter { !Self.statusExcludedFromPlayoffBracket($0.status) }
+            
             self.activeSeries = enriched
             self.roundSections = buildRoundSections(from: enriched)
             Self.cachedSeries = enriched
@@ -240,6 +242,39 @@ final class PlayoffViewModel: ObservableObject {
         return f.date(from: t)
     }
     
+    private func normalizedTri(fromTeamCode raw: String) -> String {
+        let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        if t.count == 3 {
+            return NBAStaticConference.normalizeTriAlias(t.uppercased())
+        }
+        let tri = t.nickNameToTriCode
+        if !tri.isEmpty {
+            return NBAStaticConference.normalizeTriAlias(tri.uppercased())
+        }
+        return t.uppercased()
+    }
+    
+    private func teamTriSet(of s: PlayoffSeries) -> Set<String> {
+        [normalizedTri(fromTeamCode: s.awayTeamCode), normalizedTri(fromTeamCode: s.homeTeamCode)]
+    }
+    
+    /// Tries to extract winner tri code from recap copy like `NYK wins 4-2`.
+    private func winnerTri(of s: PlayoffSeries) -> String? {
+        guard s.isFinished else { return nil }
+        let u = s.status.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !u.isEmpty else { return nil }
+        
+        if let r = u.range(of: #"^[A-Z]{2,3}(?=\s+WINS)"#, options: .regularExpression) {
+            return NBAStaticConference.normalizeTriAlias(String(u[r]))
+        }
+        
+        let awayTri = normalizedTri(fromTeamCode: s.awayTeamCode)
+        let homeTri = normalizedTri(fromTeamCode: s.homeTeamCode)
+        if u.contains("\(awayTri) WINS") { return awayTri }
+        if u.contains("\(homeTri) WINS") { return homeTri }
+        return nil
+    }
+    
     private func conferenceBucket(_ s: PlayoffSeries) -> String {
         if s.conference == "Finals" { return "Finals" }
         if s.conference == "East" || s.conference == "West" { return s.conference }
@@ -289,43 +324,76 @@ final class PlayoffViewModel: ObservableObject {
         return sections
     }
     
-    /// Canonical per-conference slots:
-    /// conference finals 1 / conference semifinals 2 / first round 4.
-    /// Priority: fill using finished rows from the tail (older -> newer), then backfill with unfinished rows.
+    /// Core rule: teams that **won** a lower series appear in an upper series.
+    /// Build winner -> next-series links inside the same conference and assign round by graph depth:
+    /// depth 0 = FIRST ROUND, depth 1 = CONF. SEMIFINALS, depth 2+ = CONF. FINALS.
     private func allocateConferenceLayers(_ input: [PlayoffSeries]) -> (conferenceFinals: [PlayoffSeries], semifinals: [PlayoffSeries], firstRound: [PlayoffSeries]) {
         guard !input.isEmpty else { return ([], [], []) }
         
         let sorted = input.sorted {
             (parseRecapDay($0.latestDate) ?? .distantPast) > (parseRecapDay($1.latestDate) ?? .distantPast)
         }
+        let n = sorted.count
+        let dates = sorted.map { parseRecapDay($0.latestDate) ?? .distantPast }
+        let teamSets = sorted.map { teamTriSet(of: $0) }
+        let winners = sorted.map { winnerTri(of: $0) }
         
-        let finished = sorted.filter { $0.isFinished }
-        let unfinishedNewestFirst = sorted.filter { !$0.isFinished }
-        let finishedOldestFirst = finished.reversed()
-        
-        var firstRound: [PlayoffSeries] = []
-        var semifinals: [PlayoffSeries] = []
-        var conferenceFinals: [PlayoffSeries] = []
-        
-        // 1) Fill by finished rows from older rounds first: FR(4) -> SF(2) -> CF(1)
-        for s in finishedOldestFirst {
-            if firstRound.count < 4 {
-                firstRound.append(s)
-            } else if semifinals.count < 2 {
-                semifinals.append(s)
-            } else if conferenceFinals.count < 1 {
-                conferenceFinals.append(s)
+        var preds: [[Int]] = Array(repeating: [], count: n)
+        for i in 0..<n {
+            guard let w = winners[i] else { continue } // only completed series can advance a winner
+            for j in 0..<n where i != j {
+                // Winner must appear in the next series, and next series date should be same/later.
+                if teamSets[j].contains(w), dates[i] <= dates[j] {
+                    preds[j].append(i)
+                }
             }
         }
         
-        // 2) Backfill remaining slots with unfinished rows (newest first), same stage order.
-        for s in unfinishedNewestFirst {
-            if firstRound.count < 4 {
-                firstRound.append(s)
-            } else if semifinals.count < 2 {
-                semifinals.append(s)
-            } else if conferenceFinals.count < 1 {
-                conferenceFinals.append(s)
+        // Longest predecessor chain depth as round index.
+        var depth = Array(repeating: 0, count: n)
+        if n > 1 {
+            for _ in 0..<(n * 2) {
+                var changed = false
+                for j in 0..<n {
+                    let candidate = preds[j].map { depth[$0] + 1 }.max() ?? 0
+                    if candidate != depth[j] {
+                        depth[j] = candidate
+                        changed = true
+                    }
+                }
+                if !changed { break }
+            }
+        }
+        
+        var conferenceFinals: [PlayoffSeries] = []
+        var semifinals: [PlayoffSeries] = []
+        var firstRound: [PlayoffSeries] = []
+        
+        for idx in 0..<n {
+            switch depth[idx] {
+            case 0:
+                firstRound.append(sorted[idx])
+            case 1:
+                semifinals.append(sorted[idx])
+            default:
+                conferenceFinals.append(sorted[idx])
+            }
+        }
+        
+        // If links were sparse (winner text missing), fallback by alive-count shape.
+        if conferenceFinals.isEmpty && semifinals.isEmpty {
+            let unfinished = sorted.filter { !$0.isFinished }
+            switch unfinished.count {
+            case 1:
+                conferenceFinals = Array(unfinished.prefix(1))
+                let finished = sorted.filter { $0.isFinished }
+                semifinals = Array(finished.prefix(2))
+                firstRound = Array(finished.dropFirst(2).prefix(4))
+            case 2:
+                semifinals = Array(unfinished.prefix(2))
+                firstRound = Array(sorted.filter { $0.isFinished }.suffix(4))
+            default:
+                firstRound = Array(sorted.prefix(4))
             }
         }
         
