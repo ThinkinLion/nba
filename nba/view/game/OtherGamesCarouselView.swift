@@ -77,12 +77,21 @@ struct MiniGameCard: View {
                     .foregroundColor(.white)
             }
             
-            // Status
-            Text(viewModel.final)
-                .font(.system(size: 9, weight: .medium))
-                .foregroundColor(.white.opacity(0.5))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 4)
+            // Status & Series
+            HStack {
+                Text(viewModel.final)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.white.opacity(0.5))
+                
+                Spacer()
+                
+                if !viewModel.series.isEmpty {
+                    Text(viewModel.series)
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundColor(.yellow)
+                }
+            }
+            .padding(.top, 4)
         }
         .padding(12)
         .frame(width: 160)

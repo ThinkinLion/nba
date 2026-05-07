@@ -183,6 +183,10 @@ struct StandingsView: View {
                 }
             }
         }
+        .refreshable {
+            await viewModel.fetchStandingsAsync(forceRefresh: true)
+            await powerRankingViewModel.fetchPowerRankings(forceRefresh: true)
+        }
         .navigationBarTitle("Standings", displayMode: .large)
         .toolbar {
 //            ToolbarItem(placement: .navigationBarTrailing) {
@@ -199,8 +203,10 @@ struct StandingsView: View {
         .background(Color.black.edgesIgnoringSafeArea(.all))
         .onAppear {
             if !hasAppeared {
-                viewModel.fetchStandings()
-                powerRankingViewModel.fetchPowerRankings() // Fetch latest rankings for detail view
+                Task {
+                    await viewModel.fetchStandingsAsync()
+                    await powerRankingViewModel.fetchPowerRankings()
+                }
                 hasAppeared = true
             }
         }

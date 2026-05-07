@@ -85,13 +85,19 @@ final class StandingsViewModel: ObservableObject {
         self.powerRankingRepository = powerRankingRepository
     }
     
-    func fetchStandings() {
+    func fetchStandings(forceRefresh: Bool = false) {
         Task {
-            await fetchStandings(documentId: SeasonProvider.shared.seasonYear())
-            await fetchGameRecap()
-            await fetchStatsLeaders(documentId: SeasonProvider.shared.seasonYear())
-            await fetchPowerRankings()
+            await fetchStandingsAsync(forceRefresh: forceRefresh)
         }
+    }
+    
+    /// Aggregated refresh. Uses `NBAFirestoreDayCache` (24h) per resource unless `forceRefresh` (e.g. pull-to-refresh).
+    func fetchStandingsAsync(forceRefresh: Bool = false) async {
+        let season = SeasonProvider.shared.seasonYear()
+        await fetchStandings(documentId: season, forceRefresh: forceRefresh)
+        await fetchGameRecap(forceRefresh: forceRefresh)
+        await fetchStatsLeaders(documentId: season, forceRefresh: forceRefresh)
+        await fetchPowerRankings(forceRefresh: forceRefresh)
     }
     
     @MainActor
@@ -120,13 +126,22 @@ extension StandingsViewModel {
 }
 
 extension StandingsViewModel {
-    func fetchPowerRankings() async {
+    func fetchPowerRankings(forceRefresh: Bool = false) async {
+        let cacheKey = "powerRankings.list"
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load([PowerRankingModel].self, key: cacheKey) {
+            await MainActor.run {
+                self.powerRankings = cached
+                self.errorMessage = nil
+            }
+            return
+        }
         do {
             let rankings = try await powerRankingRepository.fetchPowerRankings()
             await MainActor.run {
                 self.powerRankings = rankings
                 self.errorMessage = nil
             }
+            NBAFirestoreDayCache.save(rankings, key: cacheKey)
         } catch {
             await MainActor.run {
                 self.errorMessage = "Error fetching power rankings: \(error.localizedDescription)"
@@ -134,17 +149,20 @@ extension StandingsViewModel {
         }
     }
   
-    private func fetchStandings(documentId: String) async {
+    private func fetchStandings(documentId: String, forceRefresh: Bool) async {
         guard !documentId.isEmpty else { return }
-        
+        let cacheKey = "standings.\(documentId)"
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load(StandingsModel.self, key: cacheKey) {
+            await MainActor.run { applyStandings(cached) }
+            return
+        }
         do {
             let standings = try await standingsRepository.fetchStandings(seasonYear: documentId)
             await MainActor.run {
-                self.lastUpdated = standings.date?.lastUpdated ?? ""
-                self.east = self.divideConferenceStandings(conference: standings.east)
-                self.west = self.divideConferenceStandings(conference: standings.west)
+                applyStandings(standings)
                 self.errorMessage = nil
             }
+            NBAFirestoreDayCache.save(standings, key: cacheKey)
         } catch {
             await MainActor.run {
                 self.errorMessage = "Error fetching standings: \(error.localizedDescription)"
@@ -152,18 +170,19 @@ extension StandingsViewModel {
         }
     }
     
-    func fetchGameRecap() async {
+    func fetchGameRecap(forceRefresh: Bool = false) async {
+        let cacheKey = "gameRecap"
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load([GamesModel].self, key: cacheKey) {
+            await MainActor.run { applyGameRecap(cached) }
+            return
+        }
         do {
             let games = try await standingsRepository.fetchGameRecap()
             await MainActor.run {
-                self.gameRecap = games
-                let lastGameRecap = self.gameRecap.first
-                self.hasGames = (lastGameRecap?.items.count ?? 0) > 0
-                if let firstRecap = lastGameRecap {
-                    self.updateDailyPerformers(for: firstRecap)
-                }
+                applyGameRecap(games)
                 self.errorMessage = nil
             }
+            NBAFirestoreDayCache.save(games, key: cacheKey)
         } catch {
             await MainActor.run {
                 self.errorMessage = "Error fetching game recap: \(error.localizedDescription)"
@@ -171,94 +190,120 @@ extension StandingsViewModel {
         }
     }
     
-    private func fetchStatsLeaders(documentId: String) async {
+    private func fetchStatsLeaders(documentId: String, forceRefresh: Bool) async {
         guard !documentId.isEmpty else { return }
-        
+        let cacheKey = "statsLeaders.\(documentId)"
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load(SeasonLeadersModel.self, key: cacheKey) {
+            await MainActor.run { applySeasonLeaders(cached) }
+            return
+        }
         do {
             let seasonLeaders = try await standingsRepository.fetchStatsLeaders(seasonYear: documentId)
             await MainActor.run {
-                self.shuffledSeasonLeaders(leaders: [seasonLeaders.seasonLeadersPointsPerGame ?? .empty,
-                                                     seasonLeaders.seasonLeadersAssistsPerGame ?? .empty,
-                                                     seasonLeaders.seasonLeadersReboundsPerGame ?? .empty,
-                                                     
-                                                     seasonLeaders.seasonLeadersBlocksPerGame ?? .empty,
-                                                     seasonLeaders.seasonLeadersStealsPerGame ?? .empty,
-                                                     seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty,
-                                                     
-                                                     seasonLeaders.seasonLeadersThreePointersMade ?? .empty,
-                                                     seasonLeaders.seasonLeadersThreePointPercentage ?? .empty,
-                                                     seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty])
-                
-                self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
-                self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
-                self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
-                
-                self.seasonLeadersMostTotalPoints = seasonLeaders.seasonLeadersMostTotalPoints ?? .empty
-                self.seasonLeadersMostPointsinaGame = seasonLeaders.seasonLeadersMostPointsinaGame ?? .empty
-                self.seasonLeadersMostReboundsinaGame = seasonLeaders.seasonLeadersMostReboundsinaGame ?? .empty
-                self.seasonLeadersMostAssistsinaGame = seasonLeaders.seasonLeadersMostAssistsinaGame ?? .empty
-                self.seasonLeadersMostStealsinaGame = seasonLeaders.seasonLeadersMostStealsinaGame ?? .empty
-                self.seasonLeadersMostBlocksinaGame = seasonLeaders.seasonLeadersMostBlocksinaGame ?? .empty
-                
-                self.seasonLeaderEtc = [
-                    seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty,
-                    seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty,
-                    seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty,
-                ]
-                
-                self.advanced = [
-                    seasonLeaders.advancedUsagePercentage ?? .empty,
-                    seasonLeaders.advancedTrueShootingPercentage ?? .empty,
-                    seasonLeaders.advancedOffensiveReboundPercentage ?? .empty
-                ]
-                
-                self.miscellaneous = [
-                    seasonLeaders.miscellaneous2ndChancePointsPerGame ?? .empty,
-                    seasonLeaders.miscellaneousFastBreakPointsPerGame ?? .empty,
-                    seasonLeaders.miscellaneousPointsInThePaintPerGame ?? .empty,
-                ]
-                
-                self.playerTrackingPassing = [
-                    seasonLeaders.playerTrackingPassingPassesPerGame ?? .empty,
-                    seasonLeaders.playerTrackingPassingPotentialAssistsPerGame ?? .empty,
-                    seasonLeaders.playerTrackingPassingPointsFromAssistsPerGame ?? .empty,
-                ]
-                
-                self.scoring = [
-                    seasonLeaders.scoringPercentageofPoints3PT ?? .empty,
-                    seasonLeaders.scoringPercentageofPointsinthePaint ?? .empty,
-                    seasonLeaders.scoringPercentageofPointsMidRange ?? .empty,
-                ]
-                
-                self.centers = [
-                    seasonLeaders.centersPointsPerGame ?? .empty,
-                    seasonLeaders.centersAssistsPerGame ?? .empty,
-                    seasonLeaders.centersReboundsPerGame ?? .empty,
-                ]
-                
-                self.forwards = [
-                    seasonLeaders.forwardsPointsPerGame ?? .empty,
-                    seasonLeaders.forwardsAssistsPerGame ?? .empty,
-                    seasonLeaders.forwardsReboundsPerGame ?? .empty
-                ]
-                
-                self.guards = [
-                    seasonLeaders.guardsPointsPerGame ?? .empty,
-                    seasonLeaders.guardsAssistsPerGame ?? .empty,
-                    seasonLeaders.guardsReboundsPerGame ?? .empty,
-                ]
-                
-                self.rookies = [
-                    seasonLeaders.rookiesDoubleDoubles ?? .empty,
-                    seasonLeaders.rookiesPointsPerGame ?? .empty,
-                    seasonLeaders.rookiesMinutesPerGame ?? .empty,
-                ]
+                applySeasonLeaders(seasonLeaders)
+                self.errorMessage = nil
             }
+            NBAFirestoreDayCache.save(seasonLeaders, key: cacheKey)
         } catch {
             await MainActor.run {
                 self.errorMessage = "Error fetching stats leaders: \(error.localizedDescription)"
             }
         }
+    }
+    
+    private func applyStandings(_ standings: StandingsModel) {
+        self.standings = standings
+        self.lastUpdated = standings.date?.lastUpdated ?? ""
+        self.east = self.divideConferenceStandings(conference: standings.east)
+        self.west = self.divideConferenceStandings(conference: standings.west)
+    }
+    
+    private func applyGameRecap(_ games: [GamesModel]) {
+        self.gameRecap = games
+        let lastGameRecap = self.gameRecap.first
+        self.hasGames = (lastGameRecap?.items.count ?? 0) > 0
+        if let firstRecap = lastGameRecap {
+            self.updateDailyPerformers(for: firstRecap)
+        }
+    }
+    
+    private func applySeasonLeaders(_ seasonLeaders: SeasonLeadersModel) {
+        self.shuffledSeasonLeaders(leaders: [seasonLeaders.seasonLeadersPointsPerGame ?? .empty,
+                                             seasonLeaders.seasonLeadersAssistsPerGame ?? .empty,
+                                             seasonLeaders.seasonLeadersReboundsPerGame ?? .empty,
+                                             
+                                             seasonLeaders.seasonLeadersBlocksPerGame ?? .empty,
+                                             seasonLeaders.seasonLeadersStealsPerGame ?? .empty,
+                                             seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty,
+                                             
+                                             seasonLeaders.seasonLeadersThreePointersMade ?? .empty,
+                                             seasonLeaders.seasonLeadersThreePointPercentage ?? .empty,
+                                             seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty])
+        
+        self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
+        self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
+        self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
+        
+        self.seasonLeadersMostTotalPoints = seasonLeaders.seasonLeadersMostTotalPoints ?? .empty
+        self.seasonLeadersMostPointsinaGame = seasonLeaders.seasonLeadersMostPointsinaGame ?? .empty
+        self.seasonLeadersMostReboundsinaGame = seasonLeaders.seasonLeadersMostReboundsinaGame ?? .empty
+        self.seasonLeadersMostAssistsinaGame = seasonLeaders.seasonLeadersMostAssistsinaGame ?? .empty
+        self.seasonLeadersMostStealsinaGame = seasonLeaders.seasonLeadersMostStealsinaGame ?? .empty
+        self.seasonLeadersMostBlocksinaGame = seasonLeaders.seasonLeadersMostBlocksinaGame ?? .empty
+        
+        self.seasonLeaderEtc = [
+            seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty,
+            seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty,
+            seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty,
+        ]
+        
+        self.advanced = [
+            seasonLeaders.advancedUsagePercentage ?? .empty,
+            seasonLeaders.advancedTrueShootingPercentage ?? .empty,
+            seasonLeaders.advancedOffensiveReboundPercentage ?? .empty
+        ]
+        
+        self.miscellaneous = [
+            seasonLeaders.miscellaneous2ndChancePointsPerGame ?? .empty,
+            seasonLeaders.miscellaneousFastBreakPointsPerGame ?? .empty,
+            seasonLeaders.miscellaneousPointsInThePaintPerGame ?? .empty,
+        ]
+        
+        self.playerTrackingPassing = [
+            seasonLeaders.playerTrackingPassingPassesPerGame ?? .empty,
+            seasonLeaders.playerTrackingPassingPotentialAssistsPerGame ?? .empty,
+            seasonLeaders.playerTrackingPassingPointsFromAssistsPerGame ?? .empty,
+        ]
+        
+        self.scoring = [
+            seasonLeaders.scoringPercentageofPoints3PT ?? .empty,
+            seasonLeaders.scoringPercentageofPointsinthePaint ?? .empty,
+            seasonLeaders.scoringPercentageofPointsMidRange ?? .empty,
+        ]
+        
+        self.centers = [
+            seasonLeaders.centersPointsPerGame ?? .empty,
+            seasonLeaders.centersAssistsPerGame ?? .empty,
+            seasonLeaders.centersReboundsPerGame ?? .empty,
+        ]
+        
+        self.forwards = [
+            seasonLeaders.forwardsPointsPerGame ?? .empty,
+            seasonLeaders.forwardsAssistsPerGame ?? .empty,
+            seasonLeaders.forwardsReboundsPerGame ?? .empty
+        ]
+        
+        self.guards = [
+            seasonLeaders.guardsPointsPerGame ?? .empty,
+            seasonLeaders.guardsAssistsPerGame ?? .empty,
+            seasonLeaders.guardsReboundsPerGame ?? .empty,
+        ]
+        
+        self.rookies = [
+            seasonLeaders.rookiesDoubleDoubles ?? .empty,
+            seasonLeaders.rookiesPointsPerGame ?? .empty,
+            seasonLeaders.rookiesMinutesPerGame ?? .empty,
+        ]
     }
 }
 

@@ -97,6 +97,13 @@ struct GameScoreRow: View {
                         .foregroundColor(isWinner(team: game.home, opponent: game.away) ? .white : .gray)
                         .fixedSize() // Prevent wrapping
                 }
+                
+                if let series = game.series, !series.isEmpty {
+                    Text(series)
+                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .foregroundColor(.yellow)
+                        .padding(.top, 2)
+                }
             }
             .frame(width: 100) // Increased width to prevent wrapping
             

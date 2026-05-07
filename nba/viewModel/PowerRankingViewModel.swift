@@ -66,45 +66,55 @@ final class PowerRankingViewModel: ObservableObject {
         }
     }
     
-    func fetchPowerRankings() {
-        isLoading = true
+    func fetchPowerRankings(forceRefresh: Bool = false) async {
         errorMessage = nil
         
-        Task {
-            do {
-                let rankings = try await repository.fetchPowerRankings()
-                await MainActor.run {
-                    // items가 있고 비어있지 않은 경우만 필터링 후 주차별 정렬 (숫자 기준 내림차순)
-                    self.powerRankings = rankings
-                        .filter { ($0.items?.count ?? 0) > 0 }
-                        .sorted { lhs, rhs in
-                            let lhsNum = Int(lhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
-                            let rhsNum = Int(rhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
-                            return lhsNum > rhsNum
-                        }
-                    self.isLoading = false
-                    
-                    // 데이터 로드 후 초기 선택 설정
-                    if self.selectedWeek == nil, let firstRanking = self.powerRankings.first {
-                        self.currentPowerRanking = firstRanking
-                        self.selectedWeek = firstRanking.week
-                    } else if let currentWeek = self.selectedWeek,
-                              let existingRanking = self.powerRankings.first(where: { $0.week == currentWeek }) {
-                        // 이미 선택된 주차가 있다면 해당 랭킹으로 업데이트
-                        self.currentPowerRanking = existingRanking
-                    } else if let firstRanking = self.powerRankings.first {
-                        // 선택된 주차가 없거나, 기존 선택된 주차의 랭킹이 더 이상 존재하지 않으면 최신 랭킹으로 설정
-                        self.currentPowerRanking = firstRanking
-                        self.selectedWeek = firstRanking.week
-                    }
-                    self.errorMessage = nil
-                }
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "Error fetching power rankings: \(error.localizedDescription)"
-                    self.isLoading = false
-                }
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load([PowerRankingModel].self, key: Self.powerRankingsCacheKey) {
+            await MainActor.run {
+                self.applyProcessedPowerRankings(from: cached)
+                self.isLoading = false
+                self.errorMessage = nil
             }
+            return
+        }
+        
+        isLoading = true
+        do {
+            let rankings = try await repository.fetchPowerRankings()
+            NBAFirestoreDayCache.save(rankings, key: Self.powerRankingsCacheKey)
+            await MainActor.run {
+                self.applyProcessedPowerRankings(from: rankings)
+                self.isLoading = false
+                self.errorMessage = nil
+            }
+        } catch {
+            await MainActor.run {
+                self.errorMessage = "Error fetching power rankings: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
+    
+    private static let powerRankingsCacheKey = "powerRankings.list"
+    
+    /// Shared cache payload with `StandingsViewModel` — filter/sort for UI only.
+    private func applyProcessedPowerRankings(from rankings: [PowerRankingModel]) {
+        powerRankings = rankings
+            .filter { ($0.items?.count ?? 0) > 0 }
+            .sorted { lhs, rhs in
+                let lhsNum = Int(lhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
+                let rhsNum = Int(rhs.week?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined() ?? "") ?? 0
+                return lhsNum > rhsNum
+            }
+        if selectedWeek == nil, let firstRanking = powerRankings.first {
+            currentPowerRanking = firstRanking
+            selectedWeek = firstRanking.week
+        } else if let currentWeek = selectedWeek,
+                  let existingRanking = powerRankings.first(where: { $0.week == currentWeek }) {
+            currentPowerRanking = existingRanking
+        } else if let firstRanking = powerRankings.first {
+            currentPowerRanking = firstRanking
+            selectedWeek = firstRanking.week
         }
     }
     

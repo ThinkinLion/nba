@@ -25,7 +25,7 @@ final class FirestoreStandingsRepository: StandingsRepository {
     func fetchGameRecap() async throws -> [GamesModel] {
         let snapshot = try await db.collection("games")
             .order(by: "date", descending: true)
-            .limit(to: 7)
+            .limit(to: 60)
             .getDocuments()
         
         return snapshot.documents.compactMap { documentSnapshot in

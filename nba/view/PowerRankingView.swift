@@ -98,9 +98,14 @@ struct PowerRankingView: View {
         }
         .navigationBarTitle("Power Rankings", displayMode: .large)
         .preferredColorScheme(.dark)
+        .refreshable {
+            await viewModel.fetchPowerRankings(forceRefresh: true)
+        }
         .onAppear() {
             guard !hasAppeared else { return }
-            viewModel.fetchPowerRankings()
+            Task {
+                await viewModel.fetchPowerRankings()
+            }
             hasAppeared = true
         }
         .analyticsScreen(name: "NBA-PowerRankingView")

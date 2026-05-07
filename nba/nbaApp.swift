@@ -43,6 +43,14 @@ struct nbaApp: App {
           // Multi-tab Mode
           TabView {
             NavigationView {
+              PlayoffMainView()
+            }
+            .tabItem {
+                Image(systemName: "trophy.fill")
+                Text("Playoffs")
+            }
+            
+            NavigationView {
               PowerRankingView()
             }
             .tabItem {

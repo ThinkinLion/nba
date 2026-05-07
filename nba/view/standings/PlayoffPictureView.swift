@@ -61,7 +61,7 @@ struct PlayoffPictureView: View {
                 
                 // Section Title
                 VStack(spacing: 8) {
-                    Text("IF THE PLAYOFFS STARTED TODAY")
+                    Text("2024 NBA PLAYOFFS")
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .foregroundColor(.gray)
                         .padding(.top, 20)
