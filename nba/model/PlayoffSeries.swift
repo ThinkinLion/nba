@@ -12,6 +12,12 @@ enum PlayoffBracketSide: String, Hashable {
     case undetermined
 }
 
+struct PlayoffGame: Identifiable, Hashable {
+    var id: String { homeAway.gameId ?? UUID().uuidString }
+    let homeAway: HomeAway
+    let date: String
+}
+
 /// One best-of series row from recap `series` text. Round grouping is derived in `PlayoffViewModel` (bracket counts + seeds), not from this string alone.
 struct PlayoffSeries: Identifiable, Hashable {
     var id: String { "\(awayTeamCode)-vs-\(homeTeamCode)" }
@@ -25,6 +31,7 @@ struct PlayoffSeries: Identifiable, Hashable {
     let status: String
     let latestDate: String
     let conference: String
+    var games: [PlayoffGame] = []
     
     var isFinished: Bool {
         Self.statusIndicatesSeriesComplete(status)

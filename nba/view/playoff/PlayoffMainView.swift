@@ -16,6 +16,8 @@ struct PlayoffMainView: View {
             VStack(alignment: .leading, spacing: 28) {
                 playoffHeader
                 
+                StyledBannerContainer(adUnitId: .powerRanking)
+                
                 if viewModel.isLoading && viewModel.activeSeries.isEmpty {
                     loadingPlaceholder
                 } else if viewModel.activeSeries.isEmpty {
@@ -294,6 +296,10 @@ private struct PlayoffMatchupCard: View {
                         .foregroundStyle(.white.opacity(0.35))
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
+                
+                if !series.games.isEmpty {
+                    gameResultsSection
+                }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, metrics.vPadding)
@@ -307,6 +313,67 @@ private struct PlayoffMatchupCard: View {
                 .stroke(cardStroke, lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+    }
+    
+    private var gameResultsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Divider().background(Color.white.opacity(0.1))
+                .padding(.vertical, 4)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(series.games) { game in
+                        NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: game.homeAway), gameRecap: [])) {
+                            gameResultChip(game: game)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+            }
+        }
+    }
+    
+    private func gameResultChip(game: PlayoffGame) -> some View {
+        let awayScore = Int(game.homeAway.away.score ?? "0") ?? 0
+        let homeScore = Int(game.homeAway.home.score ?? "0") ?? 0
+        let awayWon = awayScore > homeScore
+        let homeWon = homeScore > awayScore
+        
+        let gameLabel: String = {
+            if let text = game.homeAway.series, let range = text.range(of: #"^Games?\s*\d+"#, options: .regularExpression) {
+                return String(text[range])
+                    .replacingOccurrences(of: "Games", with: "G")
+                    .replacingOccurrences(of: "Game", with: "G")
+                    .replacingOccurrences(of: " ", with: "")
+            }
+            return "G"
+        }()
+        
+        return HStack(spacing: 6) {
+            Text(gameLabel)
+                .font(.system(size: 9, weight: .black))
+                .foregroundStyle(.white.opacity(0.4))
+            
+            HStack(spacing: 3) {
+                Text("\(awayScore)")
+                    .foregroundStyle(awayWon ? .yellow : .white.opacity(0.6))
+                Text("-")
+                    .foregroundStyle(.white.opacity(0.2))
+                Text("\(homeScore)")
+                    .foregroundStyle(homeWon ? .yellow : .white.opacity(0.6))
+            }
+            .font(.system(size: 10, weight: .bold, design: .monospaced))
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(
+            Capsule()
+                .fill(Color.black.opacity(0.3))
+        )
+        .overlay(
+            Capsule()
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
     }
     
     private var sideAccent: some View {

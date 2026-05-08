@@ -98,7 +98,8 @@ final class PlayoffViewModel: ObservableObject {
                     homeTeamName: s.homeTeamName,
                     status: s.status,
                     latestDate: s.latestDate,
-                    conference: resolveConference(for: s, lookup: lookup)
+                    conference: resolveConference(for: s, lookup: lookup),
+                    games: s.games
                 )
             }
             .filter { !Self.statusExcludedFromPlayoffBracket($0.status) }
@@ -127,7 +128,8 @@ final class PlayoffViewModel: ObservableObject {
                 homeTeamName: s.homeTeamName,
                 status: s.status,
                 latestDate: s.latestDate,
-                conference: resolveConference(for: s, lookup: lookup)
+                conference: resolveConference(for: s, lookup: lookup),
+                games: s.games
             )
         }
         self.activeSeries = remapped
@@ -141,17 +143,40 @@ final class PlayoffViewModel: ObservableObject {
             for game in day.items {
                 guard let text = game.series, !text.isEmpty else { continue }
                 let key = [game.away.teamCode, game.home.teamCode].sorted().joined(separator: "-vs-")
-                dict[key] = PlayoffSeries(
-                    awayTeamCode: game.away.teamCode,
-                    homeTeamCode: game.home.teamCode,
-                    awayTeamId: game.away.teamId,
-                    homeTeamId: game.home.teamId,
-                    awayTeamName: game.away.teamCode.nickNameToTriCode,
-                    homeTeamName: game.home.teamCode.nickNameToTriCode,
-                    status: text,
-                    latestDate: day.date ?? "",
-                    conference: ""
+                
+                let gameResult = PlayoffGame(
+                    homeAway: game,
+                    date: day.date ?? ""
                 )
+                
+                if var existing = dict[key] {
+                    existing.games.append(gameResult)
+                    dict[key] = PlayoffSeries(
+                        awayTeamCode: existing.awayTeamCode,
+                        homeTeamCode: existing.homeTeamCode,
+                        awayTeamId: existing.awayTeamId,
+                        homeTeamId: existing.homeTeamId,
+                        awayTeamName: existing.awayTeamName,
+                        homeTeamName: existing.homeTeamName,
+                        status: text, // Latest status
+                        latestDate: day.date ?? "",
+                        conference: existing.conference,
+                        games: existing.games
+                    )
+                } else {
+                    dict[key] = PlayoffSeries(
+                        awayTeamCode: game.away.teamCode,
+                        homeTeamCode: game.home.teamCode,
+                        awayTeamId: game.away.teamId,
+                        homeTeamId: game.home.teamId,
+                        awayTeamName: game.away.teamCode.nickNameToTriCode,
+                        homeTeamName: game.home.teamCode.nickNameToTriCode,
+                        status: text,
+                        latestDate: day.date ?? "",
+                        conference: "",
+                        games: [gameResult]
+                    )
+                }
             }
         }
         return dict.values.sorted { $0.latestDate > $1.latestDate }
