@@ -49,7 +49,27 @@ Xcode GUI를 직접 실행하지 않고도 터미널 CLI 환경에서 빠르게 
 
 ---
 
+### 3. App Store (TestFlight) 자동 배포 (`deploy.sh`)
+
+빌드 번호 자동 증가부터 아카이브, IPA 추출, App Store Connect 업로드까지 원클릭으로 자동 처리합니다.
+
+```bash
+# 기본 배포 (빌드 번호 +1 증가 ➔ Release 빌드 ➔ TestFlight 자동 업로드)
+./deploy.sh
+
+# 사전 유효성 검증만 수행 (업로드 생략)
+./deploy.sh --validate-only
+
+# 로컬 IPA 빌드만 생성 (build/nba.ipa)
+./deploy.sh --skip-upload
+```
+
+> 📖 **자세한 배포 가이드**: [docs/APP_STORE_DEPLOY_GUIDE.md](file:///Users/a1100690/Documents/iOS/nba/docs/APP_STORE_DEPLOY_GUIDE.md)
+
+---
+
 ## 📱 프로젝트 정보
 - **Bundle Identifier**: `com.spearhead.nbaPowerRanking`
 - **Xcode Scheme**: `nba`
 - **최소 지원 타겟**: iOS 17.6+
+
