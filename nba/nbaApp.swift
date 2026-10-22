@@ -39,40 +39,24 @@ struct nbaApp: App {
   
   var body: some Scene {
     WindowGroup {
-      if remoteConfig.shouldUseOfficialTeamData {
-          // Multi-tab Mode
-          TabView {
-            NavigationView {
-              PlayoffMainView()
-            }
-            .tabItem {
-                Image(systemName: "trophy.fill")
-                Text("Playoffs")
-            }
-            
-            NavigationView {
-              PowerRankingView()
-            }
-            .tabItem {
-                Image(systemName: "bolt.fill")
-                Text("Power Ranking")
-            }
-            
-            NavigationView {
-              StandingsView()
-            }
-            .tabItem {
-                Image(systemName: "list.number")
-                Text("Standings")
-            }
-          }
-          .accentColor(.white)
-      } else {
-          // Single-view Mode (Legacy)
-          NavigationView {
-              PowerRankingView()
-          }
+      TabView {
+        NavigationView {
+          PowerRankingView()
+        }
+        .tabItem {
+            Image(systemName: "bolt.fill")
+            Text("Power Ranking")
+        }
+        
+        NavigationView {
+          StandingsView()
+        }
+        .tabItem {
+            Image(systemName: "list.number")
+            Text("Standings")
+        }
       }
+      .accentColor(.white)
     }
   }
 }

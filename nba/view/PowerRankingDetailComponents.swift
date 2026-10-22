@@ -513,11 +513,14 @@ struct TeamStatsView: View {
     // Helper to get stats
     private var currentSeasonStats: [TeamStats] {
         guard let teamModel = teamModel else { return [] }
-        let targetSeason = "2025-26"
+        let targetSeason = SeasonProvider.shared.seasonDisplayString()
         
-        if let seasonalStats = teamModel.seasonalStats,
-           let currentSeason = seasonalStats.first(where: { $0.season == targetSeason }) {
-            return currentSeason.stats
+        if let seasonalStats = teamModel.seasonalStats {
+            if let currentSeason = seasonalStats.first(where: { $0.season == targetSeason }) {
+                return currentSeason.stats
+            } else if let latestSeason = seasonalStats.first {
+                return latestSeason.stats
+            }
         } else if let legacyStats = teamModel.stats {
             return legacyStats
         }

@@ -185,10 +185,11 @@ extension TeamStatsViewModel {
   }
   
   var currentSeasonStats: [PlayerStatsItemViewModel] {
-      stats.first { $0.title == "2024-25" }
-          .map {
-              makeTeamStatsItemViewModels(with: $0)
-          } ?? []
+      let targetSeason = SeasonProvider.shared.seasonDisplayString()
+      let matchedStats = stats.first { $0.title == targetSeason } ?? stats.first { $0.title?.contains("-") == true } ?? stats.first
+      return matchedStats.map {
+          makeTeamStatsItemViewModels(with: $0)
+      } ?? []
   }
   
   var homeStats: TeamStats? {

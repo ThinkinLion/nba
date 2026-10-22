@@ -10,18 +10,27 @@ import FirebaseFirestore
 import Firebase
 
 protocol PowerRankingRepository {
-    func fetchPowerRankings() async throws -> [PowerRankingModel]
-    func fetchPowerRanking(week: String) async throws -> PowerRankingModel?
+    func fetchPowerRankings(season: String) async throws -> [PowerRankingModel]
+    func fetchPowerRanking(season: String, week: String) async throws -> PowerRankingModel?
     func fetchRecentGames(teamId: String) async throws -> [HomeAway]
+}
+
+extension PowerRankingRepository {
+    func fetchPowerRankings() async throws -> [PowerRankingModel] {
+        try await fetchPowerRankings(season: SeasonProvider.shared.seasonYear())
+    }
+    
+    func fetchPowerRanking(week: String) async throws -> PowerRankingModel? {
+        try await fetchPowerRanking(season: SeasonProvider.shared.seasonYear(), week: week)
+    }
 }
 
 final class FirestorePowerRankingRepository: PowerRankingRepository {
     private let db = Firestore.firestore()
     
-    func fetchPowerRankings() async throws -> [PowerRankingModel] {
-        let snapshot = try await db.collection("powerRankings.2025")
+    func fetchPowerRankings(season: String) async throws -> [PowerRankingModel] {
+        let snapshot = try await db.collection("powerRankings.\(season)")
             .order(by: "week", descending: true)
-//            .limit(to: 2)
             .getDocuments()
         
         return snapshot.documents.compactMap { documentSnapshot in
@@ -30,8 +39,8 @@ final class FirestorePowerRankingRepository: PowerRankingRepository {
         }
     }
     
-    func fetchPowerRanking(week: String) async throws -> PowerRankingModel? {
-        let snapshot = try await db.collection("powerRankings.2025")
+    func fetchPowerRanking(season: String, week: String) async throws -> PowerRankingModel? {
+        let snapshot = try await db.collection("powerRankings.\(season)")
             .whereField("week", isEqualTo: week)
             .limit(to: 1)
             .getDocuments()

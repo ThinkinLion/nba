@@ -18,10 +18,13 @@ struct PowerRankingView: View {
         ZStack(alignment: .top) {
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
+                    // 시즌 선택 인라인 캡슐 토글
+                    seasonSelectorView
+                    
                     // Week 캐러셀을 위한 공간 (스크롤 시 사라짐)
                     if !viewModel.availableWeeks.isEmpty {
                         weekCarouselView()
-                            .padding(.top, 10)
+                            .padding(.top, 6)
                             .padding(.bottom, 15)
                             .background(
                                 GeometryReader { proxy in
@@ -53,8 +56,6 @@ struct PowerRankingView: View {
                                 .padding(.top, 20)
                         }
                         
-
-                        
                         // 컨퍼런스 탭
                         conferenceTabView()
                             .padding(.top, 40)
@@ -64,16 +65,26 @@ struct PowerRankingView: View {
                             rankingListView(items: viewModel.filteredTeams(currentRanking.teams))
                                 .padding(.top, 20)
                         }
-                        
-
                     } else if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")
                             .foregroundColor(.red)
                             .padding()
                     } else {
-                        Text("No power rankings available")
-                            .foregroundColor(.gray)
-                            .padding()
+                        VStack(spacing: 12) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 38))
+                                .foregroundColor(.yellow.opacity(0.8))
+                            Text("\(SeasonProvider.shared.seasonDisplayString(for: viewModel.selectedSeason)) 시즌 파워랭킹 준비 중")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                            Text("새 시즌 공식 파워랭킹이 발표되면 즉시 업데이트됩니다.\n상단 이전 시즌 탭을 눌러 지난 시즌 랭킹을 확인할 수 있습니다.")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.7))
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 32)
+                        }
+                        .padding(.top, 60)
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }
@@ -109,6 +120,49 @@ struct PowerRankingView: View {
             hasAppeared = true
         }
         .analyticsScreen(name: "NBA-PowerRankingView")
+    }
+}
+
+// MARK: - Season Selector View
+extension PowerRankingView {
+    @ViewBuilder
+    private var seasonSelectorView: some View {
+        HStack(spacing: 8) {
+            ForEach(viewModel.availableSeasons) { season in
+                let isSelected = viewModel.selectedSeason == season.id
+                Button(action: {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                        viewModel.selectSeason(season.id)
+                    }
+                }) {
+                    HStack(spacing: 6) {
+                        if season.isCurrent {
+                            Circle()
+                                .fill(isSelected ? Color.green : Color.green.opacity(0.6))
+                                .frame(width: 6, height: 6)
+                        }
+                        Text(season.display)
+                            .font(.system(size: 13, weight: isSelected ? .bold : .semibold))
+                    }
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.65))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .background(
+                        Capsule()
+                            .fill(isSelected ? Color.white.opacity(0.22) : Color.white.opacity(0.06))
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(isSelected ? Color.white.opacity(0.35) : Color.white.opacity(0.1), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 15)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 }
 

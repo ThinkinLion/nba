@@ -20,6 +20,18 @@ enum Conference: String, CaseIterable {
 }
 
 final class PowerRankingViewModel: ObservableObject {
+    struct SeasonOption: Identifiable, Equatable {
+        let id: String         // e.g. "2027", "2025"
+        let display: String    // e.g. "2026-27", "2025-26"
+        let isCurrent: Bool
+    }
+    
+    @Published var availableSeasons: [SeasonOption] = [
+        SeasonOption(id: "2027", display: "2026-27", isCurrent: true),
+        SeasonOption(id: "2025", display: "2025-26", isCurrent: false)
+    ]
+    @Published var selectedSeason: String = "2027"
+    
     @Published var powerRankings: [PowerRankingModel] = []
     @Published var currentPowerRanking: PowerRankingModel?
     @Published var selectedWeek: String?
@@ -66,10 +78,27 @@ final class PowerRankingViewModel: ObservableObject {
         }
     }
     
-    func fetchPowerRankings(forceRefresh: Bool = false) async {
+    func selectSeason(_ season: String) {
+        guard selectedSeason != season else { return }
+        selectedSeason = season
+        selectedWeek = nil
+        currentPowerRanking = nil
+        powerRankings = []
+        Task {
+            await fetchPowerRankings(season: season, forceRefresh: false)
+        }
+    }
+    
+    private func powerRankingsCacheKey(for season: String) -> String {
+        "powerRankings.list.\(season)"
+    }
+    
+    func fetchPowerRankings(season: String? = nil, forceRefresh: Bool = false) async {
+        let targetSeason = season ?? selectedSeason
         errorMessage = nil
+        let cacheKey = powerRankingsCacheKey(for: targetSeason)
         
-        if !forceRefresh, let cached = NBAFirestoreDayCache.load([PowerRankingModel].self, key: Self.powerRankingsCacheKey) {
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load([PowerRankingModel].self, key: cacheKey) {
             await MainActor.run {
                 self.applyProcessedPowerRankings(from: cached)
                 self.isLoading = false
@@ -78,10 +107,13 @@ final class PowerRankingViewModel: ObservableObject {
             return
         }
         
-        isLoading = true
+        await MainActor.run {
+            self.isLoading = true
+        }
+        
         do {
-            let rankings = try await repository.fetchPowerRankings()
-            NBAFirestoreDayCache.save(rankings, key: Self.powerRankingsCacheKey)
+            let rankings = try await repository.fetchPowerRankings(season: targetSeason)
+            NBAFirestoreDayCache.save(rankings, key: cacheKey)
             await MainActor.run {
                 self.applyProcessedPowerRankings(from: rankings)
                 self.isLoading = false
@@ -94,8 +126,6 @@ final class PowerRankingViewModel: ObservableObject {
             }
         }
     }
-    
-    private static let powerRankingsCacheKey = "powerRankings.list"
     
     /// Shared cache payload with `StandingsViewModel` — filter/sort for UI only.
     private func applyProcessedPowerRankings(from rankings: [PowerRankingModel]) {
@@ -121,10 +151,11 @@ final class PowerRankingViewModel: ObservableObject {
     func fetchPowerRankingByWeek(_ week: String) {
         isLoading = true
         errorMessage = nil
+        let targetSeason = selectedSeason
         
         Task {
             do {
-                if let ranking = try await repository.fetchPowerRanking(week: week) {
+                if let ranking = try await repository.fetchPowerRanking(season: targetSeason, week: week) {
                     await MainActor.run {
                         self.currentPowerRanking = ranking
                         self.selectedWeek = ranking.week
