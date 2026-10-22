@@ -161,3 +161,29 @@ App Store Connect는 동일 버전(`1.10`) 내에서 **이전에 업로드된 �
 
 ### Q3. `No Accounts with App Store Connect Access` 또는 프로비저닝 에러
 * **해결**: Xcode > Settings > Accounts에서 본인 Apple Developer 계정이 로그인되어 있고 인증서가 유효한지 확인합니다.
+
+---
+
+## 🔮 8. 향후 지원 가능한 확장 자동화 기능
+
+AI 에이전트와 App Store Connect REST API를 통해 다음 작업들도 모두 자동화할 수 있으며, 필요 시 언제든 바로 추가 스크립트로 구현 가능합니다:
+
+### 1) 신규 앱 생성 자동화 (Create New App)
+* **API 엔드포인트**: `POST /v1/apps`
+* **동작 방식**: 
+  - 개발자가 웹사이트에 들어갈 필요 없이, AI가 앱 이름, 번들 ID(`bundleId`), 기본 언어(`primaryLocale`), 고유 SKU를 지정하여 App Store Connect에 **완전히 새로운 신규 앱 레코드를 원격으로 즉시 생성**합니다.
+* **사용 시기**: 새로운 iOS 프로젝트를 시작하거나 새 앱을 앱스토어에 최초 런칭할 때 사용.
+
+### 2) 앱스토어 스크린샷 자동 캡처 및 업로드 (Screenshots Automation)
+* **스크린샷 자동 캡처**:
+  - Mac 시뮬레이터 CLI(`xcrun simctl io booted screenshot`) 또는 XCUITest를 활용하여,
+  - 주요 디바이스 규격(6.7" iPhone 16 Pro Max, 6.5" iPhone 11 Pro Max 등)에서 메인 화면, 파워랭킹 상세, 순위표 등 **스토어 등록용 스크린샷을 전자동으로 캡처**합니다.
+* **스크린샷 원격 업로드**:
+  - `POST /v1/appScreenshotSets` (스크린샷 디스플레이 세트 생성)
+  - `POST /v1/appScreenshots` (이미지 파일 업로드 예약 및 바이너리 전송)
+  - 웹 콘솔에서 일일이 드래그 앤 드롭하지 않아도 **규격별 스크린샷이 언어별로 자동 업로드**됩니다.
+
+### 3) 심사 최종 제출 자동화 (Submit for Review)
+* **엔드포인트**: `POST /v1/reviewSubmissions` ➔ `POST /v1/reviewSubmissionItems` ➔ `PATCH /v1/reviewSubmissions/{id} (submitted: true)`
+* **구현 상태**: [scripts/submit_for_review.js](file:///Users/a1100690/Documents/iOS/nba/scripts/submit_for_review.js) 및 `./deploy.sh --submit`으로 이미 구현 완료되어, 다음 배포 시부터 명령어 한 줄로 즉시 사용 가능합니다.
+
