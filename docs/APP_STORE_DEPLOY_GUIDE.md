@@ -38,10 +38,21 @@ flowchart TD
 
 터미널에서 명령어 한 줄로 즉시 실행할 수 있습니다.
 
-### ① 기본 실행 (가장 일반적인 배포)
-빌드 번호를 자동으로 1 올리고, 배포용 빌드를 생성한 뒤 TestFlight에 업로드합니다.
+### ① 기본 실행 (TestFlight 배포)
+빌드 번호를 자동으로 1 올리고, 배포용 빌드를 생성한 뒤 TestFlight에 업로드하고 릴리즈 노트를 등록합니다.
 ```bash
 ./deploy.sh
+```
+
+### ② 심사에 최종 제출까지 원클릭 완료 (`--submit`)
+TestFlight 업로드 및 릴리즈 노트 등록 후, Apple 서버의 빌드 처리를 기다려 **App Store 공식 심사에 최종 제출(Submit for Review)**까지 한 번에 완료합니다.
+```bash
+./deploy.sh --submit
+```
+
+*또는 이미 업로드된 빌드를 심사에만 바로 제출하고 싶을 때:*
+```bash
+node scripts/submit_for_review.js
 ```
 
 ### ② 업로드 없이 빌드 및 유효성 검증만 수행

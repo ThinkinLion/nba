@@ -24,10 +24,15 @@ API_ISSUER="69a6de82-3793-47e3-e053-5b8c7c11a4d1"
 BUMP_VERSION=true
 DO_UPLOAD=true
 DO_VALIDATE_ONLY=false
+DO_SUBMIT=false
 
 # CLI 옵션 파싱
 while [[ "$#" -gt 0 ]]; do
     case $1 in
+        --submit)
+            DO_SUBMIT=true
+            shift
+            ;;
         --no-bump)
             BUMP_VERSION=false
             shift
@@ -48,7 +53,8 @@ while [[ "$#" -gt 0 ]]; do
             echo "사용법: ./deploy.sh [옵션]"
             echo ""
             echo "옵션:"
-            echo "  (기본 실행)        빌드 번호 +1 증가 ➔ Release 아카이브 ➔ IPA 추출 ➔ App Store Connect 업로드"
+            echo "  (기본 실행)        빌드 번호 +1 ➔ Release 아카이브 ➔ IPA 추출 ➔ App Store Connect 업로드"
+            echo "  --submit           업로드 및 릴리즈 노트 등록 후, Apple 심사(Review)에 최종 제출까지 자동 수행"
             echo "  --no-bump          빌드 번호(CURRENT_PROJECT_VERSION)를 증가시키지 않고 유지"
             echo "  --validate-only    업로드하지 않고 App Store Connect 유효성 검증만 수행"
             echo "  --skip-upload      IPA 빌드까지만 수행하고 업로드/검증 단계 건너뜀 (로컬 테스트용)"
@@ -186,6 +192,12 @@ if [ "$DO_UPLOAD" = true ]; then
     if [ -f "$DIR/scripts/update_release_notes.js" ]; then
         echo ""
         node "$DIR/scripts/update_release_notes.js" || echo "⚠️ Release notes update skipped"
+    fi
+    
+    # 8. 심사에 최종 제출 (--submit 옵션 지정 시)
+    if [ "$DO_SUBMIT" = true ] && [ -f "$DIR/scripts/submit_for_review.js" ]; then
+        echo ""
+        node "$DIR/scripts/submit_for_review.js"
     fi
 elif [ "$DO_VALIDATE_ONLY" = true ]; then
     echo "=================================================================="

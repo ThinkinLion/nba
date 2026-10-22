@@ -57,6 +57,9 @@ Xcode GUI를 직접 실행하지 않고도 터미널 CLI 환경에서 빠르게 
 # 기본 배포 (빌드 번호 +1 증가 ➔ Release 빌드 ➔ TestFlight 자동 업로드)
 ./deploy.sh
 
+# 심사에 최종 제출까지 원클릭 완료 (업로드 + 릴리즈노트 + App Store 심사 제출)
+./deploy.sh --submit
+
 # 사전 유효성 검증만 수행 (업로드 생략)
 ./deploy.sh --validate-only
 
