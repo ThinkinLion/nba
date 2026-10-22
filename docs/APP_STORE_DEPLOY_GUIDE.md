@@ -90,13 +90,27 @@ App Store Connect는 동일 버전(`1.10`) 내에서 **이전에 업로드된 �
 
 ---
 
-## 📝 6. 릴리즈 노트 (Release Notes) 팁
+## 📝 6. 릴리즈 노트 (What's New) 자동 등록 기능
 
-새 버전을 앱스토어 정식 심사에 제출할 때 필요한 릴리즈 노트는 프로젝트 내 **[AppStore_Metadata.md](file:///Users/a1100690/Documents/iOS/nba/AppStore_Metadata.md)**를 참고하세요.
+`altool`은 앱 바이너리만 올리지만, 프로젝트에 포함된 **`scripts/update_release_notes.js`**를 통해 **Apple REST API로 App Store Connect의 '이 버전에서 변경된 사항'을 직접 원격 갱신**합니다.
 
-### 이번 2026-27 시즌 개막 추천 릴리즈 노트
+* `./deploy.sh` 실행 시 업로드 완료 후 **자동으로 릴리즈 노트까지 함께 업데이트**됩니다.
+* 단독으로 릴리즈 노트만 수정하고 싶을 때:
+  ```bash
+  node scripts/update_release_notes.js
+  ```
+
+### 이번 2026-27 시즌 개막 반영 릴리즈 노트 (적용 완료)
+*(애플 문자열 제약 규칙에 맞춰 이모지 대신 표준 대시 기호 사용)*
 ```text
-🏀 2026-27 NBA 새 시즌 개막 업데이트!
+2026-27 NBA Season Opening Update!
+
+- 2026-27 Season Ready: Track the latest weekly power rankings, team rosters, and standings for the brand new 2026-27 NBA season.
+- Season Switcher: Seamlessly toggle between 2026-27 and 2025-26 power rankings with a single tap.
+- Streamlined Navigation: Clean 2-Tab experience focused on 'Power Ranking' and 'Standings'.
+- Roster & Stats Improvements: Fast and reliable team roster and seasonal statistics.
+- UI & Performance: Optimized early-season ranking handling and enhanced app stability.
+```
 
 • 2026-27 시즌 개막 지원:
   새 시즌 최신 주차별 파워랭킹, 팀 로스터 및 경기 순위를 실시간으로 확인하세요.

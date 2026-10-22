@@ -181,6 +181,12 @@ if [ "$DO_UPLOAD" = true ]; then
     echo "🌐 TestFlight:      https://appstoreconnect.apple.com/apps"
     echo "⏱️  Processing:     애플 서버에서 빌드 처리가 완료되면(약 5~15분) TestFlight에 노출됩니다."
     echo "=================================================================="
+    
+    # 7. 릴리즈 노트(이 버전에서 변경된 사항) 자동 업데이트
+    if [ -f "$DIR/scripts/update_release_notes.js" ]; then
+        echo ""
+        node "$DIR/scripts/update_release_notes.js" || echo "⚠️ Release notes update skipped"
+    fi
 elif [ "$DO_VALIDATE_ONLY" = true ]; then
     echo "=================================================================="
     echo "✅ Validation complete! (--validate-only: 업로드는 건너뛰었습니다)"
