@@ -51,7 +51,7 @@ struct PowerRankingView: View {
                         }
                         
                         // Movement Section
-                        if let movement = currentRanking.movement {
+                        if let movement = currentRanking.movement, movement.hasData {
                             MovementView(movement: movement, viewModel: viewModel)
                                 .padding(.top, 20)
                         }

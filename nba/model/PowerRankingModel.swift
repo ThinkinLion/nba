@@ -94,6 +94,12 @@ struct PowerRankingAdvancedItemModel: Codable {
 struct PowerRankingMovementModel: Codable, Hashable {
     let highJumps: [PowerRankingMovementItemModel]?
     let freeFalls: [PowerRankingMovementItemModel]?
+    
+    var hasData: Bool {
+        let hasJumps = !(highJumps?.isEmpty ?? true)
+        let hasFalls = !(freeFalls?.isEmpty ?? true)
+        return hasJumps || hasFalls
+    }
 }
 
 struct PowerRankingMovementItemModel: Codable, Hashable {

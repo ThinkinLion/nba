@@ -12,24 +12,26 @@ struct MovementView: View {
     @ObservedObject var viewModel: PowerRankingViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            Text("MOVEMENT IN THE RANKINGS")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white.opacity(0.8))
-                .padding(.horizontal, 15)
-            
-            HStack(alignment: .top, spacing: 15) {
-                // High Jumps
-                if let jumps = movement.highJumps, !jumps.isEmpty {
-                    movementColumn(title: "HIGH JUMPS", items: jumps, color: .green, icon: "arrow.up")
-                }
+        if movement.hasData {
+            VStack(alignment: .leading, spacing: 15) {
+                Text("MOVEMENT IN THE RANKINGS")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white.opacity(0.8))
+                    .padding(.horizontal, 15)
                 
-                // Free Falls
-                if let falls = movement.freeFalls, !falls.isEmpty {
-                    movementColumn(title: "FREE FALLS", items: falls, color: .red, icon: "arrow.down")
+                HStack(alignment: .top, spacing: 15) {
+                    // High Jumps
+                    if let jumps = movement.highJumps, !jumps.isEmpty {
+                        movementColumn(title: "HIGH JUMPS", items: jumps, color: .green, icon: "arrow.up")
+                    }
+                    
+                    // Free Falls
+                    if let falls = movement.freeFalls, !falls.isEmpty {
+                        movementColumn(title: "FREE FALLS", items: falls, color: .red, icon: "arrow.down")
+                    }
                 }
+                .padding(.horizontal, 15)
             }
-            .padding(.horizontal, 15)
         }
     }
     
