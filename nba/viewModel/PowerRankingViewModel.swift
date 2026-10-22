@@ -27,10 +27,10 @@ final class PowerRankingViewModel: ObservableObject {
     }
     
     @Published var availableSeasons: [SeasonOption] = [
-        SeasonOption(id: "2027", display: "2026-27", isCurrent: true),
+        SeasonOption(id: "2026", display: "2026-27", isCurrent: true),
         SeasonOption(id: "2025", display: "2025-26", isCurrent: false)
     ]
-    @Published var selectedSeason: String = "2027"
+    @Published var selectedSeason: String = "2026"
     
     @Published var powerRankings: [PowerRankingModel] = []
     @Published var currentPowerRanking: PowerRankingModel?
