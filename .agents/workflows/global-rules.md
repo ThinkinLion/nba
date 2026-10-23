@@ -23,3 +23,9 @@ description: 글로벌 코딩 규칙 및 컨벤션 (Global Rules)
 
 ### 5. 응답 및 문서 언어
 - 주석, 코드 내 설명, 그리고 **실행 계획(Implementation Plan)**을 포함한 모든 작업 내역과 문서화는 **한국어**로 명확하게 작성합니다.
+
+### 6. Git 커밋 및 작성자 규칙 (Git Author & Committer)
+- Git 커밋 시 시스템 글로벌 계정을 사용하지 않고, 반드시 다음 **GitHub 전용 계정 정보**를 사용해야 합니다:
+  - **User Name**: `ThinkinLion`
+  - **User Email**: `spearhead0427@gmail.com`
+- 레포지토리 내 커밋 전 로컬 git config(`user.name`, `user.email`)가 올바르게 설정되어 있는지 항상 확인하고 준수합니다.
