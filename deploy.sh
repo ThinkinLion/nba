@@ -25,10 +25,15 @@ BUMP_VERSION=true
 DO_UPLOAD=true
 DO_VALIDATE_ONLY=false
 DO_SUBMIT=false
+DO_SCREENSHOTS=false
 
 # CLI 옵션 파싱
 while [[ "$#" -gt 0 ]]; do
     case $1 in
+        --screenshots)
+            DO_SCREENSHOTS=true
+            shift
+            ;;
         --submit)
             DO_SUBMIT=true
             shift
@@ -54,6 +59,7 @@ while [[ "$#" -gt 0 ]]; do
             echo ""
             echo "옵션:"
             echo "  (기본 실행)        빌드 번호 +1 ➔ Release 아카이브 ➔ IPA 추출 ➔ App Store Connect 업로드"
+            echo "  --screenshots      필수 2대 규격(6.7/6.9인치 & 6.5인치) 스크린샷 자동 캡처 및 업로드"
             echo "  --submit           업로드 및 릴리즈 노트 등록 후, Apple 심사(Review)에 최종 제출까지 자동 수행"
             echo "  --no-bump          빌드 번호(CURRENT_PROJECT_VERSION)를 증가시키지 않고 유지"
             echo "  --validate-only    업로드하지 않고 App Store Connect 유효성 검증만 수행"
@@ -194,7 +200,18 @@ if [ "$DO_UPLOAD" = true ]; then
         node "$DIR/scripts/update_release_notes.js" || echo "⚠️ Release notes update skipped"
     fi
     
-    # 8. 심사에 최종 제출 (--submit 옵션 지정 시)
+    # 8. 필수 2대 규격 스크린샷 캡처 및 업로드 (--screenshots 옵션 지정 시)
+    if [ "$DO_SCREENSHOTS" = true ]; then
+        echo ""
+        if [ -f "$DIR/scripts/capture_screenshots.sh" ]; then
+            "$DIR/scripts/capture_screenshots.sh"
+        fi
+        if [ -f "$DIR/scripts/upload_screenshots.js" ]; then
+            node "$DIR/scripts/upload_screenshots.js"
+        fi
+    fi
+
+    # 9. 심사에 최종 제출 (--submit 옵션 지정 시)
     if [ "$DO_SUBMIT" = true ] && [ -f "$DIR/scripts/submit_for_review.js" ]; then
         echo ""
         node "$DIR/scripts/submit_for_review.js"

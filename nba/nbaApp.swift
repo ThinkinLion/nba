@@ -37,26 +37,41 @@ struct nbaApp: App {
     }
   }
   
+  @State private var selectedTab: Int = ProcessInfo.processInfo.arguments.contains("-screenshot-standings") ? 1 : 0
+  private var isTeamScreenshot: Bool = ProcessInfo.processInfo.arguments.contains("-screenshot-team")
+  
   var body: some Scene {
     WindowGroup {
-      TabView {
+      if isTeamScreenshot {
         NavigationView {
-          PowerRankingView()
+          TeamView(teamId: "1610612759")
         }
-        .tabItem {
-            Image(systemName: "bolt.fill")
-            Text("Power Ranking")
+        .navigationViewStyle(.stack)
+        .accentColor(.white)
+      } else {
+        TabView(selection: $selectedTab) {
+          NavigationView {
+            PowerRankingView()
+          }
+          .navigationViewStyle(.stack)
+          .tabItem {
+              Image(systemName: "bolt.fill")
+              Text("Power Ranking")
+          }
+          .tag(0)
+          
+          NavigationView {
+            StandingsView()
+          }
+          .navigationViewStyle(.stack)
+          .tabItem {
+              Image(systemName: "list.number")
+              Text("Standings")
+          }
+          .tag(1)
         }
-        
-        NavigationView {
-          StandingsView()
-        }
-        .tabItem {
-            Image(systemName: "list.number")
-            Text("Standings")
-        }
+        .accentColor(.white)
       }
-      .accentColor(.white)
     }
   }
 }

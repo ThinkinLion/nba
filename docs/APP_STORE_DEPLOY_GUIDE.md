@@ -164,26 +164,50 @@ App Store Connect는 동일 버전(`1.10`) 내에서 **이전에 업로드된 �
 
 ---
 
-## 🔮 8. 향후 지원 가능한 확장 자동화 기능
+## 📸 8. 필수 2대 규격(Duo) 스크린샷 자동화 (구현 완료)
 
-AI 에이전트와 App Store Connect REST API를 통해 다음 작업들도 모두 자동화할 수 있으며, 필요 시 언제든 바로 추가 스크립트로 구현 가능합니다:
+Apple의 최신 가이드라인에 따른 **iPhone 필수 2대 규격(Duo)** 스크린샷 자동 캡처 및 App Store Connect API 업로드 파이프라인이 구축되어 있습니다.
+
+### 📱 2대 규격 사양
+| 구분 | 디스플레이 및 대표 기기 | 해상도 (픽셀) | API DisplayType | 저장 경로 |
+| :--- | :--- | :--- | :--- | :--- |
+| **규격 1** | **6.7/6.9형 Super Retina XDR**<br>(Dynamic Island 기기, iPhone 16 Pro Max) | **1320 x 2868** | `APP_IPHONE_67` | `screenshots/iphone_67/` |
+| **규격 2** | **6.5형 Super Retina XDR**<br>(Notch 기기, iPhone 11 Pro Max) | **1242 x 2688** | `APP_IPHONE_65` | `screenshots/iphone_65/` |
+
+* **상태바 정제**: Apple 가이드라인에 맞춰 상단 상태바를 공식 9:41 AM, 100% 충전, 풀 신호 상태로 고정하여 캡처됩니다.
+* **캡처 화면 세트**:
+  1. `01_power_ranking.png` (시즌 파워랭킹 리그 순위)
+  2. `02_standings.png` (동/서부 순위표 및 POTN)
+  3. `03_team_detail.png` (팀 상세 로스터 및 시즌 기록)
+
+### 🚀 사용 방법
+1. **스크린샷만 자동 캡처**:
+   ```bash
+   ./scripts/capture_screenshots.sh
+   ```
+2. **App Store Connect에 스크린샷만 업로드**:
+   ```bash
+   # 제출 준비 중(PREPARE_FOR_SUBMISSION)인 버전에 업로드
+   node scripts/upload_screenshots.js
+
+   # 새 버전을 생성하면서 스크린샷 업로드
+   node scripts/upload_screenshots.js --create-version=1.11
+   ```
+3. **원클릭 배포 시 스크린샷까지 한 번에 처리**:
+   ```bash
+   ./deploy.sh --screenshots
+   ```
+
+---
+
+## 🔮 9. 향후 지원 가능한 확장 자동화 기능
+
+AI 에이전트와 App Store Connect REST API를 통해 다음 작업들도 지원 가능합니다:
 
 ### 1) 신규 앱 생성 자동화 (Create New App)
 * **API 엔드포인트**: `POST /v1/apps`
-* **동작 방식**: 
-  - 개발자가 웹사이트에 들어갈 필요 없이, AI가 앱 이름, 번들 ID(`bundleId`), 기본 언어(`primaryLocale`), 고유 SKU를 지정하여 App Store Connect에 **완전히 새로운 신규 앱 레코드를 원격으로 즉시 생성**합니다.
-* **사용 시기**: 새로운 iOS 프로젝트를 시작하거나 새 앱을 앱스토어에 최초 런칭할 때 사용.
+* **동작 방식**: 웹 콘솔 접속 없이 앱 이름, Bundle ID, 기본 언어, 고유 SKU를 지정하여 신규 앱 레코드를 원격 즉시 생성.
 
-### 2) 앱스토어 스크린샷 자동 캡처 및 업로드 (Screenshots Automation)
-* **스크린샷 자동 캡처**:
-  - Mac 시뮬레이터 CLI(`xcrun simctl io booted screenshot`) 또는 XCUITest를 활용하여,
-  - 주요 디바이스 규격(6.7" iPhone 16 Pro Max, 6.5" iPhone 11 Pro Max 등)에서 메인 화면, 파워랭킹 상세, 순위표 등 **스토어 등록용 스크린샷을 전자동으로 캡처**합니다.
-* **스크린샷 원격 업로드**:
-  - `POST /v1/appScreenshotSets` (스크린샷 디스플레이 세트 생성)
-  - `POST /v1/appScreenshots` (이미지 파일 업로드 예약 및 바이너리 전송)
-  - 웹 콘솔에서 일일이 드래그 앤 드롭하지 않아도 **규격별 스크린샷이 언어별로 자동 업로드**됩니다.
-
-### 3) 심사 최종 제출 자동화 (Submit for Review)
-* **엔드포인트**: `POST /v1/reviewSubmissions` ➔ `POST /v1/reviewSubmissionItems` ➔ `PATCH /v1/reviewSubmissions/{id} (submitted: true)`
-* **구현 상태**: [scripts/submit_for_review.js](file:///Users/a1100690/Documents/iOS/nba/scripts/submit_for_review.js) 및 `./deploy.sh --submit`으로 이미 구현 완료되어, 다음 배포 시부터 명령어 한 줄로 즉시 사용 가능합니다.
+### 2) 심사 최종 제출 자동화 (Submit for Review)
+* **구현 상태**: [scripts/submit_for_review.js](file:///Users/a1100690/Documents/iOS/nba/scripts/submit_for_review.js) 및 `./deploy.sh --submit`으로 이미 구현 완료.
 
