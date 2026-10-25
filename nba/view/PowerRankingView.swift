@@ -25,7 +25,7 @@ struct PowerRankingView: View {
                     if !viewModel.availableWeeks.isEmpty {
                         weekCarouselView()
                             .padding(.top, 6)
-                            .padding(.bottom, 15)
+                            .padding(.bottom, 10)
                             .background(
                                 GeometryReader { proxy in
                                     Color.clear
@@ -33,6 +33,11 @@ struct PowerRankingView: View {
                                 }
                             )
                     }
+                    
+                    // ⭐ 마이팀(즐겨찾기 팀) 최상단 핀 대시보드
+                    FavoriteTeamsBarView(viewModel: viewModel)
+                        .padding(.top, 4)
+                        .padding(.bottom, 8)
                     
                     if viewModel.isLoading {
                         LogoLoadingView(size: 140)
@@ -58,33 +63,23 @@ struct PowerRankingView: View {
                         
                         // 컨퍼런스 탭
                         conferenceTabView()
-                            .padding(.top, 40)
+                            .padding(.top, 30)
                         
                         // 랭킹 리스트
                         if !currentRanking.teams.isEmpty {
                             rankingListView(items: viewModel.filteredTeams(currentRanking.teams))
-                                .padding(.top, 20)
+                                .padding(.top, 16)
                         }
                     } else if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")
                             .foregroundColor(.red)
                             .padding()
                     } else {
-                        VStack(spacing: 12) {
-                            Image(systemName: "sparkles")
-                                .font(.system(size: 38))
-                                .foregroundColor(.yellow.opacity(0.8))
-                            Text("\(SeasonProvider.shared.seasonDisplayString(for: viewModel.selectedSeason)) 시즌 파워랭킹 준비 중")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                            Text("새 시즌 공식 파워랭킹이 발표되면 즉시 업데이트됩니다.\n상단 이전 시즌 탭을 눌러 지난 시즌 랭킹을 확인할 수 있습니다.")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.7))
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 32)
-                        }
-                        .padding(.top, 60)
-                        .frame(maxWidth: .infinity)
+                        // 2026-27 새 시즌 개막 초기 모던 Empty State
+                        seasonOpeningEmptyStateView
+                            .padding(.top, 40)
+                            .padding(.horizontal, 20)
+                            .frame(maxWidth: .infinity)
                     }
                 }
             }
@@ -163,6 +158,95 @@ extension PowerRankingView {
         .padding(.horizontal, 15)
         .padding(.top, 8)
         .padding(.bottom, 4)
+    }
+    
+    // MARK: - Season Opening Empty State View
+    @ViewBuilder
+    private var seasonOpeningEmptyStateView: some View {
+        VStack(spacing: 20) {
+            ZStack {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [Color(red: 1.0, green: 0.84, blue: 0.0).opacity(0.25), Color.clear],
+                            center: .center,
+                            startRadius: 10,
+                            endRadius: 50
+                        )
+                    )
+                    .frame(width: 90, height: 90)
+                
+                Image(systemName: "basketball.fill")
+                    .font(.system(size: 44))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [Color(red: 1.0, green: 0.6, blue: 0.1), Color(red: 0.9, green: 0.3, blue: 0.0)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .shadow(color: Color(red: 1.0, green: 0.5, blue: 0.0).opacity(0.6), radius: 12, x: 0, y: 4)
+            }
+            .padding(.top, 10)
+            
+            VStack(spacing: 8) {
+                Text("\(SeasonProvider.shared.seasonDisplayString(for: viewModel.selectedSeason)) 시즌 개막!")
+                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white)
+                
+                Text("새 시즌 1주차 공식 파워랭킹이 발표되면\n가장 빠르게 분석 데이터와 함께 업데이트됩니다.")
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+            }
+            
+            // 지난 시즌 랭킹 바로가기 버튼
+            Button(action: {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                    viewModel.selectSeason("2025")
+                }
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "trophy.fill")
+                        .font(.system(size: 13))
+                        .foregroundColor(.yellow)
+                    Text("2025-26 지난 시즌 랭킹 살펴보기")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.white.opacity(0.6))
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color.white.opacity(0.12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                        )
+                )
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.top, 6)
+        }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.08), Color.white.opacity(0.02)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                )
+        )
     }
 }
 
@@ -492,28 +576,29 @@ extension PowerRankingView {
                             }
                         }
                         
-                        // Rank Change Badge
-                        HStack(spacing: 2) {
+                        // Rank Change Badge (Modern Neon Glass)
+                        let badgeColor = PowerRankingFormatter.rankChangeColor(for: team.rankChangeStyle)
+                        HStack(spacing: 3) {
                             Text(team.rankChangeText)
-                                .font(.system(size: 11, weight: .bold))
+                                .font(.system(size: 11, weight: .bold, design: .rounded))
                             
                             if team.rankChangeStyle != .same {
                                 Image(systemName: team.rankChangeStyle == .up ? "arrow.up" : "arrow.down")
-                                    .font(.system(size: 7, weight: .bold))
+                                    .font(.system(size: 8, weight: .heavy))
                             }
                         }
-
-                        .foregroundColor(PowerRankingFormatter.rankChangeColor(for: team.rankChangeStyle))
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .foregroundColor(badgeColor)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
                         .background(
                             Capsule()
-                                .fill(Color.black.opacity(0.3))
+                                .fill(badgeColor.opacity(0.18))
                                 .overlay(
                                     Capsule()
-                                        .stroke(PowerRankingFormatter.rankChangeColor(for: team.rankChangeStyle).opacity(0.3), lineWidth: 1)
+                                        .stroke(badgeColor.opacity(0.4), lineWidth: 1)
                                 )
                         )
+                        .shadow(color: badgeColor.opacity(team.rankChangeStyle == .same ? 0 : 0.35), radius: 4, x: 0, y: 1)
                     }
                 }
                 .padding(.leading, 10)

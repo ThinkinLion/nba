@@ -99,6 +99,7 @@
 		C2FDA6B92B1C118B00E2B3D7 /* SeasonLeadersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */; };
 		C2FDA6BB2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */; };
 		C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */; };
+C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */; };
 		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */; };
 /* End PBXBuildFile section */
 
@@ -213,6 +214,7 @@
 		C2FDA6B82B1C118B00E2B3D7 /* SeasonLeadersModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeadersModel.swift; sourceTree = "<group>"; };
 		C2FDA6BA2B1C26F400E2B3D7 /* SeasonLeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonLeaderViewModel.swift; sourceTree = "<group>"; };
 		C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
+C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteTeamsBarView.swift; sourceTree = "<group>"; };
 		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -336,6 +338,7 @@
 				C21EF4702B099989005D87D2 /* LineView.swift */,
 				C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */,
 				C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */,
+C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 				C2AF5CEF2EFB72D10025022F /* StyledBannerContainer.swift */,
 				C21EF4752B0B48AD005D87D2 /* BannerView.swift */,
 				C2EF47062F0508C900818956 /* SafeModeLogoView.swift */,
@@ -659,6 +662,7 @@
 			files = (
 				C26A109C2EF29B3500624C87 /* CategorizedTeamStatsView.swift in Sources */,
 				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
+C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */,
 				C2BA7EB52EE4FF0F00A71348 /* FavoritesManager.swift in Sources */,
 				C2E591CB2EDFCDC700A88D97 /* GenericTeamData.swift in Sources */,
 				C2E076692D77F28C00CE8ED3 /* PowerRankingModel.swift in Sources */,
