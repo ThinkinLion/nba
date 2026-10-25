@@ -1,7 +1,8 @@
-2026-27 NBA Season Opening Update!
+2026-27 NBA Season Major Revamp Update!
 
+- Brand New 3-Tab Experience: Seamless navigation across 'Games' (scores & daily MVP), 'Power Ranking' (weekly power rankings & favorites), and 'Standings' (conference tables & seeds).
+- My Teams Dashboard: Pin your favorite teams at the top to track ranks, records, and weekly movements at a glance.
+- Modern Glassmorphism & Neon Design: Upgraded live game scoreboard cards, horizontal calendar date strip, and sleek rank change badges.
 - 2026-27 Season Ready: Track the latest weekly power rankings, team rosters, and standings for the brand new 2026-27 NBA season.
-- Season Switcher: Seamlessly toggle between 2026-27 and 2025-26 power rankings with a single tap.
-- Streamlined Navigation: Clean 2-Tab experience focused on 'Power Ranking' and 'Standings'.
-- Roster & Stats Improvements: Fast and reliable team roster and seasonal statistics.
-- UI & Performance: Optimized early-season ranking handling and enhanced app stability.
+- Season Switcher & Early Season UX: Seamlessly toggle between 2026-27 and 2025-26 with instant season preview links.
+- Performance & Stability: Enhanced day-caching and smoother navigation transitions.
