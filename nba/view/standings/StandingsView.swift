@@ -13,8 +13,6 @@ struct StandingsView: View {
     @StateObject var powerRankingViewModel = PowerRankingViewModel()
     @State private var selectedConference: Conference = .east
     @State private var hasAppeared = false
-    @State private var selectedGameDateIndex: Int = 0 // For Bottom Section (Game List)
-    @State private var selectedPerformerDateIndex: Int = 0 // For Top Section (Daily Performer)
     
     enum Conference: String, CaseIterable {
         case east = "Eastern"
@@ -31,45 +29,9 @@ struct StandingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // List View Content
+                // STANDINGS TABLE
                 VStack(spacing: 0) {
-                    
-                    // --- TOP SECTION: DAILY PERFORMER ---
-                    if !viewModel.gameRecap.isEmpty {
-                        VStack(spacing: 12) {
-                            // Daily Top Performer Card (Includes independent date selector)
-                            if let bestPlayer = viewModel.dailyPerformer {
-                                DailyPerformerCardView(
-                                    performer: bestPlayer,
-                                    candidates: viewModel.dailyCandidates,
-                                    games: viewModel.gameRecap,
-                                    selectedIndex: $selectedPerformerDateIndex
-                                )
-                                .padding(.horizontal, 10)
-                            }
-                        }
-                        .padding(.vertical, 12)
-                        // Update performer when TOP date changes
-                        .onChange(of: selectedPerformerDateIndex) { newIndex in
-                            if viewModel.gameRecap.indices.contains(newIndex) {
-                                let selectedGames = viewModel.gameRecap[newIndex]
-                                viewModel.updateDailyPerformers(for: selectedGames)
-                            }
-                        }
-                        // Initial load helper if needed (but ViewModel usually sets initial)
-                        .onAppear {
-                            // Ensure initial sync if needed, or just let ViewModel handle first load
-                        }
-                    }
-                    
-                    // --- MIDDLE SECTION: STANDINGS TABLE ---
-                    VStack(spacing: 0) {
-                        
-                        // Section Title: STANDINGS
-                        SectionHeaderView(title: "STANDINGS")
-                          .padding(.top, 10)
-                        
-                        // Header Timestamp & Toggle (Grouped)
+                    // Header Timestamp & Toggle (Grouped)
                         VStack(spacing: 0) {
                             // Header Timestamp
                             if !viewModel.lastUpdated.isEmpty {
@@ -167,20 +129,7 @@ struct StandingsView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 20)
-                    
-                    // --- BOTTOM SECTION: RECENT GAMES ---
-                    if !viewModel.gameRecap.isEmpty {
-                        VStack(spacing: 0) {
-                            SectionHeaderView(title: "RECENT GAMES")
-                            
-                            // GameScoresView (Includes its own Date Selector, bound to separate state)
-                            GameScoresView(games: viewModel.gameRecap, selectedIndex: $selectedGameDateIndex)
-                        }
-                        .padding(.top, 30)
-                        .padding(.bottom, 40)
-                    }
-                }
+                    .padding(.bottom, 30)
             }
         }
         .refreshable {

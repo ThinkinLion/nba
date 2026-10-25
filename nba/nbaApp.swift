@@ -37,7 +37,17 @@ struct nbaApp: App {
     }
   }
   
-  @State private var selectedTab: Int = ProcessInfo.processInfo.arguments.contains("-screenshot-standings") ? 1 : 0
+  @State private var selectedTab: Int = {
+    let args = ProcessInfo.processInfo.arguments
+    if args.contains("-screenshot-standings") {
+      return 2
+    } else if args.contains("-screenshot-powerranking") {
+      return 1
+    } else if args.contains("-screenshot-games") {
+      return 0
+    }
+    return 0
+  }()
   private var isTeamScreenshot: Bool = ProcessInfo.processInfo.arguments.contains("-screenshot-team")
   
   var body: some Scene {
@@ -50,6 +60,18 @@ struct nbaApp: App {
         .accentColor(.white)
       } else {
         TabView(selection: $selectedTab) {
+          // Tab 0: Games (경기 스코어보드, 날짜별 일정, 데일리 MVP)
+          NavigationView {
+            GamesView()
+          }
+          .navigationViewStyle(.stack)
+          .tabItem {
+              Image(systemName: "basketball.fill")
+              Text("Games")
+          }
+          .tag(0)
+          
+          // Tab 1: Power Ranking (주간 공식 파워랭킹, 마이팀 핀, 분석글)
           NavigationView {
             PowerRankingView()
           }
@@ -58,8 +80,9 @@ struct nbaApp: App {
               Image(systemName: "bolt.fill")
               Text("Power Ranking")
           }
-          .tag(0)
+          .tag(1)
           
+          // Tab 2: Standings (컨퍼런스 순위표, 승률, 플레이오프 시드)
           NavigationView {
             StandingsView()
           }
@@ -68,7 +91,7 @@ struct nbaApp: App {
               Image(systemName: "list.number")
               Text("Standings")
           }
-          .tag(1)
+          .tag(2)
         }
         .accentColor(.white)
       }
