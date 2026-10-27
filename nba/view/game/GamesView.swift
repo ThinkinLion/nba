@@ -315,28 +315,30 @@ struct GamesView: View {
         }
     }
     
-    // MARK: - Candidate Mini Card (Top-Bottom Split: 얼굴과 텍스트 분리)
+    // MARK: - Candidate Mini Card (Honorable Mentions: 상단 여백 없이 테두리를 꽉 채우는 구조)
     @ViewBuilder
     private func candidateMiniCard(performer: DailyPerformer) -> some View {
         let teamCode = performer.teamCode
         let triCode = teamCode.nickNameToTriCode
         
-        VStack(spacing: 0) {
-            // [상단 105pt] 선수 사진 전용 영역 (얼굴이 텍스트에 가려지지 않고 온전히 보임!)
-            ZStack(alignment: .top) {
-                // 팀 컬러 배경 그라디언트
-                LinearGradient(
-                    colors: [
-                        Color(teamCode.lowercased() + ".dark").opacity(0.9),
-                        Color.black.opacity(0.7)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
+        ZStack(alignment: .bottom) {
+            // 1. 카드 전체 배경 (테두리를 빈틈없이 100% 꽉 채우는 그라디언트)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(teamCode.lowercased() + ".dark").opacity(0.9),
+                            Color.black.opacity(0.92)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
                 )
-                
-                // 선수 이미지 (중앙 배치)
-                if let playerId = performer.player.playerId {
-                    AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
+            
+            // 2. 선수 이미지 (상단 영역에 시원하게 배치되어 머리가 잘리거나 붕 뜨지 않음)
+            if let playerId = performer.player.playerId {
+                VStack(spacing: 0) {
+                    AsyncImage(url: URL(string: playerId.imageUrl)) { phase in
                         if let image = phase.image {
                             image
                                 .resizable()
@@ -345,11 +347,15 @@ struct GamesView: View {
                             Color.clear
                         }
                     }
-                    .frame(height: 98)
-                    .offset(y: 8)
+                    .frame(height: 112)
+                    .offset(y: 4)
+                    
+                    Spacer(minLength: 0)
                 }
-                
-                // 상단 팀 트라이코드 & 승패 뱃지 오버레이
+            }
+            
+            // 3. 상단 뱃지 오버레이 (팀 TriCode & W/L 승패)
+            VStack {
                 HStack {
                     Text(triCode)
                         .font(.system(size: 11, weight: .black, design: .rounded))
@@ -360,19 +366,19 @@ struct GamesView: View {
                     Text(performer.isWin ? "W" : "L")
                         .font(.system(size: 9, weight: .black))
                         .foregroundColor(.white)
-                        .padding(.horizontal, 5)
-                        .padding(.vertical, 1)
-                        .background(performer.isWin ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.8))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(performer.isWin ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.85))
                         .clipShape(Capsule())
                 }
-                .padding(.horizontal, 8)
+                .padding(.horizontal, 10)
                 .padding(.top, 8)
+                
+                Spacer()
             }
-            .frame(height: 105)
-            .clipped()
             
-            // [하단 55pt] 선수 이름 및 스탯 바 (검정 반투명 패널)
-            VStack(alignment: .leading, spacing: 2) {
+            // 4. 하단 정보 패널 (카드 밑바닥에 딱 밀착되어 얼굴을 전혀 가리지 않음)
+            VStack(alignment: .leading, spacing: 3) {
                 Text(performer.player.lastName?.uppercased() ?? "")
                     .font(.system(size: 13, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
@@ -380,34 +386,49 @@ struct GamesView: View {
                 
                 HStack(spacing: 4) {
                     Text("\(performer.player.pts ?? "0") PTS")
-                        .font(.system(size: 12, weight: .black, design: .monospaced))
+                        .font(.system(size: 11, weight: .black, design: .monospaced))
                         .foregroundColor(.white)
                     
                     if let reb = performer.player.reb, reb != "0" {
                         Text("· \(reb)R")
-                            .font(.system(size: 10, weight: .semibold))
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white.opacity(0.65))
+                    }
+                    
+                    if let ast = performer.player.ast, ast != "0" {
+                        Text("· \(ast)A")
+                            .font(.system(size: 10, weight: .bold))
                             .foregroundColor(.white.opacity(0.65))
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 10)
             .padding(.vertical, 8)
-            .background(Color.black.opacity(0.85))
+            .background(
+                Rectangle()
+                    .fill(Color.black.opacity(0.88))
+                    .overlay(
+                        Rectangle()
+                            .fill(Color.white.opacity(0.08))
+                            .frame(height: 0.5),
+                        alignment: .top
+                    )
+            )
         }
-        .frame(width: 130, height: 160)
-        .cornerRadius(14)
+        .frame(width: 130, height: 165)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .stroke(
                     LinearGradient(
-                        colors: [Color.white.opacity(0.2), Color.white.opacity(0.05)],
+                        colors: [Color.white.opacity(0.25), Color.white.opacity(0.05)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
                     lineWidth: 1
                 )
         )
-        .shadow(color: Color.black.opacity(0.35), radius: 5, x: 0, y: 2)
+        .shadow(color: Color.black.opacity(0.4), radius: 6, x: 0, y: 3)
     }
 }
