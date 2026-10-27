@@ -62,9 +62,9 @@ struct GamesView: View {
                             .buttonStyle(PlainButtonStyle())
                             .padding(.horizontal, 16)
                             
-                            // 2~4위 후보군 (Runners Up) 가로 스크롤 카드
+                            // 2~4위 후보군 (Honorable Mentions) 가로 스크롤 카드
                             if !viewModel.dailyCandidates.isEmpty {
-                                runnersUpSection(candidates: viewModel.dailyCandidates)
+                                honorableMentionsSection(candidates: viewModel.dailyCandidates)
                             }
                         }
                         .padding(.bottom, 24)
@@ -138,7 +138,7 @@ struct GamesView: View {
                     LinearGradient(
                         colors: [
                             Color(teamCode.lowercased() + ".dark").opacity(0.85),
-                            Color.black.opacity(0.9)
+                            Color.black.opacity(0.92)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -157,7 +157,7 @@ struct GamesView: View {
                 )
                 .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
             
-            // 선수 이미지 (우측 정렬)
+            // 선수 이미지 (우측 정렬 - 높이 165, 얼굴이 절대 텍스트에 가려지지 않음)
             if let playerId = performer.player.playerId {
                 HStack {
                     Spacer()
@@ -170,11 +170,11 @@ struct GamesView: View {
                             Color.clear
                         }
                     }
-                    .frame(height: 150)
-                    .offset(x: 10, y: 0)
+                    .frame(height: 165)
+                    .offset(x: 5, y: 0)
                     .mask(
                         LinearGradient(
-                            colors: [.white, .white.opacity(0.8), .clear],
+                            colors: [.white, .white.opacity(0.9), .clear],
                             startPoint: .trailing,
                             endPoint: .leading
                         )
@@ -182,49 +182,48 @@ struct GamesView: View {
                 }
             }
             
-            // 콘텐츠 정보 (좌측)
+            // 콘텐츠 정보 (좌측에만 정렬 - 우측 120pt는 선수 얼굴 공간으로 클리어하게 비워둠)
             VStack(alignment: .leading, spacing: 6) {
-                // 팀 & 경기 결과 뱃지
-                HStack(spacing: 6) {
+                // 1행: 팀 정보 & 경기 결과 뱃지 (좌측 정렬!)
+                HStack(spacing: 8) {
                     if !triCode.isEmpty {
                         Image(triCode)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 22, height: 22)
                     }
                     Text(triCode)
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundColor(.white)
                     
                     Text("vs \(performer.opponentTriCode)")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundColor(.white.opacity(0.6))
-                    
-                    Spacer()
+                        .foregroundColor(.white.opacity(0.65))
                     
                     Text(performer.gameResultText)
-                        .font(.system(size: 11, weight: .heavy, design: .rounded))
+                        .font(.system(size: 10, weight: .heavy, design: .rounded))
                         .foregroundColor(Color(red: 0.2, green: 0.85, blue: 0.45))
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 7)
                         .padding(.vertical, 2)
                         .background(Color.white.opacity(0.12))
                         .clipShape(Capsule())
                 }
                 
-                // 선수 이름
+                Spacer()
+                
+                // 2행: 선수 이름 (좌측에 굵게)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(performer.player.firstName ?? "")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.white.opacity(0.75))
                     Text(performer.player.lastName ?? "")
-                        .font(.system(size: 22, weight: .heavy, design: .rounded))
+                        .font(.system(size: 24, weight: .heavy, design: .rounded))
                         .foregroundColor(.white)
                         .lineLimit(1)
                 }
-                .padding(.top, 2)
                 
-                // 주요 기록 칩 (PTS / REB / AST)
-                HStack(spacing: 8) {
+                // 3행: 주요 기록 칩 (PTS / REB / AST)
+                HStack(spacing: 6) {
                     statPill(title: "PTS", value: performer.player.pts ?? "0")
                     statPill(title: "REB", value: performer.player.reb ?? "0")
                     statPill(title: "AST", value: performer.player.ast ?? "0")
@@ -235,11 +234,12 @@ struct GamesView: View {
                         statPill(title: "BLK", value: blk)
                     }
                 }
-                .padding(.top, 4)
+                .padding(.top, 2)
             }
-            .padding(16)
+            .padding(14)
+            .padding(.trailing, 120) // 선수 얼굴 영역과 절대 겹치지 않도록 우측 여백 확보!
         }
-        .frame(height: 140)
+        .frame(height: 155)
     }
     
     @ViewBuilder
@@ -252,9 +252,9 @@ struct GamesView: View {
                 .font(.system(size: 12, weight: .black, design: .rounded))
                 .foregroundColor(.white)
         }
-        .padding(.horizontal, 7)
+        .padding(.horizontal, 6)
         .padding(.vertical, 3)
-        .background(Color.black.opacity(0.35))
+        .background(Color.black.opacity(0.45))
         .clipShape(Capsule())
         .overlay(
             Capsule()
@@ -284,18 +284,18 @@ struct GamesView: View {
         )
     }
     
-    // MARK: - Runners Up (Top 3 Candidates) Section
+    // MARK: - Honorable Mentions (Top Candidates) Section
     
     @ViewBuilder
-    private func runnersUpSection(candidates: [DailyPerformer]) -> some View {
+    private func honorableMentionsSection(candidates: [DailyPerformer]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                Image(systemName: "flame.fill")
+                Image(systemName: "star.fill")
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.orange)
-                Text("RUNNERS UP")
+                    .foregroundColor(.yellow)
+                Text("HONORABLE MENTIONS")
                     .font(.system(size: 11, weight: .heavy, design: .rounded))
-                    .foregroundColor(.white.opacity(0.75))
+                    .foregroundColor(.white.opacity(0.8))
                     .tracking(0.6)
             }
             .padding(.horizontal, 16)
@@ -315,41 +315,27 @@ struct GamesView: View {
         }
     }
     
+    // MARK: - Candidate Mini Card (Top-Bottom Split: 얼굴과 텍스트 분리)
     @ViewBuilder
     private func candidateMiniCard(performer: DailyPerformer) -> some View {
         let teamCode = performer.teamCode
         let triCode = teamCode.nickNameToTriCode
         
-        ZStack(alignment: .bottomLeading) {
-            // 배경
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(teamCode.lowercased() + ".dark").opacity(0.75),
-                            Color.black.opacity(0.85)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+        VStack(spacing: 0) {
+            // [상단 105pt] 선수 사진 전용 영역 (얼굴이 텍스트에 가려지지 않고 온전히 보임!)
+            ZStack(alignment: .top) {
+                // 팀 컬러 배경 그라디언트
+                LinearGradient(
+                    colors: [
+                        Color(teamCode.lowercased() + ".dark").opacity(0.9),
+                        Color.black.opacity(0.7)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.2), Color.white.opacity(0.05)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 1
-                        )
-                )
-                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
-            
-            // 선수 이미지 (우측 상단)
-            if let playerId = performer.player.playerId {
-                HStack {
-                    Spacer()
+                
+                // 선수 이미지 (중앙 배치)
+                if let playerId = performer.player.playerId {
                     AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
                         if let image = phase.image {
                             image
@@ -359,24 +345,15 @@ struct GamesView: View {
                             Color.clear
                         }
                     }
-                    .frame(width: 80, height: 80)
-                    .mask(
-                        LinearGradient(
-                            colors: [.white, .clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
+                    .frame(height: 98)
+                    .offset(y: 8)
                 }
-            }
-            
-            // 정보 영역
-            VStack(alignment: .leading, spacing: 4) {
-                // 팀 & 승패 뱃지
-                HStack(spacing: 4) {
+                
+                // 상단 팀 트라이코드 & 승패 뱃지 오버레이
+                HStack {
                     Text(triCode)
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundColor(.white.opacity(0.85))
+                        .font(.system(size: 11, weight: .black, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
                     
                     Spacer()
                     
@@ -388,30 +365,49 @@ struct GamesView: View {
                         .background(performer.isWin ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.8))
                         .clipShape(Capsule())
                 }
-                
-                Spacer()
-                
-                // 선수 성
+                .padding(.horizontal, 8)
+                .padding(.top, 8)
+            }
+            .frame(height: 105)
+            .clipped()
+            
+            // [하단 55pt] 선수 이름 및 스탯 바 (검정 반투명 패널)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(performer.player.lastName?.uppercased() ?? "")
-                    .font(.system(size: 14, weight: .heavy, design: .rounded))
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
                     .lineLimit(1)
                 
-                // 주요 기록 (PTS / REB / AST)
                 HStack(spacing: 4) {
                     Text("\(performer.player.pts ?? "0") PTS")
                         .font(.system(size: 12, weight: .black, design: .monospaced))
                         .foregroundColor(.white)
                     
                     if let reb = performer.player.reb, reb != "0" {
-                        Text("• \(reb)R")
+                        Text("· \(reb)R")
                             .font(.system(size: 10, weight: .semibold))
-                            .foregroundColor(.white.opacity(0.6))
+                            .foregroundColor(.white.opacity(0.65))
                     }
                 }
             }
-            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 8)
+            .background(Color.black.opacity(0.85))
         }
-        .frame(width: 124, height: 110)
+        .frame(width: 130, height: 160)
+        .cornerRadius(14)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.2), Color.white.opacity(0.05)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: Color.black.opacity(0.35), radius: 5, x: 0, y: 2)
     }
 }
