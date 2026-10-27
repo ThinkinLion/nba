@@ -46,26 +46,49 @@ struct StatSeasonCard: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header (Year)
+            // Header (Year & Team of that season)
             if let firstItem = items.first {
-                HStack {
-                    Text(firstItem.value) // Year
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.white)
-                    
-                    Spacer()
-                    
-                    if firstItem.title == "TOT" {
-                         Text("TOTAL")
-                            .font(.system(size: 10, weight: .bold))
+                let teamTriCode = firstItem.title
+                let year = firstItem.value
+                let cardTeamId = teamTriCode.triCodeToTeamId
+                let headerColor = cardTeamId.isEmpty ? Color(teamId.dark) : Color(cardTeamId.dark)
+                
+                HStack(spacing: 6) {
+                    if teamTriCode == "TOT" {
+                        Text("TOTAL")
+                            .font(.system(size: 9, weight: .heavy, design: .rounded))
+                            .foregroundColor(.white.opacity(0.95))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(Color.white.opacity(0.2))
-                            .cornerRadius(4)
-                     }
+                            .clipShape(Capsule())
+                    } else if !teamTriCode.isEmpty {
+                        HStack(spacing: 4) {
+                            if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                                Image(teamTriCode)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 14, height: 14)
+                            }
+                            Text(teamTriCode)
+                                .font(.system(size: 11, weight: .black, design: .rounded))
+                                .foregroundColor(.white.opacity(0.95))
+                        }
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.black.opacity(0.4))
+                        .clipShape(Capsule())
+                    }
+                    
+                    Spacer()
+                    
+                    Text(year) // Season Year
+                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
                 }
-                .padding(12)
-                .background(Color(teamId.dark).opacity(0.6))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(headerColor.opacity(0.75))
             }
             
             Divider().background(Color.white.opacity(0.1))

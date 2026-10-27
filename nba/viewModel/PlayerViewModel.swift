@@ -263,7 +263,20 @@ struct PlayerSummaryViewModel {
     }
     
     var pie: String {
-        sanitizeStat(player.pie)
+        let direct = sanitizeStat(player.pie)
+        if direct != "-" {
+            return direct
+        }
+        // Fallback: Advanced stats에서 가장 최신(첫 번째) 시즌의 PIE 추출
+        for adv in advanced {
+            if let advPie = adv.pie?.trimmingCharacters(in: .whitespacesAndNewlines), !advPie.isEmpty {
+                let sanitized = sanitizeStat(advPie)
+                if sanitized != "-" {
+                    return sanitized
+                }
+            }
+        }
+        return "-"
     }
     
     var ppgTitle: String {
@@ -271,7 +284,10 @@ struct PlayerSummaryViewModel {
     }
     
     var ppg: String {
-        sanitizeStat(player.ppg)
+        let direct = sanitizeStat(player.ppg)
+        if direct != "-" { return direct }
+        if let first = traditional.first?.pts { return sanitizeStat(first) }
+        return "-"
     }
     
     var rpgTitle: String {
@@ -279,7 +295,10 @@ struct PlayerSummaryViewModel {
     }
     
     var rpg: String {
-        sanitizeStat(player.rpg)
+        let direct = sanitizeStat(player.rpg)
+        if direct != "-" { return direct }
+        if let first = traditional.first?.reb { return sanitizeStat(first) }
+        return "-"
     }
     
     var apgTitle: String {
@@ -287,7 +306,10 @@ struct PlayerSummaryViewModel {
     }
     
     var apg: String {
-        sanitizeStat(player.apg)
+        let direct = sanitizeStat(player.apg)
+        if direct != "-" { return direct }
+        if let first = traditional.first?.ast { return sanitizeStat(first) }
+        return "-"
     }
     
     var heightTitle: String {
