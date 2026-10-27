@@ -12,10 +12,23 @@ import Firebase
 final class PlayerViewModel: ObservableObject {
     @Published var player = PlayerModel.empty
     @Published var roster = [PlayerModel]()
+    @Published var lastGameStats: PlayerLastGameStats? = nil
     var errorMessage: String?
     
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
+}
+
+struct PlayerLastGameStats: Equatable {
+    let opponentTriCode: String
+    let isHome: Bool
+    let gameDate: String
+    let resultText: String
+    let pts: String
+    let reb: String
+    let ast: String
+    let min: String?
+    let game: HomeAway
 }
 
 extension PlayerViewModel {
@@ -63,6 +76,75 @@ extension PlayerViewModel {
                     return nil
                 }
             } ?? []
+        }
+    }
+    
+    func fetchLastGame(playerId: String) {
+        guard !playerId.isEmpty else { return }
+        
+        Task {
+            // 1. 캐시 우선 확인
+            var games: [GamesModel] = NBAFirestoreDayCache.load([GamesModel].self, key: "gameRecap") ?? []
+            
+            // 2. 비어있으면 저장소에서 fetch
+            if games.isEmpty {
+                games = (try? await FirestoreStandingsRepository().fetchGameRecap()) ?? []
+            }
+            
+            // 3. 선수가 출전한 가장 최근 경기 및 박스스코어 탐색
+            var foundStats: PlayerLastGameStats? = nil
+            for day in games {
+                for match in day.items {
+                    // Check Home Boxscore
+                    if let box = match.home.boxscore?.first(where: { $0.playerId == playerId }) {
+                        let awayScore = Int(match.away.score ?? "0") ?? 0
+                        let homeScore = Int(match.home.score ?? "0") ?? 0
+                        let isWin = homeScore > awayScore
+                        let scoreText = "\(match.home.score ?? "0") - \(match.away.score ?? "0")"
+                        let resultText = (isWin ? "W " : "L ") + scoreText
+                        
+                        foundStats = PlayerLastGameStats(
+                            opponentTriCode: match.away.teamCode.nickNameToTriCode,
+                            isHome: true,
+                            gameDate: day.date ?? "",
+                            resultText: resultText,
+                            pts: box.pts ?? "0",
+                            reb: box.reb ?? "0",
+                            ast: box.ast ?? "0",
+                            min: box.min,
+                            game: match
+                        )
+                        break
+                    }
+                    
+                    // Check Away Boxscore
+                    if let box = match.away.boxscore?.first(where: { $0.playerId == playerId }) {
+                        let awayScore = Int(match.away.score ?? "0") ?? 0
+                        let homeScore = Int(match.home.score ?? "0") ?? 0
+                        let isWin = awayScore > homeScore
+                        let scoreText = "\(match.away.score ?? "0") - \(match.home.score ?? "0")"
+                        let resultText = (isWin ? "W " : "L ") + scoreText
+                        
+                        foundStats = PlayerLastGameStats(
+                            opponentTriCode: match.home.teamCode.nickNameToTriCode,
+                            isHome: false,
+                            gameDate: day.date ?? "",
+                            resultText: resultText,
+                            pts: box.pts ?? "0",
+                            reb: box.reb ?? "0",
+                            ast: box.ast ?? "0",
+                            min: box.min,
+                            game: match
+                        )
+                        break
+                    }
+                }
+                if foundStats != nil { break }
+            }
+            
+            await MainActor.run {
+                self.lastGameStats = foundStats
+            }
         }
     }
 }
