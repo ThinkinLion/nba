@@ -157,12 +157,31 @@ struct PlayerSummaryViewModel {
         return jersey + " • " + position.abbreviation
     }
     
+    private func sanitizeStat(_ value: String?) -> String {
+        guard let v = value?.trimmingCharacters(in: .whitespacesAndNewlines), !v.isEmpty else {
+            return "-"
+        }
+        if v == "0" || v == "0.0" || v == "--" {
+            return "-"
+        }
+        return v
+    }
+    
+    var isRookie: Bool {
+        let exp = player.experience?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        return exp == "r" || exp == "rookie" || exp == "0"
+    }
+    
+    var hasSeasonStats: Bool {
+        return ppg != "-" || rpg != "-" || apg != "-"
+    }
+    
     var pieTitle: String {
         "PIE"
     }
     
     var pie: String {
-        player.pie ?? ""
+        sanitizeStat(player.pie)
     }
     
     var ppgTitle: String {
@@ -170,7 +189,7 @@ struct PlayerSummaryViewModel {
     }
     
     var ppg: String {
-        player.ppg ?? ""
+        sanitizeStat(player.ppg)
     }
     
     var rpgTitle: String {
@@ -178,7 +197,7 @@ struct PlayerSummaryViewModel {
     }
     
     var rpg: String {
-        player.rpg ?? ""
+        sanitizeStat(player.rpg)
     }
     
     var apgTitle: String {
@@ -186,7 +205,7 @@ struct PlayerSummaryViewModel {
     }
     
     var apg: String {
-        player.apg ?? ""
+        sanitizeStat(player.apg)
     }
     
     var heightTitle: String {

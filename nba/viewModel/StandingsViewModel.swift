@@ -394,7 +394,8 @@ extension StandingsViewModel {
                     score: score,
                     gameScoreText: scoreText,
                     gameResultText: resultText,
-                    game: match
+                    game: match,
+                    isWin: isWin
                 ))
             }
             
@@ -417,17 +418,23 @@ extension StandingsViewModel {
                     score: score,
                     gameScoreText: scoreText,
                     gameResultText: resultText,
-                    game: match
+                    game: match,
+                    isWin: isWin
                 ))
             }
         }
         
-        // Sort by score descending
+        // 1. 점수(score) 내림차순 정렬
         let sorted = performances.sorted { $0.score > $1.score }
         
-        if let best = sorted.first {
+        // 2. 1위 POTN은 '팀 승리(isWin)' 선수 중에서 최고 활약자 선발 (승리팀 우선 원칙)
+        if let bestWinner = sorted.first(where: { $0.isWin }) {
+            self.dailyPerformer = bestWinner
+            // 후보군(Runners Up): 1위를 제외한 상위 4명 (패배팀 에이스의 괴물 스탯도 후보군엔 포함 가능)
+            self.dailyCandidates = Array(sorted.filter { $0.id != bestWinner.id }.prefix(4))
+        } else if let best = sorted.first {
+            // 승패 구분이 없거나 특이 케이스 fallback
             self.dailyPerformer = best
-            // Next 4 as candidates
             self.dailyCandidates = Array(sorted.dropFirst().prefix(4))
         } else {
             self.dailyPerformer = nil
@@ -446,6 +453,7 @@ struct DailyPerformer: Identifiable {
     let gameScoreText: String // "110 - 105"
     let gameResultText: String // "W 110 - 105"
     let game: HomeAway // The Full Game Object for navigation
+    let isWin: Bool
 }
 
 import SwiftUI

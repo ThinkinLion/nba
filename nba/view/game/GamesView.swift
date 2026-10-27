@@ -49,17 +49,23 @@ struct GamesView: View {
                     }
                     .padding(.top, 60)
                 } else {
-                    // 1. PERFORMANCE OF THE NIGHT (데일리 MVP)
+                    // 1. PERFORMANCE OF THE NIGHT (데일리 MVP & 후보군)
                     if let bestPlayer = viewModel.dailyPerformer {
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 14) {
                             SectionHeaderView(title: "PERFORMANCE OF THE NIGHT")
                                 .padding(.horizontal, 16)
                             
+                            // 1위 히어로 카드 (승리팀 MVP)
                             NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: bestPlayer.game), gameRecap: viewModel.gameRecap)) {
                                 dailyPerformerHeroCard(performer: bestPlayer)
                             }
                             .buttonStyle(PlainButtonStyle())
                             .padding(.horizontal, 16)
+                            
+                            // 2~4위 후보군 (Runners Up) 가로 스크롤 카드
+                            if !viewModel.dailyCandidates.isEmpty {
+                                runnersUpSection(candidates: viewModel.dailyCandidates)
+                            }
                         }
                         .padding(.bottom, 24)
                     }
@@ -276,5 +282,136 @@ struct GamesView: View {
                         .stroke(Color.white.opacity(0.08), lineWidth: 1)
                 )
         )
+    }
+    
+    // MARK: - Runners Up (Top 3 Candidates) Section
+    
+    @ViewBuilder
+    private func runnersUpSection(candidates: [DailyPerformer]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(.orange)
+                Text("RUNNERS UP")
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white.opacity(0.75))
+                    .tracking(0.6)
+            }
+            .padding(.horizontal, 16)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(candidates) { candidate in
+                        NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: candidate.game), gameRecap: viewModel.gameRecap)) {
+                            candidateMiniCard(performer: candidate)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 4)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func candidateMiniCard(performer: DailyPerformer) -> some View {
+        let teamCode = performer.teamCode
+        let triCode = teamCode.nickNameToTriCode
+        
+        ZStack(alignment: .bottomLeading) {
+            // 배경
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(teamCode.lowercased() + ".dark").opacity(0.75),
+                            Color.black.opacity(0.85)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.2), Color.white.opacity(0.05)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
+                        )
+                )
+                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
+            
+            // 선수 이미지 (우측 상단)
+            if let playerId = performer.player.playerId {
+                HStack {
+                    Spacer()
+                    AsyncImage(url: URL(string: playerId.smallImageUrl)) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } else {
+                            Color.clear
+                        }
+                    }
+                    .frame(width: 80, height: 80)
+                    .mask(
+                        LinearGradient(
+                            colors: [.white, .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                }
+            }
+            
+            // 정보 영역
+            VStack(alignment: .leading, spacing: 4) {
+                // 팀 & 승패 뱃지
+                HStack(spacing: 4) {
+                    Text(triCode)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.white.opacity(0.85))
+                    
+                    Spacer()
+                    
+                    Text(performer.isWin ? "W" : "L")
+                        .font(.system(size: 9, weight: .black))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 1)
+                        .background(performer.isWin ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.8))
+                        .clipShape(Capsule())
+                }
+                
+                Spacer()
+                
+                // 선수 성
+                Text(performer.player.lastName?.uppercased() ?? "")
+                    .font(.system(size: 14, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                
+                // 주요 기록 (PTS / REB / AST)
+                HStack(spacing: 4) {
+                    Text("\(performer.player.pts ?? "0") PTS")
+                        .font(.system(size: 12, weight: .black, design: .monospaced))
+                        .foregroundColor(.white)
+                    
+                    if let reb = performer.player.reb, reb != "0" {
+                        Text("• \(reb)R")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.6))
+                    }
+                }
+            }
+            .padding(10)
+        }
+        .frame(width: 124, height: 110)
     }
 }
