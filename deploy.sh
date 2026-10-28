@@ -45,6 +45,12 @@ while [[ "$#" -gt 0 ]]; do
             BUMP_VERSION=false
             shift
             ;;
+        --version)
+            # 마케팅 버전(CFBundleShortVersionString) 지정. 이미 심사 승인된 버전과 같으면
+            # App Store Connect 가 "Invalid Pre-Release Train (90186)" 으로 거부하므로 새 릴리즈마다 올려야 함
+            NEW_MARKETING_VERSION="$2"
+            shift 2
+            ;;
         --validate-only)
             DO_VALIDATE_ONLY=true
             DO_UPLOAD=false
@@ -65,6 +71,7 @@ while [[ "$#" -gt 0 ]]; do
             echo "  --screenshots      필수 2대 규격(6.7/6.9인치 & 6.5인치) 스크린샷 자동 캡처 및 업로드"
             echo "  --submit           업로드 및 릴리즈 노트 등록 후, Apple 심사(Review)에 최종 제출까지 자동 수행"
             echo "  --no-bump          빌드 번호(CURRENT_PROJECT_VERSION)를 증가시키지 않고 유지"
+            echo "  --version X.Y      마케팅 버전(CFBundleShortVersionString) 변경 (예: --version 1.12). 승인된 버전과 같으면 업로드 거부됨"
             echo "  --validate-only    업로드하지 않고 App Store Connect 유효성 검증만 수행"
             echo "  --skip-upload      IPA 빌드까지만 수행하고 업로드/검증 단계 건너뜀 (로컬 테스트용)"
             echo "  -h, --help         도움말 출력"
@@ -96,6 +103,13 @@ if [ ! -f "$KEY_PATH" ]; then
     exit 1
 fi
 echo "🔑 Verified API Key: $KEY_PATH"
+
+# 0. 마케팅 버전 변경 (--version)
+if [ -n "$NEW_MARKETING_VERSION" ]; then
+    echo "🏷️  Marketing version: $(agvtool what-marketing-version -terse1 2>/dev/null || echo '?') ➔ $NEW_MARKETING_VERSION"
+    agvtool new-marketing-version "$NEW_MARKETING_VERSION" > /dev/null
+fi
+echo "🏷️  Marketing Version: $(agvtool what-marketing-version -terse1 2>/dev/null || echo 'unknown')"
 
 # 1. 빌드 번호 +1 자동 증가
 if [ "$BUMP_VERSION" = true ]; then

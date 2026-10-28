@@ -1,8 +1,8 @@
-2026-27 NBA Season Major Revamp Update!
+Today: your NBA, first.
 
-- Brand New 3-Tab Experience: Seamless navigation across 'Games' (scores & daily MVP), 'Power Ranking' (weekly power rankings & favorites), and 'Standings' (conference tables & seeds).
-- My Teams Dashboard: Pin your favorite teams at the top to track ranks, records, and weekly movements at a glance.
-- Modern Glassmorphism & Neon Design: Upgraded live game scoreboard cards, horizontal calendar date strip, and sleek rank change badges.
-- 2026-27 Season Ready: Track the latest weekly power rankings, team rosters, and standings for the brand new 2026-27 NBA season.
-- Season Switcher & Early Season UX: Seamlessly toggle between 2026-27 and 2025-26 with instant season preview links.
-- Performance & Stability: Enhanced day-caching and smoother navigation transitions.
+- New Today tab: your favorite teams' games, standings and weekly Power Ranking moves come first, followed by Performance of the Night, Movers and League Leaders.
+- Pick your teams on first launch and manage teams and players anytime from the profile button.
+- Follow players: tap the star on any player page to pin them to Today.
+- League Top 5 badges on player and team pages, powered by daily NBA stat leaderboards.
+- Team pages now open the full Weekly Insights / Team Stats / Roster view everywhere.
+- Fixes: player season stats now show reliably regardless of how you reach the player page.
