@@ -78,7 +78,8 @@ while [[ "$#" -gt 0 ]]; do
             echo "  --screenshots      필수 2대 규격(6.7/6.9인치 & 6.5인치) 스크린샷 자동 캡처 및 업로드"
             echo "  --submit           업로드 및 릴리즈 노트 등록 후, Apple 심사(Review)에 최종 제출까지 자동 수행"
             echo "  --no-bump          빌드 번호(CURRENT_PROJECT_VERSION)를 증가시키지 않고 유지"
-            echo "  --version X.Y      마케팅 버전(CFBundleShortVersionString) 변경 (예: --version 1.12). 승인된 버전과 같으면 업로드 거부됨"
+            echo "  --version X.Y      마케팅 버전 지정 (예: --version 1.12). 생략하면 App Store Connect 상태를 보고 자동 결정"
+            echo "                     (현재 버전이 이미 승인·판매 중이면 마지막 자리 +1, 아직 심사 전/중이면 유지)"
             echo "  --post-only        빌드·업로드 생략, 업로드 이후 단계만 실행 (버전 레코드 생성 → 릴리즈 노트 → [--submit] 심사 제출)"
             echo "  --validate-only    업로드하지 않고 App Store Connect 유효성 검증만 수행"
             echo "  --skip-upload      IPA 빌드까지만 수행하고 업로드/검증 단계 건너뜀 (로컬 테스트용)"
@@ -116,6 +117,15 @@ echo "🔑 Verified API Key: $KEY_PATH"
 # Info.plist 에 CFBundleShortVersionString 키가 없고 빌드 설정 MARKETING_VERSION 으로만 관리하므로
 # agvtool 대신 project.pbxproj 의 앱 타겟 값을 직접 치환한다.
 CURRENT_MARKETING_VERSION=$(xcodebuild -project "$PROJECT" -scheme "$SCHEME" -configuration Release -showBuildSettings 2>/dev/null | awk '/^ *MARKETING_VERSION = /{print $3; exit}')
+# --version 을 안 주면 App Store Connect 상태를 보고 자동 결정:
+#   현재 버전이 이미 승인·판매 중(닫힘)이면 마지막 자리 +1 (1.11 → 1.12), 아직 열려 있으면 유지
+if [ -z "$NEW_MARKETING_VERSION" ] && [ "$POST_ONLY" = false ] && [ -f "$DIR/scripts/next_version.js" ]; then
+    # 스크립트는 로그를 stderr(화면)로, 결정된 버전만 stdout 으로 출력
+    NEW_MARKETING_VERSION=$(MARKETING_VERSION="$CURRENT_MARKETING_VERSION" node "$DIR/scripts/next_version.js" | tail -n 1 || true)
+    if ! [[ "$NEW_MARKETING_VERSION" =~ ^[0-9]+(\.[0-9]+)+$ ]]; then
+        NEW_MARKETING_VERSION=""
+    fi
+fi
 if [ -n "$NEW_MARKETING_VERSION" ] && [ "$NEW_MARKETING_VERSION" != "$CURRENT_MARKETING_VERSION" ]; then
     echo "🏷️  Marketing version: ${CURRENT_MARKETING_VERSION:-?} ➔ $NEW_MARKETING_VERSION"
     sed -i '' "s/MARKETING_VERSION = ${CURRENT_MARKETING_VERSION};/MARKETING_VERSION = ${NEW_MARKETING_VERSION};/g" "$PROJECT/project.pbxproj"
