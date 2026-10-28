@@ -102,18 +102,33 @@ extension PlayerViewModel {
                     let awayScore = Int(match.away.score ?? "0") ?? 0
                     let homeScore = Int(match.home.score ?? "0") ?? 0
                     
-                    // Helper: playerId 일치 우선, 실패 시 lastName 폴백 매칭
-                    func findBox(in scores: [BoxScore]?) -> BoxScore? {
+                    // Helper: 선수 매칭 및 '실제 출전 여부(Played)' 검증
+                    // - DNP(결장), DND, Inactive 또는 pts/min이 모두 빈 문자열인 경기는 스킵
+                    func findPlayedBox(in scores: [BoxScore]?) -> BoxScore? {
                         guard let scores = scores else { return nil }
-                        if let exact = scores.first(where: { $0.playerId == playerId }) { return exact }
-                        if !playerName.isEmpty {
-                            return scores.first(where: { $0.lastName?.lowercased() == playerName })
+                        let matched: BoxScore?
+                        if let exact = scores.first(where: { $0.playerId == playerId }) {
+                            matched = exact
+                        } else if !playerName.isEmpty {
+                            matched = scores.first(where: { $0.lastName?.lowercased() == playerName })
+                        } else {
+                            matched = nil
                         }
-                        return nil
+                        
+                        guard let box = matched else { return nil }
+                        let pts = box.pts?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                        let min = box.min?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                        
+                        // 미출전(DNP/결장) 판별: pts가 비어있고 min도 비어있거나, min에 DNP 관련 키워드가 있는 경우
+                        if pts.isEmpty && (min.isEmpty || min.contains("DNP") || min.contains("DND") || min.contains("Inactive") || min.contains("Not With Team")) {
+                            return nil
+                        }
+                        
+                        return box
                     }
                     
                     // Check Home Boxscore
-                    if let box = findBox(in: match.home.boxscore) {
+                    if let box = findPlayedBox(in: match.home.boxscore) {
                         let isWin = homeScore > awayScore
                         let scoreText = "\(match.home.score ?? "0") - \(match.away.score ?? "0")"
                         let resultText = (isWin ? "W " : "L ") + scoreText
@@ -123,9 +138,9 @@ extension PlayerViewModel {
                             isHome: true,
                             gameDate: day.date ?? "",
                             resultText: resultText,
-                            pts: box.pts ?? "0",
-                            reb: box.reb ?? "0",
-                            ast: box.ast ?? "0",
+                            pts: box.pts?.nonEmpty ?? "0",
+                            reb: box.reb?.nonEmpty ?? "0",
+                            ast: box.ast?.nonEmpty ?? "0",
                             min: box.min,
                             game: match
                         ))
@@ -134,7 +149,7 @@ extension PlayerViewModel {
                     }
                     
                     // Check Away Boxscore
-                    if let box = findBox(in: match.away.boxscore) {
+                    if let box = findPlayedBox(in: match.away.boxscore) {
                         let isWin = awayScore > homeScore
                         let scoreText = "\(match.away.score ?? "0") - \(match.home.score ?? "0")"
                         let resultText = (isWin ? "W " : "L ") + scoreText
@@ -144,9 +159,9 @@ extension PlayerViewModel {
                             isHome: false,
                             gameDate: day.date ?? "",
                             resultText: resultText,
-                            pts: box.pts ?? "0",
-                            reb: box.reb ?? "0",
-                            ast: box.ast ?? "0",
+                            pts: box.pts?.nonEmpty ?? "0",
+                            reb: box.reb?.nonEmpty ?? "0",
+                            ast: box.ast?.nonEmpty ?? "0",
                             min: box.min,
                             game: match
                         ))
@@ -459,4 +474,11 @@ extension PlayerSummaryViewModel {
   var hasUsage: Bool {
     !self.usage.isEmpty
   }
+}
+
+private extension String {
+    var nonEmpty: String? {
+        let trimmed = self.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
 }

@@ -42,15 +42,15 @@ struct PlayerView: View {
                     // 3. LAST 3 GAMES Section
                     if !viewModel.recentGames.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            // 섹션 헤더
+                            // 단일 섹션 헤더 (중복 방지)
                             HStack(spacing: 6) {
                                 Image(systemName: "flame.fill")
-                                    .font(.system(size: 11, weight: .bold))
+                                    .font(.system(size: 12, weight: .bold))
                                     .foregroundColor(.orange)
                                 Text("LAST \(viewModel.recentGames.count) GAMES")
-                                    .font(.system(size: 11, weight: .heavy, design: .rounded))
-                                    .foregroundColor(.white.opacity(0.75))
-                                    .tracking(0.6)
+                                    .font(.system(size: 12, weight: .heavy, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
+                                    .tracking(0.5)
                                 Spacer()
                             }
                             
@@ -62,9 +62,9 @@ struct PlayerView: View {
                                 .buttonStyle(PlainButtonStyle())
                             }
                             
-                            // 최근 3경기 미니 요약 로우 (2번째부터)
+                            // 2·3번째 경기: 첫번째와 유사한 스타일이지만 높이를 작게 한 슬림 카드
                             if viewModel.recentGames.count > 1 {
-                                HStack(spacing: 8) {
+                                VStack(spacing: 8) {
                                     ForEach(viewModel.recentGames.dropFirst().prefix(2), id: \.gameDate) { game in
                                         NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: game.game), gameRecap: [])) {
                                             miniGameRow(stats: game)
@@ -158,121 +158,105 @@ struct PlayerView: View {
         .analyticsScreen(name: "NBA-PlayerView")
     }
     
-    // MARK: - Last Game Snapshot Card (Scaled-Up Premium Boxscore)
+    // MARK: - Last Game Snapshot Card (헤더 없이 카드만 - 외부 섹션 헤더가 담당)
     @ViewBuilder
     private func lastGameCard(stats: PlayerLastGameStats) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // 섹션 헤더
-            HStack(spacing: 6) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(.orange)
-                Text("LATEST PERFORMANCE")
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
-                    .foregroundColor(.white.opacity(0.75))
-                    .tracking(0.6)
-                
-                Spacer()
-                
-                if !stats.gameDate.isEmpty {
-                    Text(stats.gameDate)
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(.white.opacity(0.45))
-                }
-            }
-            
-            // 프리미엄 네온 글래스 카드
-            ZStack {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color(self.teamId.dark).opacity(0.45),
-                                Color.white.opacity(0.06),
-                                Color.black.opacity(0.65)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+        ZStack {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(self.teamId.dark).opacity(0.45),
+                            Color.white.opacity(0.06),
+                            Color.black.opacity(0.65)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(
+                            LinearGradient(
+                                colors: [
+                                    Color.orange.opacity(0.55),
+                                    Color.white.opacity(0.12)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1
                         )
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(
-                                LinearGradient(
-                                    colors: [
-                                        Color.orange.opacity(0.55),
-                                        Color.white.opacity(0.12)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
-                            )
-                    )
-                    .shadow(color: Color.black.opacity(0.35), radius: 6, x: 0, y: 3)
-                
-                VStack(spacing: 12) {
-                    // 상단 행: 상대팀 정보 & 스코어 & 리캡 인디케이터
-                    HStack(spacing: 8) {
-                        HStack(spacing: 6) {
-                            if RemoteConfigManager.shared.shouldUseOfficialTeamData, !stats.opponentTriCode.isEmpty {
-                                Image(stats.opponentTriCode)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 22, height: 22)
-                            }
-                            Text("\(stats.isHome ? "vs" : "@") \(stats.opponentTriCode)")
-                                .font(.system(size: 14, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
+                )
+                .shadow(color: Color.black.opacity(0.35), radius: 6, x: 0, y: 3)
+            
+            VStack(spacing: 12) {
+                // 상단 행: 상대팀 + 스코어 + 날짜 + RECAP
+                HStack(spacing: 8) {
+                    HStack(spacing: 6) {
+                        if RemoteConfigManager.shared.shouldUseOfficialTeamData, !stats.opponentTriCode.isEmpty {
+                            Image(stats.opponentTriCode)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 22, height: 22)
                         }
-                        
-                        Text(stats.resultText)
-                            .font(.system(size: 11, weight: .black, design: .rounded))
-                            .foregroundColor(stats.resultText.hasPrefix("W") ? Color(red: 0.2, green: 0.85, blue: 0.45) : Color.red.opacity(0.85))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 3)
-                            .background(Color.black.opacity(0.35))
-                            .clipShape(Capsule())
-                        
-                        Spacer()
-                        
-                        HStack(spacing: 3) {
-                            Text("RECAP")
-                                .font(.system(size: 10, weight: .heavy, design: .rounded))
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 9, weight: .bold))
-                        }
-                        .foregroundColor(.white.opacity(0.6))
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 3)
-                        .background(Color.white.opacity(0.08))
-                        .clipShape(Capsule())
+                        Text("\(stats.isHome ? "vs" : "@") \(stats.opponentTriCode)")
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
                     }
                     
-                    // 하단 행: 스탯 그리드 (PTS 크게, REB, AST, MIN 미니 필)
-                    HStack(spacing: 10) {
-                        HStack(alignment: .firstTextBaseline, spacing: 3) {
-                            Text(stats.pts)
-                                .font(.system(size: 26, weight: .black, design: .rounded))
-                                .foregroundColor(.white)
-                            Text("PTS")
-                                .font(.system(size: 10, weight: .heavy))
-                                .foregroundColor(.orange)
-                        }
-                        .padding(.trailing, 4)
-                        
-                        statPill(label: "REB", value: stats.reb)
-                        statPill(label: "AST", value: stats.ast)
-                        if let min = stats.min, !min.isEmpty && min != "0" {
-                            statPill(label: "MIN", value: min)
-                        }
-                        
-                        Spacer()
+                    Text(stats.resultText)
+                        .font(.system(size: 11, weight: .black, design: .rounded))
+                        .foregroundColor(stats.resultText.hasPrefix("W") ? Color(red: 0.2, green: 0.85, blue: 0.45) : Color.red.opacity(0.85))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Color.black.opacity(0.35))
+                        .clipShape(Capsule())
+                    
+                    Spacer()
+                    
+                    if !stats.gameDate.isEmpty {
+                        Text(stats.gameDate)
+                            .font(.system(size: 10, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white.opacity(0.4))
                     }
+                    
+                    HStack(spacing: 3) {
+                        Text("RECAP")
+                            .font(.system(size: 10, weight: .heavy, design: .rounded))
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 9, weight: .bold))
+                    }
+                    .foregroundColor(.white.opacity(0.6))
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.08))
+                    .clipShape(Capsule())
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
+                
+                // 하단 행: 스탯 그리드 (PTS 크게, REB·AST·MIN 미니 필)
+                HStack(spacing: 10) {
+                    HStack(alignment: .firstTextBaseline, spacing: 3) {
+                        Text(stats.pts)
+                            .font(.system(size: 26, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                        Text("PTS")
+                            .font(.system(size: 10, weight: .heavy))
+                            .foregroundColor(.orange)
+                    }
+                    .padding(.trailing, 4)
+                    
+                    statPill(label: "REB", value: stats.reb)
+                    statPill(label: "AST", value: stats.ast)
+                    if let min = stats.min, !min.isEmpty && min != "0" {
+                        statPill(label: "MIN", value: min)
+                    }
+                    
+                    Spacer()
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
         }
     }
     
@@ -292,53 +276,86 @@ struct PlayerView: View {
         .clipShape(Capsule())
     }
     
-    // MARK: - Mini Game Row (2번째, 3번째 최근 경기 요약 카드)
+    // MARK: - Mini Game Card (2·3번째: 히어로 카드와 패밀리 룩, 슬림한 높이)
     @ViewBuilder
     private func miniGameRow(stats: PlayerLastGameStats) -> some View {
-        HStack(spacing: 10) {
-            // 상대팀 로고 + 홈/어웨이
-            HStack(spacing: 5) {
-                if RemoteConfigManager.shared.shouldUseOfficialTeamData, !stats.opponentTriCode.isEmpty {
-                    Image(stats.opponentTriCode)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 20, height: 20)
-                }
-                Text("\(stats.isHome ? "vs" : "@") \(stats.opponentTriCode)")
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .foregroundColor(.white.opacity(0.85))
-            }
-            
-            // 승패 뱃지
-            Text(String(stats.resultText.prefix(1))) // "W" or "L"
-                .font(.system(size: 9, weight: .black))
-                .foregroundColor(.white)
-                .padding(.horizontal, 5)
-                .padding(.vertical, 2)
-                .background(stats.resultText.hasPrefix("W") ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.8))
-                .clipShape(Capsule())
-            
-            Spacer()
-            
-            // 핵심 스탯 (PTS · REB · AST)
-            Text("\(stats.pts) · \(stats.reb) · \(stats.ast)")
-                .font(.system(size: 12, weight: .heavy, design: .rounded))
-                .foregroundColor(.white)
-            
-            Image(systemName: "chevron.right")
-                .font(.system(size: 9, weight: .bold))
-                .foregroundColor(.white.opacity(0.35))
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(
+        ZStack {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.white.opacity(0.06))
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(self.teamId.dark).opacity(0.35),
+                            Color.black.opacity(0.6)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
                 )
-        )
+            
+            HStack(spacing: 8) {
+                // 상대팀 로고 + 홈/어웨이 + TriCode
+                HStack(spacing: 5) {
+                    if RemoteConfigManager.shared.shouldUseOfficialTeamData, !stats.opponentTriCode.isEmpty {
+                        Image(stats.opponentTriCode)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                    }
+                    Text("\(stats.isHome ? "vs" : "@") \(stats.opponentTriCode)")
+                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                
+                // 승패 및 스코어 뱃지
+                Text(stats.resultText)
+                    .font(.system(size: 10, weight: .black, design: .rounded))
+                    .foregroundColor(stats.resultText.hasPrefix("W") ? Color(red: 0.2, green: 0.85, blue: 0.45) : Color.red.opacity(0.85))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2.5)
+                    .background(Color.black.opacity(0.35))
+                    .clipShape(Capsule())
+                
+                Spacer()
+                
+                // PTS 강조 + REB · AST
+                HStack(spacing: 6) {
+                    HStack(alignment: .firstTextBaseline, spacing: 2) {
+                        Text(stats.pts)
+                            .font(.system(size: 15, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                        Text("PTS")
+                            .font(.system(size: 8, weight: .heavy))
+                            .foregroundColor(.orange)
+                    }
+                    
+                    Text("·")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white.opacity(0.25))
+                    
+                    Text("\(stats.reb) REB")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.75))
+                    
+                    Text("·")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white.opacity(0.25))
+                    
+                    Text("\(stats.ast) AST")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white.opacity(0.75))
+                }
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.white.opacity(0.35))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+        }
         .frame(maxWidth: .infinity)
     }
 }
