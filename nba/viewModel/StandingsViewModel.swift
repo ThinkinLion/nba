@@ -25,55 +25,6 @@ final class StandingsViewModel: ObservableObject {
     @Published var dailyPerformer: DailyPerformer? = nil
     @Published var dailyCandidates: [DailyPerformer] = []
     
-    //Season Leaders
-    @Published var firstCardViewSlot: SeasonLeaders = .empty
-    @Published var secondCardViewSlot: SeasonLeaders = .empty
-    @Published var thirdCardViewSlot: SeasonLeaders = .empty
-    
-//    @Published var pointsPerGame: SeasonLeaders = .empty
-//    @Published var assistsPerGame: SeasonLeaders = .empty
-//    @Published var reboundsPerGame: SeasonLeaders = .empty
-    
-    @Published var firstVStackSlot: SeasonLeaders = .empty
-    @Published var secondVStackSlot: SeasonLeaders = .empty
-    @Published var thirdVStackSlot: SeasonLeaders = .empty
-    @Published var fourthVStackSlot: SeasonLeaders = .empty
-    @Published var fifthVStackSlot: SeasonLeaders = .empty
-    @Published var sixthVStackSlot: SeasonLeaders = .empty
-//    @Published var blocksPerGame: SeasonLeaders = .empty
-//    @Published var stealsPerGame: SeasonLeaders = .empty
-//    @Published var fieldGoalPercentage: SeasonLeaders = .empty
-//    
-//    @Published var threePointersMade: SeasonLeaders = .empty
-//    @Published var threePointPercentage: SeasonLeaders = .empty
-//    @Published var fantasyPointsPerGame: SeasonLeaders = .empty
-    
-    @Published var rookiesMinutesPerGame: SeasonLeaders = .empty
-    @Published var rookiesPointsPerGame: SeasonLeaders = .empty
-    @Published var rookiesDoubleDoubles: SeasonLeaders = .empty
-    
-    //advanced, miscellaneous, player tracking passing, scoring, centers, forwards, guards, rookies, season leaders etc
-    @Published var advanced: [SeasonLeaders] = []
-    @Published var miscellaneous: [SeasonLeaders] = []
-    @Published var playerTrackingPassing: [SeasonLeaders] = []
-    @Published var scoring: [SeasonLeaders] = []
-    @Published var centers: [SeasonLeaders] = []
-    @Published var forwards: [SeasonLeaders] = []
-    @Published var guards: [SeasonLeaders] = []
-    @Published var rookies: [SeasonLeaders] = []
-    @Published var seasonLeaderEtc: [SeasonLeaders] = []
-    
-    //season leaders etc
-    @Published var seasonLeadersMostTotalPoints: SeasonLeaders = .empty
-    @Published var seasonLeadersMostPointsinaGame: SeasonLeaders = .empty
-    @Published var seasonLeadersMostReboundsinaGame: SeasonLeaders = .empty
-    @Published var seasonLeadersMostAssistsinaGame: SeasonLeaders = .empty
-    @Published var seasonLeadersMostStealsinaGame: SeasonLeaders = .empty
-    @Published var seasonLeadersMostBlocksinaGame: SeasonLeaders = .empty
-    @Published var seasonLeadersHighestPercentageofPTS3PT: SeasonLeaders = .empty
-    @Published var seasonLeadersHighestPercentageofPTS2PT: SeasonLeaders = .empty
-    @Published var seasonLeadersHighestPercentageofPTSMidRange: SeasonLeaders = .empty
-    
     var errorMessage: String?
     
     private let standingsRepository: StandingsRepository
@@ -96,32 +47,12 @@ final class StandingsViewModel: ObservableObject {
         let season = SeasonProvider.shared.seasonYear()
         await fetchStandings(documentId: season, forceRefresh: forceRefresh)
         await fetchGameRecap(forceRefresh: forceRefresh)
-        await fetchStatsLeaders(documentId: season, forceRefresh: forceRefresh)
         await fetchPowerRankings(forceRefresh: forceRefresh)
     }
     
     @MainActor
     private func asyncFetch(documentId: String) async {
         // Legacy or unused? Keeping empty for now as it was in original
-    }
-}
-
-extension StandingsViewModel {
-    func shuffledSeasonLeaders(leaders: [SeasonLeaders]) {
-        let shuffeld = leaders.shuffled()
-        guard shuffeld.count >= 9 else { return }
-        
-        firstCardViewSlot = shuffeld[0]
-        secondCardViewSlot = shuffeld[1]
-        thirdCardViewSlot = shuffeld[2]
-        
-        firstVStackSlot = shuffeld[3]
-        secondVStackSlot = shuffeld[4]
-        thirdVStackSlot = shuffeld[5]
-        
-        fourthVStackSlot = shuffeld[6]
-        fifthVStackSlot = shuffeld[7]
-        sixthVStackSlot = shuffeld[8]
     }
 }
 
@@ -190,27 +121,6 @@ extension StandingsViewModel {
         }
     }
     
-    private func fetchStatsLeaders(documentId: String, forceRefresh: Bool) async {
-        guard !documentId.isEmpty else { return }
-        let cacheKey = "statsLeaders.\(documentId)"
-        if !forceRefresh, let cached = NBAFirestoreDayCache.load(SeasonLeadersModel.self, key: cacheKey) {
-            await MainActor.run { applySeasonLeaders(cached) }
-            return
-        }
-        do {
-            let seasonLeaders = try await standingsRepository.fetchStatsLeaders(seasonYear: documentId)
-            await MainActor.run {
-                applySeasonLeaders(seasonLeaders)
-                self.errorMessage = nil
-            }
-            NBAFirestoreDayCache.save(seasonLeaders, key: cacheKey)
-        } catch {
-            await MainActor.run {
-                self.errorMessage = "Error fetching stats leaders: \(error.localizedDescription)"
-            }
-        }
-    }
-    
     private func applyStandings(_ standings: StandingsModel) {
         self.standings = standings
         self.lastUpdated = standings.date?.lastUpdated ?? ""
@@ -227,84 +137,6 @@ extension StandingsViewModel {
         }
     }
     
-    private func applySeasonLeaders(_ seasonLeaders: SeasonLeadersModel) {
-        self.shuffledSeasonLeaders(leaders: [seasonLeaders.seasonLeadersPointsPerGame ?? .empty,
-                                             seasonLeaders.seasonLeadersAssistsPerGame ?? .empty,
-                                             seasonLeaders.seasonLeadersReboundsPerGame ?? .empty,
-                                             
-                                             seasonLeaders.seasonLeadersBlocksPerGame ?? .empty,
-                                             seasonLeaders.seasonLeadersStealsPerGame ?? .empty,
-                                             seasonLeaders.seasonLeadersFieldGoalPercentage ?? .empty,
-                                             
-                                             seasonLeaders.seasonLeadersThreePointersMade ?? .empty,
-                                             seasonLeaders.seasonLeadersThreePointPercentage ?? .empty,
-                                             seasonLeaders.seasonLeadersFantasyPointsPerGame ?? .empty])
-        
-        self.rookiesMinutesPerGame = seasonLeaders.rookiesMinutesPerGame ?? .empty
-        self.rookiesPointsPerGame = seasonLeaders.rookiesPointsPerGame ?? .empty
-        self.rookiesDoubleDoubles = seasonLeaders.rookiesDoubleDoubles ?? .empty
-        
-        self.seasonLeadersMostTotalPoints = seasonLeaders.seasonLeadersMostTotalPoints ?? .empty
-        self.seasonLeadersMostPointsinaGame = seasonLeaders.seasonLeadersMostPointsinaGame ?? .empty
-        self.seasonLeadersMostReboundsinaGame = seasonLeaders.seasonLeadersMostReboundsinaGame ?? .empty
-        self.seasonLeadersMostAssistsinaGame = seasonLeaders.seasonLeadersMostAssistsinaGame ?? .empty
-        self.seasonLeadersMostStealsinaGame = seasonLeaders.seasonLeadersMostStealsinaGame ?? .empty
-        self.seasonLeadersMostBlocksinaGame = seasonLeaders.seasonLeadersMostBlocksinaGame ?? .empty
-        
-        self.seasonLeaderEtc = [
-            seasonLeaders.seasonLeadersHighestPercentageofPTS3PT ?? .empty,
-            seasonLeaders.seasonLeadersHighestPercentageofPTS2PT ?? .empty,
-            seasonLeaders.seasonLeadersHighestPercentageofPTSMidRange ?? .empty,
-        ]
-        
-        self.advanced = [
-            seasonLeaders.advancedUsagePercentage ?? .empty,
-            seasonLeaders.advancedTrueShootingPercentage ?? .empty,
-            seasonLeaders.advancedOffensiveReboundPercentage ?? .empty
-        ]
-        
-        self.miscellaneous = [
-            seasonLeaders.miscellaneous2ndChancePointsPerGame ?? .empty,
-            seasonLeaders.miscellaneousFastBreakPointsPerGame ?? .empty,
-            seasonLeaders.miscellaneousPointsInThePaintPerGame ?? .empty,
-        ]
-        
-        self.playerTrackingPassing = [
-            seasonLeaders.playerTrackingPassingPassesPerGame ?? .empty,
-            seasonLeaders.playerTrackingPassingPotentialAssistsPerGame ?? .empty,
-            seasonLeaders.playerTrackingPassingPointsFromAssistsPerGame ?? .empty,
-        ]
-        
-        self.scoring = [
-            seasonLeaders.scoringPercentageofPoints3PT ?? .empty,
-            seasonLeaders.scoringPercentageofPointsinthePaint ?? .empty,
-            seasonLeaders.scoringPercentageofPointsMidRange ?? .empty,
-        ]
-        
-        self.centers = [
-            seasonLeaders.centersPointsPerGame ?? .empty,
-            seasonLeaders.centersAssistsPerGame ?? .empty,
-            seasonLeaders.centersReboundsPerGame ?? .empty,
-        ]
-        
-        self.forwards = [
-            seasonLeaders.forwardsPointsPerGame ?? .empty,
-            seasonLeaders.forwardsAssistsPerGame ?? .empty,
-            seasonLeaders.forwardsReboundsPerGame ?? .empty
-        ]
-        
-        self.guards = [
-            seasonLeaders.guardsPointsPerGame ?? .empty,
-            seasonLeaders.guardsAssistsPerGame ?? .empty,
-            seasonLeaders.guardsReboundsPerGame ?? .empty,
-        ]
-        
-        self.rookies = [
-            seasonLeaders.rookiesDoubleDoubles ?? .empty,
-            seasonLeaders.rookiesPointsPerGame ?? .empty,
-            seasonLeaders.rookiesMinutesPerGame ?? .empty,
-        ]
-    }
 }
 
 /*

@@ -12,7 +12,6 @@ import Firebase
 protocol StandingsRepository {
     func fetchStandings(seasonYear: String) async throws -> StandingsModel
     func fetchGameRecap() async throws -> [GamesModel]
-    func fetchStatsLeaders(seasonYear: String) async throws -> SeasonLeadersModel
 }
 
 final class FirestoreStandingsRepository: StandingsRepository {
@@ -32,9 +31,5 @@ final class FirestoreStandingsRepository: StandingsRepository {
             guard let game = try? documentSnapshot.data(as: GamesModel.self) else { return nil }
             return game.items.count > 0 ? game : nil
         }
-    }
-    
-    func fetchStatsLeaders(seasonYear: String) async throws -> SeasonLeadersModel {
-        return try await db.collection("statsLeaders").document(seasonYear).getDocument(as: SeasonLeadersModel.self)
     }
 }
