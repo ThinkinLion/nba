@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import StoreKit
 import FirebaseAnalytics
 
 struct TodayView: View {
@@ -14,6 +15,8 @@ struct TodayView: View {
     @StateObject private var powerRankingViewModel = PowerRankingViewModel() // 팀 상세(PowerRankingDetailView) 진입용
     @ObservedObject private var favorites = FavoritesManager.shared
     @ObservedObject private var leaders = LeadersStore.shared
+    @ObservedObject private var picksManager = PicksManager.shared
+    @Environment(\.requestReview) private var requestReview
     @State private var selectedDateIndex: Int = 0
     @State private var hasAppeared = false
     @State private var showProfile = false
@@ -58,6 +61,13 @@ struct TodayView: View {
                         )
                         .padding(.bottom, 22)
                         .id("myteams")
+
+                        // 1-1. TONIGHT · YOUR PICKS (예정 경기 승자 예측)
+                        if !viewModel.schedule.isEmpty {
+                            PicksModuleView(schedule: viewModel.schedule)
+                                .padding(.bottom, 24)
+                                .id("picks")
+                        }
 
                         // 2. GAMES (내 팀 경기 우선)
                         gamesModule
@@ -130,15 +140,38 @@ struct TodayView: View {
         .onAppear {
             guard !hasAppeared else { return }
             hasAppeared = true
+            ReviewPromptManager.shared.registerSession()
             Task {
                 await viewModel.fetchStandingsAsync()
                 await powerRankingViewModel.fetchPowerRankings()
                 await leaders.loadIfNeeded()
+                gradePicksAndMaybeAskReview()
             }
         }
         .analyticsScreen(name: "NBA-TodayView")
     }
 
+    // MARK: - Picks grading & review prompt
+    
+    /// 결과가 들어온 경기로 예측을 채점하고, 긍정 순간이면 시스템 별점 요청을 띄움
+    private func gradePicksAndMaybeAskReview() {
+        let graded = picksManager.grade(with: viewModel.gameRecap)
+        let manager = ReviewPromptManager.shared
+        var trigger: ReviewPromptManager.Trigger? = nil
+        if graded, let s = picksManager.lastGradedSummary {
+            Analytics.logEvent("picks_graded", parameters: ["correct": s.correct, "total": s.total])
+            trigger = .picksGraded(correct: s.correct, total: s.total)
+        } else if manager.shouldPrompt(.sessionMilestone) {
+            trigger = .sessionMilestone
+        }
+        guard let trigger, manager.shouldPrompt(trigger) else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            requestReview()
+            manager.markPrompted()
+            Analytics.logEvent("review_prompt_shown", parameters: ["sessions": manager.sessionCount])
+        }
+    }
+    
     // MARK: - Team link (파워랭킹 탭과 동일한 팀 상세로 진입)
     
     /// 팀 상세 진입 정보. 파워랭킹 상태에서 먼저 찾고, 없으면 순위표 행으로 TeamState 를 구성

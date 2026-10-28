@@ -33,6 +33,7 @@ struct HomeAway: Codable, Hashable {
     let final: String? //"final"
     let series: String? //"Games1: BOS leads 1-0"
     let leaders: [BoxScore]? //여기에도 모아봤음, 어떤게 쓰일지 몰라서
+    let statusText: String? // 예정 경기 시작 시각 "7:00 PM ET" / 종료 "Final" (schedule 컬렉션)
 }
 
 extension HomeAway {

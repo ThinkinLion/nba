@@ -21,6 +21,7 @@ final class StandingsViewModel: ObservableObject {
     @Published var gameRecap: [GamesModel] = []
 //    @Published var games: [HomeAway] = []
     @Published var hasGames: Bool = false
+    @Published var schedule: [GamesModel] = [] // 예정 경기 (My Picks 용), 최신순
     @Published var powerRankings: [PowerRankingModel] = []
     @Published var dailyPerformer: DailyPerformer? = nil
     @Published var dailyCandidates: [DailyPerformer] = []
@@ -47,7 +48,35 @@ final class StandingsViewModel: ObservableObject {
         let season = SeasonProvider.shared.seasonYear()
         await fetchStandings(documentId: season, forceRefresh: forceRefresh)
         await fetchGameRecap(forceRefresh: forceRefresh)
+        await fetchSchedule(forceRefresh: forceRefresh)
         await fetchPowerRankings(forceRefresh: forceRefresh)
+    }
+    
+    /// LA 기준 오늘 날짜 "yyyy-MM-dd" (경기 일정은 미국 날짜 기준)
+    static func laToday() -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "America/Los_Angeles")
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: Date())
+    }
+    
+    /// 예정 경기. 캐시 키에 LA 날짜를 넣어 날짜가 바뀌면 자동으로 새로 받음
+    func fetchSchedule(forceRefresh: Bool = false) async {
+        let today = Self.laToday()
+        let cacheKey = "schedule.\(today)"
+        if !forceRefresh, let cached = NBAFirestoreDayCache.load([GamesModel].self, key: cacheKey) {
+            await MainActor.run { self.schedule = cached.filter { ($0.date ?? "") >= today } }
+            return
+        }
+        do {
+            let docs = try await standingsRepository.fetchSchedule()
+            let upcoming = docs.filter { ($0.date ?? "") >= today }
+            await MainActor.run { self.schedule = upcoming }
+            NBAFirestoreDayCache.save(docs, key: cacheKey)
+        } catch {
+            print("❌ schedule 로드 실패: \(error)")
+        }
     }
     
     @MainActor
