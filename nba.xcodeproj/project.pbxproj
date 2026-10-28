@@ -102,6 +102,10 @@ C27233B7F030E24545B763D3 /* GamesView.swift in Sources */ = {isa = PBXBuildFile;
 		C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */; };
 C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */; };
 		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C5 /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */; };
+		83D1A496F5974C058071C5EB /* NBATeamCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E300789D2CCF4817893CB308 /* NBATeamCatalog.swift */; };
+		3DB9AC9161BB445DBFB4E243 /* TeamPickerGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C42E1027F8D4C57A228DC59 /* TeamPickerGridView.swift */; };
+		4B80A51B259747F1A4B9EB40 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC79AFA8068476FB6EDA1F6 /* OnboardingView.swift */; };
+		DE7795ACEE8A4B33909356ED /* ProfileSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF5115ADF634C599F9333EE /* ProfileSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +222,10 @@ C26D79D73174D54D3799E059 /* GamesView.swift */ = {isa = PBXFileReference; lastKn
 		C2FFE0A62F43AC36002B4567 /* LogoLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoLoadingView.swift; sourceTree = "<group>"; };
 C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteTeamsBarView.swift; sourceTree = "<group>"; };
 		C3A1B2C3D4E5F6A7B8C9D0E1F2A3B4C6 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
+		E300789D2CCF4817893CB308 /* NBATeamCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NBATeamCatalog.swift; sourceTree = "<group>"; };
+		9C42E1027F8D4C57A228DC59 /* TeamPickerGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamPickerGridView.swift; sourceTree = "<group>"; };
+		9EC79AFA8068476FB6EDA1F6 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		0DF5115ADF634C599F9333EE /* ProfileSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -429,6 +437,7 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 		C2C795032AFF9EF100D72531 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				6352A47E84FC4D00B54052B0 /* onboarding */,
 				C2C4CBB12FAC211900DF98E8 /* playoff */,
 				C2628F1B2B401B80005E044B /* common */,
 				C2A277B22EEAD0F90088DC7F /* player */,
@@ -478,6 +487,7 @@ C26D79D73174D54D3799E059 /* GamesView.swift */,
 		C2FDA6B32B19C28D00E2B3D7 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E300789D2CCF4817893CB308 /* NBATeamCatalog.swift */,
 				C2F0D1E02F51E00100AAB001 /* NBAFirestoreDayCache.swift */,
 				C2FDA6B62B19C9DA00E2B3D7 /* Auth.swift */,
 				C2FDA6B42B19C29D00E2B3D7 /* String+.swift */,
@@ -493,6 +503,16 @@ C26D79D73174D54D3799E059 /* GamesView.swift */,
 				C2BA7EB42EE4FF0F00A71348 /* FavoritesManager.swift */,
 			);
 			path = common;
+			sourceTree = "<group>";
+		};
+		6352A47E84FC4D00B54052B0 /* onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				0DF5115ADF634C599F9333EE /* ProfileSheetView.swift */,
+				9EC79AFA8068476FB6EDA1F6 /* OnboardingView.swift */,
+				9C42E1027F8D4C57A228DC59 /* TeamPickerGridView.swift */,
+			);
+			path = onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -663,6 +683,10 @@ C26D79D73174D54D3799E059 /* GamesView.swift */,
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE7795ACEE8A4B33909356ED /* ProfileSheetView.swift in Sources */,
+				4B80A51B259747F1A4B9EB40 /* OnboardingView.swift in Sources */,
+				3DB9AC9161BB445DBFB4E243 /* TeamPickerGridView.swift in Sources */,
+				83D1A496F5974C058071C5EB /* NBATeamCatalog.swift in Sources */,
 				C26A109C2EF29B3500624C87 /* CategorizedTeamStatsView.swift in Sources */,
 				C2FFE0A72F43AC36002B4567 /* LogoLoadingView.swift in Sources */,
 C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */,

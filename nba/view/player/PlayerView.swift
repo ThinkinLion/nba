@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import FirebaseAnalytics
 
 struct PlayerView: View {
     @StateObject var viewModel = PlayerViewModel()
@@ -15,6 +16,7 @@ struct PlayerView: View {
     let teamId: String
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
+    @ObservedObject private var favorites = FavoritesManager.shared
     
     // 진입 경로에 따라 teamId가 비어서 올 수 있음(예: POTN의 boxscore leader) → 선수 문서의 teamId로 보완
     private var resolvedTeamId: String {
@@ -146,6 +148,19 @@ struct PlayerView: View {
                 .opacity(hideNavigationBar ? 0.0 : 1.0)
                 .animation(.easeInOut, value: hideNavigationBar)
             }
+            
+            // 팔로우(★) 토글: My Players 에 추가되어 Today 피드에서 우선 노출
+            ToolbarItem(placement: .navigationBarTrailing) {
+                let isFollowing = favorites.isFavoritePlayer(playerId)
+                Button(action: toggleFollow) {
+                    Image(systemName: isFollowing ? "star.fill" : "star")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(isFollowing ? Color(red: 1.0, green: 0.84, blue: 0.0) : .white.opacity(0.85))
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(Color.black.opacity(0.35)))
+                }
+                .disabled(viewModel.player.playerId?.isEmpty ?? true)
+            }
         }
         .onChange(of: scrollOffset) { scrollOfset in
             let offset = scrollOfset + (self.hideNavigationBar ? 50 : 0)
@@ -162,6 +177,16 @@ struct PlayerView: View {
         }
         .ignoresSafeArea(.container, edges: .top)
         .analyticsScreen(name: "NBA-PlayerView")
+    }
+    
+    private func toggleFollow() {
+        let p = viewModel.player
+        let name = "\(p.firstName ?? "") \(p.lastName ?? "")".trimmingCharacters(in: .whitespaces)
+        let tid = resolvedTeamId
+        let favorite = FavoritePlayer(id: playerId, name: name, teamId: tid, teamTriCode: tid.teamIdToTriCode)
+        favorites.toggleFavoritePlayer(favorite)
+        Analytics.logEvent(favorites.isFavoritePlayer(playerId) ? "favorite_player_add" : "favorite_player_remove",
+                           parameters: ["player_id": playerId, "team": favorite.teamTriCode])
     }
     
     // MARK: - Last Game Snapshot Card (헤더 없이 카드만 - 외부 섹션 헤더가 담당)

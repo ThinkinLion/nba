@@ -13,6 +13,7 @@ import FirebaseAnalytics
 @main
 struct nbaApp: App {
   @ObservedObject var remoteConfig: RemoteConfigManager
+  @ObservedObject private var favorites = FavoritesManager.shared
   
   init() {
     if !Auth.isDeveloper() {
@@ -112,7 +113,18 @@ struct nbaApp: App {
           .tag(2)
         }
         .accentColor(.white)
+        // 첫 실행 온보딩: 응원 팀 선택 (스크린샷 모드에서는 생략)
+        .fullScreenCover(isPresented: Binding(
+          get: { !favorites.hasCompletedOnboarding && !isScreenshotMode },
+          set: { _ in }
+        )) {
+          OnboardingView()
+        }
       }
     }
+  }
+  
+  private var isScreenshotMode: Bool {
+    ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("-screenshot") }
   }
 }
