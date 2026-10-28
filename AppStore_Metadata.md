@@ -1,4 +1,4 @@
-# Hoop Rank: NBA Weekly Power Rankings - App Store 메타데이터
+# Power Rank: NBA Weekly Power Rankings - App Store 메타데이터
 
 ### 번들 ID
 com.spearhead.nbaPowerRanking
@@ -9,7 +9,7 @@ NBA_2025_US
 ## 기본 정보
 
 ### 앱 이름
-**Hoop Rank: NBA Weekly Power Rankings**
+**Power Rank: NBA Weekly Power Rankings**
 
 ### 부제목 (Subtitle)
 **주차별 NBA 파워랭킹 & 팀 인사이트**
@@ -25,7 +25,7 @@ NBA_2025_US
 
 ### 한국어 버전
 
-Hoop Rank는 NBA 팬을 위한 파워랭킹 컴패니언 앱입니다.
+Power Rank는 NBA 팬을 위한 파워랭킹 컴패니언 앱입니다.
 
 🏀 **주차별 파워랭킹**
 - 매주 업데이트되는 최신 파워랭킹을 Firebase에서 실시간으로 불러옵니다
@@ -52,7 +52,7 @@ Hoop Rank는 NBA 팬을 위한 파워랭킹 컴패니언 앱입니다.
 - 스크롤 시 Week 캐러셀이 상단에 고정되어 언제든 주차를 변경할 수 있습니다
 - 팀별 브랜드 컬러를 활용한 아름다운 UI 디자인
 
-Hoop Rank로 NBA 시즌의 흐름을 놓치지 마세요!
+Power Rank로 NBA 시즌의 흐름을 놓치지 마세요!
 
 **본 앱은 NBA 및 NBA 공식 파트너와 제휴하거나 승인받지 않은 팬 메이드 애플리케이션입니다.**
 
@@ -60,7 +60,7 @@ Hoop Rank로 NBA 시즌의 흐름을 놓치지 마세요!
 
 ### 영어 버전 (English)
 
-Hoop Rank is the most intuitive NBA fan companion for tracking Power Rankings.
+Power Rank is the most intuitive NBA fan companion for tracking Power Rankings.
 
 🏀 **Weekly Power Rankings**
 - Get the latest power rankings updated weekly, synced in real-time from Firebase
@@ -87,7 +87,7 @@ Hoop Rank is the most intuitive NBA fan companion for tracking Power Rankings.
 - Sticky week carousel that stays at the top while scrolling for easy week switching
 - Beautiful UI design featuring team brand colors
 
-Don't miss the NBA season flow with Hoop Rank!
+Don't miss the NBA season flow with Power Rank!
 
 **This app is an independent fan-made experience and is not affiliated with or endorsed by the NBA or its official partners.**
 
@@ -136,7 +136,7 @@ NBA, power rankings, basketball, team rankings, weekly rankings, team analysis, 
 `https://yourdomain.com/support` (실제 URL로 변경 필요)
 
 ### 마케팅 URL (선택사항)
-`https://yourdomain.com/hooprank` (실제 URL로 변경 필요)
+`https://yourdomain.com/powerrank` (실제 URL로 변경 필요)
 
 ### 개인정보 처리방침 URL
 `https://yourdomain.com/privacy` (실제 URL로 변경 필요)
