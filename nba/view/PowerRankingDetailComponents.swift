@@ -627,6 +627,7 @@ struct LeaderCard: View {
     let player: PlayerModel
     let value: String
     let color: Color
+    @ObservedObject private var leaders = LeadersStore.shared
     
     var body: some View {
         NavigationLink(destination: PlayerView(playerId: player.playerId ?? "", teamId: player.teamId ?? "")) {
@@ -672,6 +673,13 @@ struct LeaderCard: View {
                             .foregroundColor(.white)
                     }
                     .padding(10)
+                    
+                    // 리그 Top 5 배지 (가장 우선순위 높은 1개)
+                    if let headline = leaders.headline(for: player.playerId ?? "") {
+                        LeaderBadgeView(entry: headline, compact: true)
+                            .padding(.horizontal, 8)
+                            .padding(.top, -6)
+                    }
                     
                     Spacer()
                     

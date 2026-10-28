@@ -111,6 +111,7 @@ C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */ = {isa = PB
 		13DE8A38B088483A80F92DB5 /* PerformanceOfTheNightModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6ECFDDF49E45DC8699D2BE /* PerformanceOfTheNightModuleView.swift */; };
 		90983CBFE5CC4F3DB4F17A27 /* MoversModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BA9879FF154AF59DCE5481 /* MoversModuleView.swift */; };
 		E944A84490AC4EDDA7571CAD /* LeadersModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B62B8A086949F4A76080AD /* LeadersModuleView.swift */; };
+		9DA537F561C6496AA4F58F60 /* TeamLeagueLeadersRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2195D24016CB4D35B7DDA6D1 /* TeamLeagueLeadersRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +237,7 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */ = {isa = PBXFileRefere
 		BB6ECFDDF49E45DC8699D2BE /* PerformanceOfTheNightModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceOfTheNightModuleView.swift; sourceTree = "<group>"; };
 		18BA9879FF154AF59DCE5481 /* MoversModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoversModuleView.swift; sourceTree = "<group>"; };
 		65B62B8A086949F4A76080AD /* LeadersModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadersModuleView.swift; sourceTree = "<group>"; };
+		2195D24016CB4D35B7DDA6D1 /* TeamLeagueLeadersRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLeagueLeadersRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -447,6 +449,7 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 		C2C795032AFF9EF100D72531 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				2195D24016CB4D35B7DDA6D1 /* TeamLeagueLeadersRow.swift */,
 				E31B7070C81B453AAD531E1C /* today */,
 				6352A47E84FC4D00B54052B0 /* onboarding */,
 				C2C4CBB12FAC211900DF98E8 /* playoff */,
@@ -706,6 +709,7 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DA537F561C6496AA4F58F60 /* TeamLeagueLeadersRow.swift in Sources */,
 				E944A84490AC4EDDA7571CAD /* LeadersModuleView.swift in Sources */,
 				90983CBFE5CC4F3DB4F17A27 /* MoversModuleView.swift in Sources */,
 				13DE8A38B088483A80F92DB5 /* PerformanceOfTheNightModuleView.swift in Sources */,

@@ -128,6 +128,7 @@ struct PlayerView: View {
             viewModel.fetchPlayer(documentId: self.playerId)
             viewModel.fetchRoster(teamId: self.teamId)
             viewModel.fetchLastGame(playerId: self.playerId)
+            Task { await LeadersStore.shared.loadIfNeeded() }
             hasAppeared = true
         }
         .navigationBarTitle("", displayMode: .inline)

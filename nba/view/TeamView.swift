@@ -68,6 +68,10 @@ struct TeamView: View {
             //currentSeasonStats
             statsView(stats: statsViewModel.currentSeasonStats)
             
+            // 이 팀 소속 선수 중 리그 Top 5 에 든 항목 (statsLeaders 역인덱스)
+            TeamLeagueLeadersRow(roster: viewModel.roster, teamId: teamId)
+                .padding(.top, 20)
+            
             //roster
             rosterView(roster: viewModel.guardsInRoster, position: "Guards")
                 .padding(.top, 20)
@@ -89,6 +93,7 @@ struct TeamView: View {
             guard !hasAppeared else { return }
             viewModel.fetchTeam(documentId: teamId)
             viewModel.fetchRoster(teamId: teamId)
+            Task { await LeadersStore.shared.loadIfNeeded() }
 //          viewModel.fetchCountry(country: "Canada")
 //          viewModel.fetchCountry(country: "Germany")
             hasAppeared = true

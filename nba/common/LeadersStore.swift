@@ -24,8 +24,8 @@ struct LeaderEntry: Identifiable, Hashable {
     var id: String { "\(key)-\(playerId)" }
     var shortTitle: String { LeadersStore.shortTitle(for: key, title: title) }
     var isSeasonLeaders: Bool { category == "Season Leaders" }
-    /// 배지 문구: "PPG" / "Centers · PPG" / "Hustle · DEFLECTIONS"
-    var badgeLabel: String { isSeasonLeaders ? shortTitle : "\(category) · \(shortTitle)" }
+    /// 배지 문구: "PPG" / "Centers · PPG" / "Misc · PITP"
+    var badgeLabel: String { isSeasonLeaders ? shortTitle : "\(LeadersStore.shortCategory(category)) · \(shortTitle)" }
 }
 
 @MainActor
@@ -110,12 +110,12 @@ final class LeadersStore: ObservableObject {
         ids.flatMap { entries(for: $0) }.sorted(by: Self.entryOrder)
     }
     
-    /// 배지 우선순위: Season Leaders → 핵심 지표(PPG/RPG/APG… curated 순) → 순위
+    /// 배지 우선순위: 핵심 지표(curated 순: PPG/RPG/APG/…/PITP/…) → Season Leaders 기타 → 포지션·바이오 등 → 순위
     nonisolated static func entryOrder(_ a: LeaderEntry, _ b: LeaderEntry) -> Bool {
-        if a.isSeasonLeaders != b.isSeasonLeaders { return a.isSeasonLeaders }
         let pa = curatedIndex[a.key] ?? Int.max
         let pb = curatedIndex[b.key] ?? Int.max
         if pa != pb { return pa < pb }
+        if a.isSeasonLeaders != b.isSeasonLeaders { return a.isSeasonLeaders }
         if a.rank != b.rank { return a.rank < b.rank }
         return a.title < b.title
     }
@@ -144,11 +144,44 @@ final class LeadersStore: ObservableObject {
         ("miscellaneous2ndChancePointsPerGame", "2ND CHANCE"),
         ("advancedTrueShootingPercentage", "TS%"),
         ("hustleLooseBallsRecPerGame", "LOOSE BALLS"),
-        ("seasonLeadersMostPointsinaGame", "SEASON HIGH"),
+        ("seasonLeadersMostPointsinaGame", "SEASON HIGH PTS"),
         ("shootingbyZoneCorner3PPercentage", "CORNER 3P%"),
     ]
 
-    nonisolated private static let shortByKey: [String: String] = Dictionary(uniqueKeysWithValues: curated.map { ($0.key, $0.short) })
+    /// Today 로테이션 대상은 아니지만 배지에는 쓰이는 카테고리의 축약 표기
+    nonisolated private static let extraShort: [String: String] = [
+        "seasonLeadersMostReboundsinaGame": "SEASON HIGH REB",
+        "seasonLeadersMostAssistsinaGame": "SEASON HIGH AST",
+        "seasonLeadersMostStealsinaGame": "SEASON HIGH STL",
+        "seasonLeadersMostBlocksinaGame": "SEASON HIGH BLK",
+        "seasonLeadersMostTotalPoints": "TOTAL PTS",
+        "seasonLeadersHighestPercentageofPTS3PT": "% PTS 3PT",
+        "seasonLeadersHighestPercentageofPTS2PT": "% PTS 2PT",
+        "seasonLeadersHighestPercentageofPTSMidRange": "% PTS MID",
+        "scoringPercentageofPoints3PT": "% PTS 3PT",
+        "scoringPercentageofPointsinthePaint": "% PTS PAINT",
+        "scoringPercentageofPointsMidRange": "% PTS MID",
+        "advancedOffensiveReboundPercentage": "OREB%",
+        "clutchFreeThrowPercentage": "CLUTCH FT%",
+        "shootingbyZoneMidRangeFGPercentage": "MID-RANGE FG%",
+        "shootingbyZoneRestrictedAreaFGPercentage": "RA FG%",
+        "bioStatsInternationalPointsPerGame": "INTL PPG",
+        "bioStats2ndRoundersPointsPerGame": "2ND RD PPG",
+        "bioStatsUndraftedPointsPerGame": "UNDRAFTED PPG",
+    ]
+    
+    nonisolated private static let shortByKey: [String: String] =
+        Dictionary(uniqueKeysWithValues: curated.map { ($0.key, $0.short) }).merging(extraShort) { a, _ in a }
+    
+    nonisolated static func shortCategory(_ category: String) -> String {
+        switch category {
+        case "Miscellaneous": return "Misc"
+        case "Shooting by Zone": return "Zone"
+        case "Bio Stats": return "Bio"
+        case "Player Tracking Passing": return "Passing"
+        default: return category
+        }
+    }
 
     nonisolated static func shortTitle(for key: String, title: String) -> String {
         if let s = shortByKey[key] { return s }
