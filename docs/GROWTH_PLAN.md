@@ -93,8 +93,8 @@
 - Analytics 이벤트: `favorite_add`, `share_card`, `week_switch`, `season_switch`, `potn_tap`, `push_optin`
 - KPI 대시보드(Firebase): DAU, D1/D7/D30, 세션/DAU, 광고 노출/DAU
 
-**P0-5. 리뷰 요청**
-- "긍정 순간" 트리거: 3번째 세션 이상 + 파워랭킹 상세 또는 My Team 핀 완료 직후. 연 3회 제한 준수
+**P0-5. 리뷰 요청** ✅ 구현(1.12)
+- 긍정 순간 트리거: 예측 채점에서 절반 이상 적중 직후, 5·20·50번째 실행. 3세션 이상·90일 간격·애플 연 3회 제한 준수. 프로필 시트에 리뷰 작성 링크
 
 ### Phase 1 — 2~4주차: 다시 열게 만드는 장치
 
@@ -134,7 +134,7 @@ Today 피드 모듈 (위에서 아래, 각 모듈은 독립 컴포넌트로 순�
 | 4 | Performance of the Night | 유지. 내 선수가 뽑히면 강조 + "시즌 PPG 리그 3위" 맥락 | games, statsLeaders |
 | 5 | Movers | 파워랭킹 주간 상승/하락 Top 3, 내 팀 변동 강조 → PR 탭으로 진입 | powerRankings |
 | 6 | League Leaders | 카테고리 3~4개를 날마다 로테이션(PPG·REB·허슬·루키 등), 내 선수 위치 표시 | statsLeaders |
-| 7 | My Picks (Phase 3) | 오늘 경기 승자 예측, 적중률·연승 | 신규 |
+| 7 | My Picks ✅ 구현(1.12) | 오늘 경기 승자 예측, 적중률·연승, 어제 채점 요약. 로컬 저장·채점 | schedule(크롤러 신규) |
 | 8 | Weekly Digest (일요일) | 내 팀·내 선수 주간 요약 카드 → 공유 | 집계 |
 
 - 네이티브 광고는 모듈 3과 5 사이, 6 아래 두 슬롯

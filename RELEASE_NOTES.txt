@@ -1,8 +1,7 @@
-Today: your NBA, first.
+Call the winners.
 
-- New Today tab: your favorite teams' games, standings and weekly Power Ranking moves come first, followed by Performance of the Night, Movers and League Leaders.
-- Pick your teams on first launch and manage teams and players anytime from the profile button.
-- Follow players: tap the star on any player page to pin them to Today.
-- League Top 5 badges on player and team pages, powered by daily NBA stat leaderboards.
-- Team pages now open the full Weekly Insights / Team Stats / Roster view everywhere.
-- Fixes: player season stats now show reliably regardless of how you reach the player page.
+- Tonight's Picks: pick the winner of every game on tonight's slate, right from Today. Your record, hit rate and streak build up as results come in.
+- Last slate recap: see how many of yesterday's calls you got right.
+- Rate Power Rank from the Favorites screen if the app is working for you.
+- Scheduled games now show tip-off times (ET).
+- Fixes and polish across Today, player and team pages.
