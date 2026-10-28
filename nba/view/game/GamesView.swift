@@ -55,8 +55,13 @@ struct GamesView: View {
                             SectionHeaderView(title: "PERFORMANCE OF THE NIGHT")
                                 .padding(.horizontal, 16)
                             
-                            // 1위 히어로 카드 (승리팀 MVP)
-                            NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: bestPlayer.game), gameRecap: viewModel.gameRecap)) {
+                            // 1위 히어로 카드 (승리팀 MVP) → PlayerView로 직접 연결
+                            NavigationLink(
+                                destination: PlayerView(
+                                    playerId: bestPlayer.player.playerId ?? "",
+                                    teamId: bestPlayer.player.teamId ?? ""
+                                )
+                            ) {
                                 dailyPerformerHeroCard(performer: bestPlayer)
                             }
                             .buttonStyle(PlainButtonStyle())
@@ -303,7 +308,13 @@ struct GamesView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(candidates) { candidate in
-                        NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: candidate.game), gameRecap: viewModel.gameRecap)) {
+                        // HONORABLE MENTIONS 카드 → PlayerView로 직접 연결
+                        NavigationLink(
+                            destination: PlayerView(
+                                playerId: candidate.player.playerId ?? "",
+                                teamId: candidate.player.teamId ?? ""
+                            )
+                        ) {
                             candidateMiniCard(performer: candidate)
                         }
                         .buttonStyle(PlainButtonStyle())

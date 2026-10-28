@@ -39,15 +39,45 @@ struct PlayerView: View {
                     PlayerSeasonSummaryView(player: player)
                         .padding(.top, 16)
                     
-                    // 3. LAST GAME (Scale-Up Boxscore Snapshot Card)
-                    if let lastGame = viewModel.lastGameStats {
-                        NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: lastGame.game), gameRecap: [])) {
-                            lastGameCard(stats: lastGame)
+                    // 3. LAST 3 GAMES Section
+                    if !viewModel.recentGames.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            // 섹션 헤더
+                            HStack(spacing: 6) {
+                                Image(systemName: "flame.fill")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundColor(.orange)
+                                Text("LAST \(viewModel.recentGames.count) GAMES")
+                                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.75))
+                                    .tracking(0.6)
+                                Spacer()
+                            }
+                            
+                            // 가장 최근 경기 히어로 카드 (탭 → GameRecap)
+                            if let lastGame = viewModel.recentGames.first {
+                                NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: lastGame.game), gameRecap: [])) {
+                                    lastGameCard(stats: lastGame)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                            
+                            // 최근 3경기 미니 요약 로우 (2번째부터)
+                            if viewModel.recentGames.count > 1 {
+                                HStack(spacing: 8) {
+                                    ForEach(viewModel.recentGames.dropFirst().prefix(2), id: \.gameDate) { game in
+                                        NavigationLink(destination: GameRecapView(viewModel: HomeAwayViewModel(homeAway: game.game), gameRecap: [])) {
+                                            miniGameRow(stats: game)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                }
+                            }
                         }
-                        .buttonStyle(PlainButtonStyle())
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
                     }
+
                     
                     // 4. Bio Grid
                     PlayerBioGridView(player: player)
@@ -261,7 +291,58 @@ struct PlayerView: View {
         .background(Color.white.opacity(0.08))
         .clipShape(Capsule())
     }
+    
+    // MARK: - Mini Game Row (2번째, 3번째 최근 경기 요약 카드)
+    @ViewBuilder
+    private func miniGameRow(stats: PlayerLastGameStats) -> some View {
+        HStack(spacing: 10) {
+            // 상대팀 로고 + 홈/어웨이
+            HStack(spacing: 5) {
+                if RemoteConfigManager.shared.shouldUseOfficialTeamData, !stats.opponentTriCode.isEmpty {
+                    Image(stats.opponentTriCode)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                }
+                Text("\(stats.isHome ? "vs" : "@") \(stats.opponentTriCode)")
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.85))
+            }
+            
+            // 승패 뱃지
+            Text(String(stats.resultText.prefix(1))) // "W" or "L"
+                .font(.system(size: 9, weight: .black))
+                .foregroundColor(.white)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 2)
+                .background(stats.resultText.hasPrefix("W") ? Color(red: 0.2, green: 0.8, blue: 0.4) : Color.red.opacity(0.8))
+                .clipShape(Capsule())
+            
+            Spacer()
+            
+            // 핵심 스탯 (PTS · REB · AST)
+            Text("\(stats.pts) · \(stats.reb) · \(stats.ast)")
+                .font(.system(size: 12, weight: .heavy, design: .rounded))
+                .foregroundColor(.white)
+            
+            Image(systemName: "chevron.right")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundColor(.white.opacity(0.35))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white.opacity(0.06))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+        )
+        .frame(maxWidth: .infinity)
+    }
 }
+
 
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {

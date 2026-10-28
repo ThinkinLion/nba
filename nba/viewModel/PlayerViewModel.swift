@@ -13,6 +13,7 @@ final class PlayerViewModel: ObservableObject {
     @Published var player = PlayerModel.empty
     @Published var roster = [PlayerModel]()
     @Published var lastGameStats: PlayerLastGameStats? = nil
+    @Published var recentGames: [PlayerLastGameStats] = [] // 최근 3경기
     var errorMessage: String?
     
     private var db = Firestore.firestore()
@@ -91,19 +92,33 @@ extension PlayerViewModel {
                 games = (try? await FirestoreStandingsRepository().fetchGameRecap()) ?? []
             }
             
-            // 3. 선수가 출전한 가장 최근 경기 및 박스스코어 탐색
-            var foundStats: PlayerLastGameStats? = nil
-            for day in games {
+            // 3. 선수 이름(lastName) 사전 조회 - playerId 매칭 실패 폴백용
+            let playerName = await MainActor.run { self.player.lastName?.lowercased() ?? "" }
+            
+            // 4. 최근 3경기 수집
+            var collected: [PlayerLastGameStats] = []
+            outer: for day in games {
                 for match in day.items {
+                    let awayScore = Int(match.away.score ?? "0") ?? 0
+                    let homeScore = Int(match.home.score ?? "0") ?? 0
+                    
+                    // Helper: playerId 일치 우선, 실패 시 lastName 폴백 매칭
+                    func findBox(in scores: [BoxScore]?) -> BoxScore? {
+                        guard let scores = scores else { return nil }
+                        if let exact = scores.first(where: { $0.playerId == playerId }) { return exact }
+                        if !playerName.isEmpty {
+                            return scores.first(where: { $0.lastName?.lowercased() == playerName })
+                        }
+                        return nil
+                    }
+                    
                     // Check Home Boxscore
-                    if let box = match.home.boxscore?.first(where: { $0.playerId == playerId }) {
-                        let awayScore = Int(match.away.score ?? "0") ?? 0
-                        let homeScore = Int(match.home.score ?? "0") ?? 0
+                    if let box = findBox(in: match.home.boxscore) {
                         let isWin = homeScore > awayScore
                         let scoreText = "\(match.home.score ?? "0") - \(match.away.score ?? "0")"
                         let resultText = (isWin ? "W " : "L ") + scoreText
                         
-                        foundStats = PlayerLastGameStats(
+                        collected.append(PlayerLastGameStats(
                             opponentTriCode: match.away.teamCode.nickNameToTriCode,
                             isHome: true,
                             gameDate: day.date ?? "",
@@ -113,19 +128,18 @@ extension PlayerViewModel {
                             ast: box.ast ?? "0",
                             min: box.min,
                             game: match
-                        )
-                        break
+                        ))
+                        if collected.count >= 3 { break outer }
+                        continue
                     }
                     
                     // Check Away Boxscore
-                    if let box = match.away.boxscore?.first(where: { $0.playerId == playerId }) {
-                        let awayScore = Int(match.away.score ?? "0") ?? 0
-                        let homeScore = Int(match.home.score ?? "0") ?? 0
+                    if let box = findBox(in: match.away.boxscore) {
                         let isWin = awayScore > homeScore
                         let scoreText = "\(match.away.score ?? "0") - \(match.home.score ?? "0")"
                         let resultText = (isWin ? "W " : "L ") + scoreText
                         
-                        foundStats = PlayerLastGameStats(
+                        collected.append(PlayerLastGameStats(
                             opponentTriCode: match.home.teamCode.nickNameToTriCode,
                             isHome: false,
                             gameDate: day.date ?? "",
@@ -135,21 +149,24 @@ extension PlayerViewModel {
                             ast: box.ast ?? "0",
                             min: box.min,
                             game: match
-                        )
-                        break
+                        ))
+                        if collected.count >= 3 { break outer }
                     }
                 }
-                if foundStats != nil { break }
             }
             
+            // Swift 6 동시성 경고 해소: immutable 캡처
+            let result = collected
             await MainActor.run {
-                self.lastGameStats = foundStats
+                self.recentGames = result
+                self.lastGameStats = result.first
             }
         }
     }
 }
 
 /*
+
  player_info = {
      "id": str(uuid.uuid4()),
      "teamId": team_id,
