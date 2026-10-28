@@ -29,6 +29,7 @@ DO_UPLOAD=true
 DO_VALIDATE_ONLY=false
 DO_SUBMIT=false
 DO_SCREENSHOTS=false
+POST_ONLY=false
 
 # CLI 옵션 파싱
 while [[ "$#" -gt 0 ]]; do
@@ -60,6 +61,12 @@ while [[ "$#" -gt 0 ]]; do
             DO_UPLOAD=false
             shift
             ;;
+        --post-only)
+            # 빌드·업로드는 건너뛰고 업로드 이후 단계(버전 생성, 릴리즈 노트, 스크린샷, 심사 제출)만 실행
+            POST_ONLY=true
+            BUMP_VERSION=false
+            shift
+            ;;
         -h|--help)
             echo "=================================================================="
             echo "🚀 NBA iOS App Store 배포 스크립트 (deploy.sh)"
@@ -72,6 +79,7 @@ while [[ "$#" -gt 0 ]]; do
             echo "  --submit           업로드 및 릴리즈 노트 등록 후, Apple 심사(Review)에 최종 제출까지 자동 수행"
             echo "  --no-bump          빌드 번호(CURRENT_PROJECT_VERSION)를 증가시키지 않고 유지"
             echo "  --version X.Y      마케팅 버전(CFBundleShortVersionString) 변경 (예: --version 1.12). 승인된 버전과 같으면 업로드 거부됨"
+            echo "  --post-only        빌드·업로드 생략, 업로드 이후 단계만 실행 (버전 레코드 생성 → 릴리즈 노트 → [--submit] 심사 제출)"
             echo "  --validate-only    업로드하지 않고 App Store Connect 유효성 검증만 수행"
             echo "  --skip-upload      IPA 빌드까지만 수행하고 업로드/검증 단계 건너뜀 (로컬 테스트용)"
             echo "  -h, --help         도움말 출력"
@@ -114,6 +122,32 @@ if [ -n "$NEW_MARKETING_VERSION" ] && [ "$NEW_MARKETING_VERSION" != "$CURRENT_MA
     CURRENT_MARKETING_VERSION="$NEW_MARKETING_VERSION"
 fi
 echo "🏷️  Marketing Version: ${CURRENT_MARKETING_VERSION:-unknown}"
+export MARKETING_VERSION="$CURRENT_MARKETING_VERSION"  # node 스크립트가 App Store Connect 버전 레코드 생성에 사용
+
+# 업로드 이후 단계만 실행하는 함수 (버전 레코드 생성 → 릴리즈 노트 → 스크린샷 → 심사 제출)
+run_post_upload_steps() {
+    if [ -f "$DIR/scripts/update_release_notes.js" ]; then
+        echo ""
+        node "$DIR/scripts/update_release_notes.js" || echo "⚠️ Release notes update skipped"
+    fi
+    if [ "$DO_SCREENSHOTS" = true ]; then
+        echo ""
+        [ -f "$DIR/scripts/capture_screenshots.sh" ] && "$DIR/scripts/capture_screenshots.sh"
+        [ -f "$DIR/scripts/upload_screenshots.js" ] && node "$DIR/scripts/upload_screenshots.js"
+    fi
+    if [ "$DO_SUBMIT" = true ] && [ -f "$DIR/scripts/submit_for_review.js" ]; then
+        echo ""
+        node "$DIR/scripts/submit_for_review.js"
+    fi
+}
+
+if [ "$POST_ONLY" = true ]; then
+    echo "------------------------------------------------------------------"
+    echo "⏩ --post-only: 빌드·업로드를 건너뛰고 업로드 이후 단계만 실행합니다."
+    echo "------------------------------------------------------------------"
+    run_post_upload_steps
+    exit 0
+fi
 
 # 1. 빌드 번호 +1 자동 증가
 if [ "$BUMP_VERSION" = true ]; then
@@ -215,28 +249,8 @@ if [ "$DO_UPLOAD" = true ]; then
     echo "⏱️  Processing:     애플 서버에서 빌드 처리가 완료되면(약 5~15분) TestFlight에 노출됩니다."
     echo "=================================================================="
     
-    # 7. 릴리즈 노트(이 버전에서 변경된 사항) 자동 업데이트
-    if [ -f "$DIR/scripts/update_release_notes.js" ]; then
-        echo ""
-        node "$DIR/scripts/update_release_notes.js" || echo "⚠️ Release notes update skipped"
-    fi
-    
-    # 8. 필수 2대 규격 스크린샷 캡처 및 업로드 (--screenshots 옵션 지정 시)
-    if [ "$DO_SCREENSHOTS" = true ]; then
-        echo ""
-        if [ -f "$DIR/scripts/capture_screenshots.sh" ]; then
-            "$DIR/scripts/capture_screenshots.sh"
-        fi
-        if [ -f "$DIR/scripts/upload_screenshots.js" ]; then
-            node "$DIR/scripts/upload_screenshots.js"
-        fi
-    fi
-
-    # 9. 심사에 최종 제출 (--submit 옵션 지정 시)
-    if [ "$DO_SUBMIT" = true ] && [ -f "$DIR/scripts/submit_for_review.js" ]; then
-        echo ""
-        node "$DIR/scripts/submit_for_review.js"
-    fi
+    # 7~9. 버전 레코드 생성 → 릴리즈 노트 → 스크린샷(--screenshots) → 심사 제출(--submit)
+    run_post_upload_steps
 elif [ "$DO_VALIDATE_ONLY" = true ]; then
     echo "=================================================================="
     echo "✅ Validation complete! (--validate-only: 업로드는 건너뛰었습니다)"

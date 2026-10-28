@@ -14,6 +14,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const { ensurePrepareForSubmissionVersion } = require("./asc_version");
 
 const API_KEY = "N8H3XA3PY5";
 const API_ISSUER = "69a6de82-3793-47e3-e053-5b8c7c11a4d1";
@@ -80,12 +81,10 @@ async function main() {
     const appId = appData.data[0].id;
     console.log(`✅ App ID 확인: ${appId} (${appData.data[0].attributes.name})`);
 
-    // 2. 제출 준비 중인 버전 탐색
-    const versionsData = await apiRequest(`/v1/apps/${appId}/appStoreVersions`);
-    const targetVersion = versionsData.data.find(v => v.attributes.appStoreState === "PREPARE_FOR_SUBMISSION");
-
+    // 2. 제출 준비 중인 버전 탐색 — 없으면 현재 마케팅 버전으로 생성
+    const targetVersion = await ensurePrepareForSubmissionVersion(apiRequest, appId);
     if (!targetVersion) {
-        console.log("⚠️ 'PREPARE_FOR_SUBMISSION' (제출 준비 중) 상태인 버전이 없습니다.");
+        console.log("⚠️ 제출할 수 있는 'PREPARE_FOR_SUBMISSION' 버전이 없습니다.");
         return;
     }
     console.log(`🎯 심사 대상 버전: v${targetVersion.attributes.versionString} (Version ID: ${targetVersion.id})`);
