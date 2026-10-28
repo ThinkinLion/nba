@@ -49,10 +49,23 @@ extension PlayerViewModel {
         db.collection("players.\(seasonYear)").document(documentId).getDocument(as: PlayerModel.self) { result in
             switch result {
             case .success(let player):
-                print("player: \(player)")
+                // 시즌별 스탯 섹션이 실제로 내려왔는지 한 줄로 확인 (전체 구조체 덤프 대신 요약)
+                let sections = [
+                    "traditional \(player.traditional?.count ?? 0)",
+                    "advanced \(player.advanced?.count ?? 0)",
+                    "misc \(player.misc?.count ?? 0)",
+                    "scoring \(player.scoring?.count ?? 0)",
+                    "usage \(player.usage?.count ?? 0)"
+                ].joined(separator: " | ")
+                let latest = player.traditional?.first.map { "\($0.title ?? "-") \($0.teamTriCode ?? "-") GP \($0.gp ?? "-") PTS \($0.pts ?? "-")" } ?? "없음"
+                print("player[\(documentId)] \(player.firstName ?? "") \(player.lastName ?? "") | PPG \(player.ppg ?? "-") | 시즌별 스탯: \(sections) | 최신: \(latest)")
+                if player.traditional?.isEmpty ?? true {
+                    print("⚠️ player[\(documentId)] 시즌별 스탯(traditional)이 비어 있음 — 크롤러에서 'python cli.py player --id \(documentId)' 재수집 필요")
+                }
                 self.player = player
                 self.errorMessage = nil
             case .failure(let error):
+                print("❌ player[\(documentId)] 디코딩 실패: \(error)")
                 self.errorMessage = "Error decoding document: \(error.localizedDescription)"
             }
         }
@@ -425,9 +438,11 @@ extension PlayerSummaryViewModel {
     !self.traditional.isEmpty
   }
   
+  // 현재 시즌(예: "2026-27") 행만 추출 — 시즌 문자열 하드코딩 대신 SeasonProvider 기준
   var currentSeasonTraditional: [PlayerStatsItemViewModel] {
-    self.traditional.first {
-      $0.title == "2023-24"
+    let season = SeasonProvider.shared.seasonDisplayString()
+    return self.traditional.first {
+      $0.title == season
     }
     .map {
       ModelFactory.createTraditionalStatsItemViewModels(with: $0, teamId: self.teamId)
@@ -443,8 +458,9 @@ extension PlayerSummaryViewModel {
   }
   
   var currentSeasonAdvanced: [PlayerStatsItemViewModel] {
-    self.advanced.first {
-      $0.title == "2023-24"
+    let season = SeasonProvider.shared.seasonDisplayString()
+    return self.advanced.first {
+      $0.title == season
     }
     .map {
       ModelFactory.createAdvancedStatsItemViewModels(with: $0, teamId: self.teamId)
