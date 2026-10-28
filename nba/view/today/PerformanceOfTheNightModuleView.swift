@@ -79,10 +79,10 @@ struct PerformanceOfTheNightModuleView: View {
                 )
                 .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
 
-            // 선수 이미지 (우측, 얼굴 영역은 텍스트와 겹치지 않음)
-            if let playerId = performer.player.playerId {
-                HStack {
-                    Spacer()
+            // 선수 이미지 (우측, 얼굴 영역은 텍스트와 겹치지 않음). 세이프 모드(use_official_team_data=false)에서는 등번호 플레이스홀더
+            HStack {
+                Spacer()
+                if RemoteConfigManager.shared.shouldUseOfficialTeamData, let playerId = performer.player.playerId {
                     AsyncImage(url: URL(string: playerId.imageUrl)) { phase in
                         if let image = phase.image {
                             image.resizable().aspectRatio(contentMode: .fit)
@@ -93,12 +93,15 @@ struct PerformanceOfTheNightModuleView: View {
                     .frame(height: 165)
                     .offset(x: 5, y: 0)
                     .mask(LinearGradient(colors: [.white, .white.opacity(0.9), .clear], startPoint: .trailing, endPoint: .leading))
+                } else {
+                    PlayerPlaceholderView(jerseyNumber: performer.player.jersey ?? "", color: Color(teamCode.lowercased() + ".light"), size: 84)
+                        .padding(.trailing, 22)
                 }
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 8) {
-                    if !triCode.isEmpty {
+                    if RemoteConfigManager.shared.shouldUseOfficialTeamData, !triCode.isEmpty {
                         Image(triCode)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -206,8 +209,8 @@ struct PerformanceOfTheNightModuleView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(LinearGradient(colors: [Color(teamCode.lowercased() + ".dark").opacity(0.9), Color.black.opacity(0.92)], startPoint: .top, endPoint: .bottom))
 
-            if let playerId = performer.player.playerId {
-                VStack(spacing: 0) {
+            VStack(spacing: 0) {
+                if RemoteConfigManager.shared.shouldUseOfficialTeamData, let playerId = performer.player.playerId {
                     AsyncImage(url: URL(string: playerId.imageUrl)) { phase in
                         if let image = phase.image {
                             image.resizable().aspectRatio(contentMode: .fit)
@@ -217,8 +220,12 @@ struct PerformanceOfTheNightModuleView: View {
                     }
                     .frame(height: 112)
                     .offset(y: 4)
-                    Spacer(minLength: 0)
+                } else {
+                    PlayerPlaceholderView(jerseyNumber: performer.player.jersey ?? "", color: Color(teamCode.lowercased() + ".light"), size: 64)
+                        .frame(height: 112)
+                        .offset(y: 10)
                 }
+                Spacer(minLength: 0)
             }
 
             VStack {

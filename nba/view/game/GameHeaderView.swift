@@ -138,14 +138,20 @@ struct GameHeaderView: View {
                                 // REMOVED Watermark from here
 
                                 NavigationLink(destination: PlayerView(playerId: viewModel.awayLeaderId, teamId: viewModel.awayTeamId)) {
-                                    AsyncImage(url: URL(string: viewModel.awayLeaderId.imageUrl)) { image in
-                                        image.resizable()
-                                    } placeholder: {
-                                        Color.clear
+                                    if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                                        AsyncImage(url: URL(string: viewModel.awayLeaderId.imageUrl)) { image in
+                                            image.resizable()
+                                        } placeholder: {
+                                            Color.clear
+                                        }
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 220)
+                                        .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
+                                    } else {
+                                        // 세이프 모드: 선수 이미지 대신 등번호 플레이스홀더
+                                        PlayerPlaceholderView(jerseyNumber: viewModel.awayLeaderJersey, color: .white, size: 110)
+                                            .frame(height: 220, alignment: .center)
                                     }
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 220)
-                                    .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
                                 }
                             }
                             .offset(x: 20) // Push Image slightly RIGHT (towards center)
@@ -196,14 +202,20 @@ struct GameHeaderView: View {
                                 // REMOVED Watermark from here
                                     
                                 NavigationLink(destination: PlayerView(playerId: viewModel.homeLeaderId, teamId: viewModel.homeTeamId)) {
-                                    AsyncImage(url: URL(string: viewModel.homeLeaderId.imageUrl)) { image in
-                                        image.resizable()
-                                    } placeholder: {
-                                        Color.clear
+                                    if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                                        AsyncImage(url: URL(string: viewModel.homeLeaderId.imageUrl)) { image in
+                                            image.resizable()
+                                        } placeholder: {
+                                            Color.clear
+                                        }
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 220)
+                                        .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
+                                    } else {
+                                        // 세이프 모드: 선수 이미지 대신 등번호 플레이스홀더
+                                        PlayerPlaceholderView(jerseyNumber: viewModel.homeLeaderJersey, color: .white, size: 110)
+                                            .frame(height: 220, alignment: .center)
                                     }
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 220)
-                                    .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
                                 }
                             }
                             .offset(x: -20) // Push Image slightly LEFT (towards center)
