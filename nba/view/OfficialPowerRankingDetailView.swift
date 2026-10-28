@@ -50,6 +50,8 @@ struct OfficialPowerRankingDetailView: View {
                 }
             case .roster:
                 VStack(spacing: 0) {
+                    TeamLeagueLeadersRow(roster: playerViewModel.roster, teamId: viewState.teamId)
+                        .padding(.bottom, 16)
                     TeamRosterView(roster: playerViewModel.roster)
                     StyledBannerContainer(adUnitId: .powerRanking, paddingHorizontal: 15)
                         .padding(.top, 20)

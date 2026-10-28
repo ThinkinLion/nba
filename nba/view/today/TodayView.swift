@@ -11,6 +11,7 @@ import FirebaseAnalytics
 
 struct TodayView: View {
     @StateObject private var viewModel = StandingsViewModel()
+    @StateObject private var powerRankingViewModel = PowerRankingViewModel() // 팀 상세(PowerRankingDetailView) 진입용
     @ObservedObject private var favorites = FavoritesManager.shared
     @ObservedObject private var leaders = LeadersStore.shared
     @State private var selectedDateIndex: Int = 0
@@ -52,6 +53,7 @@ struct TodayView: View {
                             games: viewModel.gameRecap,
                             standings: viewModel.standings,
                             powerRanking: viewModel.powerRankings.first,
+                            teamLink: teamLink,
                             onManage: { showProfile = true }
                         )
                         .padding(.bottom, 22)
@@ -75,7 +77,7 @@ struct TodayView: View {
 
                         // 4. MOVERS (주간 파워랭킹 상승/하락)
                         if let pr = viewModel.powerRankings.first {
-                            MoversModuleView(powerRanking: pr)
+                            MoversModuleView(powerRanking: pr, teamLink: teamLink)
                                 .padding(.bottom, 24)
                                 .id("movers")
                         }
@@ -122,6 +124,7 @@ struct TodayView: View {
         .background(Color.black.edgesIgnoringSafeArea(.all))
         .refreshable {
             await viewModel.fetchStandingsAsync(forceRefresh: true)
+            await powerRankingViewModel.fetchPowerRankings(forceRefresh: true)
             await leaders.loadIfNeeded(forceRefresh: true)
         }
         .onAppear {
@@ -129,12 +132,26 @@ struct TodayView: View {
             hasAppeared = true
             Task {
                 await viewModel.fetchStandingsAsync()
+                await powerRankingViewModel.fetchPowerRankings()
                 await leaders.loadIfNeeded()
             }
         }
         .analyticsScreen(name: "NBA-TodayView")
     }
 
+    // MARK: - Team link (파워랭킹 탭과 동일한 팀 상세로 진입)
+    
+    /// 팀 상세 진입 정보. 파워랭킹 상태에서 먼저 찾고, 없으면 순위표 행으로 TeamState 를 구성
+    private var teamLink: TodayTeamLink {
+        TodayTeamLink(viewModel: powerRankingViewModel) { team in
+            if let ts = powerRankingViewModel.getTeamState(for: team.triCode) { return ts }
+            if let row = (viewModel.standings.east + viewModel.standings.west).first(where: { $0.teamId == team.teamId }) {
+                return viewModel.createTeamState(from: row, powerRankings: powerRankingViewModel.currentPowerRanking?.items)
+            }
+            return nil
+        }
+    }
+    
     // MARK: - Games module
 
     @ViewBuilder

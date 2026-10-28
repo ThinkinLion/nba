@@ -463,23 +463,13 @@ private struct PlayoffMatchupCard: View {
         .opacity(activeOpacity)
         .frame(maxWidth: .infinity, alignment: alignTrailing ? .trailing : .leading)
         
-        if !teamId.isEmpty {
-            NavigationLink(destination: teamDestinationView(teamId: teamId, code: code)) {
+        if !teamId.isEmpty, let teamState = powerRankingViewModel.getTeamState(for: normalizedTri(fromTeamCode: code)) {
+            NavigationLink(destination: PowerRankingDetailView(teamState: teamState, viewModel: powerRankingViewModel)) {
                 content
             }
             .buttonStyle(.plain)
         } else {
             content
-        }
-    }
-    
-    @ViewBuilder
-    private func teamDestinationView(teamId: String, code: String) -> some View {
-        let tri = normalizedTri(fromTeamCode: code)
-        if let teamState = powerRankingViewModel.getTeamState(for: tri) {
-            PowerRankingDetailView(teamState: teamState, viewModel: powerRankingViewModel)
-        } else {
-            TeamView(teamId: teamId)
         }
     }
 }

@@ -53,6 +53,8 @@ struct SafeModePowerRankingDetailView: View {
                     teamModel: teamModel
                 )
             case .roster:
+                TeamLeagueLeadersRow(roster: playerViewModel.roster, teamId: viewState.teamId)
+                    .padding(.bottom, 16)
                 TeamRosterView(roster: playerViewModel.roster)
             }
         }

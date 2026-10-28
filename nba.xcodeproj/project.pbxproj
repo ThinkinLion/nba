@@ -23,11 +23,8 @@
 		C21ECE322EE80DCB00791B0D /* MovementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21ECE302EE80DCB00791B0D /* MovementView.swift */; };
 		C21ECE332EE80DCB00791B0D /* TeamsOfTheWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21ECE312EE80DCB00791B0D /* TeamsOfTheWeekView.swift */; };
 		C21EF4712B099989005D87D2 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4702B099989005D87D2 /* LineView.swift */; };
-		C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */; };
 		C21EF4762B0B48AD005D87D2 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21EF4752B0B48AD005D87D2 /* BannerView.swift */; };
 		C22634972B639F2500692248 /* PlayerStatsItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22634962B639F2500692248 /* PlayerStatsItemViewModel.swift */; };
-		C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B99992B33EF9400A1152E /* TeamView.swift */; };
-		C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22B999D2B358AF300A1152E /* TeamViewModel.swift */; };
 		C23A65D32B4BE4C0000F4096 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */; };
 		C23AF2F72AFB833700984545 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = C23AF2F62AFB833700984545 /* GoogleMobileAds */; };
 		C24D07BF2EC29E0A00777BF1 /* PowerRankingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */; };
@@ -150,12 +147,9 @@ C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */ = {isa = PB
 		C21ECE302EE80DCB00791B0D /* MovementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementView.swift; sourceTree = "<group>"; };
 		C21ECE312EE80DCB00791B0D /* TeamsOfTheWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsOfTheWeekView.swift; sourceTree = "<group>"; };
 		C21EF4702B099989005D87D2 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
-		C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSummaryViewModel.swift; sourceTree = "<group>"; };
 		C21EF4742B0B478D005D87D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C21EF4752B0B48AD005D87D2 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		C22634962B639F2500692248 /* PlayerStatsItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatsItemViewModel.swift; sourceTree = "<group>"; };
-		C22B99992B33EF9400A1152E /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
-		C22B999D2B358AF300A1152E /* TeamViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViewModel.swift; sourceTree = "<group>"; };
 		C23A65D22B4BE4C0000F4096 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
 		C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingDetailView.swift; sourceTree = "<group>"; };
 		C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerRankingView.swift; sourceTree = "<group>"; };
@@ -430,9 +424,7 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 				C20EB6362EE9A53100FC6711 /* state */,
 				C2C794FF2AFE146200D72531 /* StandingsViewModel.swift */,
 				C28C322C2B26F3C90054B189 /* PlayerViewModel.swift */,
-				C22B999D2B358AF300A1152E /* TeamViewModel.swift */,
 				C22634962B639F2500692248 /* PlayerStatsItemViewModel.swift */,
-				C21EF4722B0A3286005D87D2 /* TeamSummaryViewModel.swift */,
 				C2F034AA2B196B2B009B372F /* HomeAwayViewModel.swift */,
 				C2628F202B4576B3005E044B /* BoxScoreViewModel.swift */,
 				C24D07C12EC29E1500777BF1 /* PowerRankingViewModel.swift */,
@@ -452,7 +444,6 @@ C29313F7F4134E485DBD18B2 /* FavoriteTeamsBarView.swift */,
 				C2A277B22EEAD0F90088DC7F /* player */,
 				C2FCDCBE2EEAFAD2006748C6 /* game */,
 				C2EF470B2F050E6E00818956 /* standings */,
-				C22B99992B33EF9400A1152E /* TeamView.swift */,
 				C24D07BE2EC29E0A00777BF1 /* PowerRankingView.swift */,
 				C24D07BD2EC29E0A00777BF1 /* PowerRankingDetailView.swift */,
 				C2E591EF2EE02F4D00A88D97 /* OfficialPowerRankingDetailView.swift */,
@@ -773,7 +764,6 @@ C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */,
 				C21ECE322EE80DCB00791B0D /* MovementView.swift in Sources */,
 				C21ECE332EE80DCB00791B0D /* TeamsOfTheWeekView.swift in Sources */,
 				C28C322D2B26F3C90054B189 /* PlayerViewModel.swift in Sources */,
-				C22B999E2B358AF300A1152E /* TeamViewModel.swift in Sources */,
 				C2628F212B4576B3005E044B /* BoxScoreViewModel.swift in Sources */,
 				C2FCDCC42EED5637006748C6 /* String+Flag.swift in Sources */,
 				C28C322F2B26F4690054B189 /* PlayerModel.swift in Sources */,
@@ -790,10 +780,8 @@ C266AFA92CA1214CCEA8F29C /* FavoriteTeamsBarView.swift in Sources */,
 				C2C794F92AFE140D00D72531 /* StandingsModel.swift in Sources */,
 				C2A995442CB21305009A4C55 /* SeasonProvider.swift in Sources */,
 				C2AF5CF02EFB72D10025022F /* StyledBannerContainer.swift in Sources */,
-				C21EF4732B0A3286005D87D2 /* TeamSummaryViewModel.swift in Sources */,
 				C2C4CBB42FAC2A2C00DF98E8 /* PlayoffSeries.swift in Sources */,
 				C2C4CBB72FAC2B100DF98E8 /* NBAStaticConference.swift in Sources */,
-				C22B999A2B33EF9400A1152E /* TeamView.swift in Sources */,
 				C2AC6EE02CCD06FE00E5DF61 /* Usage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

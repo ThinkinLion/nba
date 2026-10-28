@@ -1,7 +1,7 @@
-# Hoop Rank 사용자 성장 계획 (광고 노출 극대화)
+# Power Rank 사용자 성장 계획 (광고 노출 극대화)
 
 작성일: 2026-10-28
-대상: Hoop Rank iOS 앱(com.spearhead.nbaPowerRanking) + NBACrafter 데이터 파이프라인
+대상: Power Rank iOS 앱(com.spearhead.nbaPowerRanking) + NBACrafter 데이터 파이프라인
 
 ---
 
@@ -53,7 +53,7 @@
 - `crawl_runs` 컬렉션은 있으나 쓰는 코드 없음 → 실패를 알 방법이 없음
 
 ### 1-4. 스토어 (ASO)
-- 앱명 `Hoop Rank: NBA Weekly Power Rankings` — "power rankings"는 검색량이 작은 틈새 키워드
+- 현재 스토어 메타데이터의 앱명이 "NBA Weekly Power Rankings" 중심 — "power rankings"는 검색량이 작은 틈새 키워드
 - SKU `NBA_2025_US`로 미국 타깃인데 부제목이 한국어
 - "NBA scores", "NBA standings", "NBA stats" 같은 대형 키워드 미공략
 
@@ -156,7 +156,7 @@ Today 피드 모듈 (위에서 아래, 각 모듈은 독립 컴포넌트로 순�
 ### Phase 2 — 5~8주차: 찾아오게 만드는 장치
 
 **P2-1. ASO 전면 개편**
-- 앱명: `Hoop Rank: NBA Scores & Rankings` (대형 키워드 "scores" 앞쪽 배치)
+- 앱명: `Power Rank: NBA Scores & Rankings` (대형 키워드 "scores" 앞쪽 배치)
 - 부제목(영문): `Standings, Stats, Power Rankings`
 - 키워드 필드 100자: `nba,basketball,scores,standings,stats,power rankings,player,team,schedule,playoffs`
 - 스크린샷 첫 장을 "오늘의 스코어 + POTN"으로 (현재 파워랭킹 중심)
@@ -168,7 +168,7 @@ Today 피드 모듈 (위에서 아래, 각 모듈은 독립 컴포넌트로 순�
 
 **P2-3. 공유 카드 + 유니버설 링크**
 - 공유 가능 카드: 주간 파워랭킹 Top 10, My Team 순위 변동(▲3), 선수 시즌 스탯, POTN(기존)
-- 카드 하단에 앱 이름 + 짧은 링크(`hooprank.app/t/{teamId}`) 워터마크
+- 카드 하단에 앱 이름 + 짧은 링크(`<앱 도메인>/t/{teamId}`) 워터마크
 - 유니버설 링크 수신 → 팀/선수/주차로 직접 진입. 링크 랜딩 페이지는 Firebase Hosting 정적 페이지
 - 운영 루틴: 매주 파워랭킹 발행일에 r/nba·X에 Top 10 카드 게시(무료 채널)
 

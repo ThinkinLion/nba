@@ -7,11 +7,31 @@
 
 import SwiftUI
 
+/// Today 모듈에서 팀 상세(PowerRankingDetailView)로 진입하기 위한 해석기
+struct TodayTeamLink {
+    let viewModel: PowerRankingViewModel
+    let resolve: (NBATeamCatalogItem) -> TeamState?
+    
+    /// TeamState 를 찾으면 NavigationLink 로 감싸고, 없으면 라벨만 표시
+    @ViewBuilder
+    func wrap<Label: View>(_ team: NBATeamCatalogItem, @ViewBuilder label: () -> Label) -> some View {
+        if let state = resolve(team) {
+            NavigationLink(destination: PowerRankingDetailView(teamState: state, viewModel: viewModel)) {
+                label()
+            }
+            .buttonStyle(PlainButtonStyle())
+        } else {
+            label()
+        }
+    }
+}
+
 struct MyTeamsModuleView: View {
     @ObservedObject private var favorites = FavoritesManager.shared
     let games: [GamesModel]            // 최신순
     let standings: StandingsModel
     let powerRanking: PowerRankingModel?
+    let teamLink: TodayTeamLink
     let onManage: () -> Void
 
     var body: some View {
@@ -58,10 +78,9 @@ struct MyTeamsModuleView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         ForEach(teams) { team in
-                            NavigationLink(destination: TeamView(teamId: team.teamId)) {
+                            teamLink.wrap(team) {
                                 MyTeamCard(team: team, snapshot: snapshot(for: team))
                             }
-                            .buttonStyle(PlainButtonStyle())
                         }
                     }
                     .padding(.horizontal, 16)

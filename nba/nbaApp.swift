@@ -67,7 +67,7 @@ struct nbaApp: App {
     WindowGroup {
       if isTeamScreenshot {
         NavigationView {
-          TeamView(teamId: "1610612759")
+          ScreenshotTeamEntryView(triCode: "SAS")
         }
         .navigationViewStyle(.stack)
         .accentColor(.white)
@@ -126,5 +126,24 @@ struct nbaApp: App {
   
   private var isScreenshotMode: Bool {
     ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("-screenshot") }
+  }
+}
+
+/// 스크린샷 모드(-screenshot-team): 파워랭킹 데이터를 불러온 뒤 지정 팀의 공식 팀 상세로 바로 진입
+struct ScreenshotTeamEntryView: View {
+  let triCode: String
+  @StateObject private var powerRankingViewModel = PowerRankingViewModel()
+  
+  var body: some View {
+    Group {
+      if let teamState = powerRankingViewModel.getTeamState(for: triCode) {
+        PowerRankingDetailView(teamState: teamState, viewModel: powerRankingViewModel)
+      } else {
+        LogoLoadingView(size: 130)
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .background(Color.black.ignoresSafeArea())
+      }
+    }
+    .task { await powerRankingViewModel.fetchPowerRankings() }
   }
 }

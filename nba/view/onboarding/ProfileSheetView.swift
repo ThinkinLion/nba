@@ -43,7 +43,7 @@ struct ProfileSheetView: View {
                 .padding(.top, 8)
             }
             .background(Color.black.ignoresSafeArea())
-            .navigationBarTitle("My Hoop", displayMode: .inline)
+            .navigationBarTitle("Favorites", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
@@ -109,12 +109,27 @@ struct ProfileSheetView: View {
     @ViewBuilder
     private func playerRow(_ player: FavoritePlayer) -> some View {
         HStack(spacing: 10) {
-            if RemoteConfigManager.shared.shouldUseOfficialTeamData {
-                Image(player.teamTriCode)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 24, height: 24)
+            // 선수 사진 (NBA CDN 헤드샷). 세이프 모드에서는 등번호 플레이스홀더
+            ZStack {
+                Circle().fill(Color(player.teamId.dark).opacity(0.8))
+                if RemoteConfigManager.shared.shouldUseOfficialTeamData {
+                    AsyncImage(url: URL(string: player.id.smallImageUrl)) { image in
+                        image.resizable().aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.white.opacity(0.5))
+                    }
+                } else {
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(.white.opacity(0.7))
+                }
             }
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
+            
             VStack(alignment: .leading, spacing: 1) {
                 Text(player.name)
                     .font(.system(size: 14, weight: .bold, design: .rounded))

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MoversModuleView: View {
     let powerRanking: PowerRankingModel
+    let teamLink: TodayTeamLink
     @ObservedObject private var favorites = FavoritesManager.shared
 
     struct Mover: Identifiable {
@@ -63,10 +64,9 @@ struct MoversModuleView: View {
                     .padding(.vertical, 12)
             } else {
                 ForEach(movers) { m in
-                    NavigationLink(destination: TeamView(teamId: m.team.teamId)) {
+                    teamLink.wrap(m.team) {
                         moverRow(m, color: color)
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
