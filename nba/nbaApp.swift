@@ -49,12 +49,30 @@ struct nbaApp: App {
     return 0
   }()
   private var isTeamScreenshot: Bool = ProcessInfo.processInfo.arguments.contains("-screenshot-team")
+  // 선수 상세 화면 바로 진입 (레이아웃 검증/스크린샷용): -screenshot-player [playerId] [teamId]
+  private var isPlayerScreenshot: Bool = ProcessInfo.processInfo.arguments.contains("-screenshot-player")
+  private var screenshotPlayerId: String {
+    let args = ProcessInfo.processInfo.arguments
+    guard let idx = args.firstIndex(of: "-screenshot-player"), args.count > idx + 1 else { return "1641705" }
+    return args[idx + 1]
+  }
+  private var screenshotTeamId: String {
+    let args = ProcessInfo.processInfo.arguments
+    guard let idx = args.firstIndex(of: "-screenshot-player"), args.count > idx + 2 else { return "1610612759" }
+    return args[idx + 2]
+  }
   
   var body: some Scene {
     WindowGroup {
       if isTeamScreenshot {
         NavigationView {
           TeamView(teamId: "1610612759")
+        }
+        .navigationViewStyle(.stack)
+        .accentColor(.white)
+      } else if isPlayerScreenshot {
+        NavigationView {
+          PlayerView(playerId: screenshotPlayerId, teamId: screenshotTeamId)
         }
         .navigationViewStyle(.stack)
         .accentColor(.white)
