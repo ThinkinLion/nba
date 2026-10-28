@@ -38,7 +38,7 @@ struct PlayerSeasonSummaryView: View {
                 SeasonStatCard(title: player.ppgTitle, value: player.ppg, color: .green)
                 SeasonStatCard(title: player.rpgTitle, value: player.rpg, color: .blue)
                 SeasonStatCard(title: player.apgTitle, value: player.apg, color: .orange)
-                if !player.pie.isEmpty {
+                if !player.pie.isEmpty && player.pie != "-" {
                     SeasonStatCard(title: player.pieTitle, value: player.pie, color: .purple)
                 }
             }
