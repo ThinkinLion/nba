@@ -39,7 +39,6 @@ final class ModelFactory {
    }
    */
   static func createUsageStatsItemViewModels(with usage: Usage, teamId: String) -> [PlayerStatsItemViewModel] {
-    guard teamId.count >= 10 else { return [] }
     let transformed = Transform.transformTeamId(teamId)
     return [
       PlayerStatsItemViewModel(title: usage.teamTriCode ?? "", value: usage.title ?? "", colors: Transform.randomColors(transformed.characterAtIndex(0))),
@@ -104,7 +103,6 @@ final class ModelFactory {
    }
    */
   static func createScoringStatsItemViewModels(with scoring: Scoring, teamId: String) -> [PlayerStatsItemViewModel] {
-    guard teamId.count >= 10 else { return [] }
     let transformed = Transform.transformTeamId(teamId)
     return [
       PlayerStatsItemViewModel(title: scoring.teamTriCode ?? "", value: scoring.title ?? "", colors: Transform.randomColors(transformed.characterAtIndex(0))),
@@ -159,7 +157,6 @@ final class ModelFactory {
    }
    */
   static func createMiscStatsItemViewModels(with misc: Misc, teamId: String) -> [PlayerStatsItemViewModel] {
-    guard teamId.count >= 10 else { return [] }
     let transformed = Transform.transformTeamId(teamId)
     return [
       PlayerStatsItemViewModel(title: misc.teamTriCode ?? "", value: misc.title ?? "", colors: Transform.randomColors(transformed.characterAtIndex(0))),
@@ -186,7 +183,6 @@ final class ModelFactory {
     // MARK: - Advanced Stats
     
     static func createAdvancedStatsItemViewModels(with advanced: Advanced, teamId: String) -> [PlayerStatsItemViewModel] {
-        guard teamId.count >= 10 else { return [] }
         let transformed = Transform.transformTeamId(teamId)
         return [
             PlayerStatsItemViewModel(title: advanced.teamTriCode ?? "", value: advanced.title ?? "", colors: Transform.randomColors(transformed.characterAtIndex(0))),
@@ -215,7 +211,6 @@ final class ModelFactory {
     // MARK: - Traditional Stats
     
     static func createTraditionalStatsItemViewModels(with traditional: Traditional, teamId: String) -> [PlayerStatsItemViewModel] {
-        guard teamId.count >= 10 else { return [] }
         let transformed = Transform.transformTeamId(teamId)
         return [
             PlayerStatsItemViewModel(title: traditional.teamTriCode ?? "", value: traditional.title ?? "", colors: Transform.randomColors(transformed.characterAtIndex(0))),

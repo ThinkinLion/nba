@@ -388,6 +388,7 @@ extension StandingsViewModel {
                 
                 performances.append(DailyPerformer(
                     player: leader,
+                    teamId: match.away.teamId,
                     teamCode: match.away.teamCode,
                     opponentTriCode: match.home.teamCode.nickNameToTriCode,
                     gameDate: games.date ?? "",
@@ -412,6 +413,7 @@ extension StandingsViewModel {
                 
                 performances.append(DailyPerformer(
                     player: leader,
+                    teamId: match.home.teamId,
                     teamCode: match.home.teamCode,
                     opponentTriCode: match.away.teamCode.nickNameToTriCode,
                     gameDate: games.date ?? "",
@@ -446,6 +448,7 @@ extension StandingsViewModel {
 struct DailyPerformer: Identifiable {
     var id: String { player.id.uuidString }
     let player: BoxScore
+    let teamId: String // 소속 팀 ID (boxscore leader에는 teamId가 없어 경기 팀 정보에서 보완)
     let teamCode: String // Nickname
     let opponentTriCode: String // VS Team
     let gameDate: String

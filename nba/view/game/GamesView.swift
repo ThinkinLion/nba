@@ -59,7 +59,7 @@ struct GamesView: View {
                             NavigationLink(
                                 destination: PlayerView(
                                     playerId: bestPlayer.player.playerId ?? "",
-                                    teamId: bestPlayer.player.teamId ?? ""
+                                    teamId: bestPlayer.teamId
                                 )
                             ) {
                                 dailyPerformerHeroCard(performer: bestPlayer)
@@ -312,7 +312,7 @@ struct GamesView: View {
                         NavigationLink(
                             destination: PlayerView(
                                 playerId: candidate.player.playerId ?? "",
-                                teamId: candidate.player.teamId ?? ""
+                                teamId: candidate.teamId
                             )
                         ) {
                             candidateMiniCard(performer: candidate)

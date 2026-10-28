@@ -16,6 +16,12 @@ struct PlayerView: View {
     @State var scrollOffset: CGFloat = CGFloat.zero
     @State var hideNavigationBar: Bool = true
     
+    // 진입 경로에 따라 teamId가 비어서 올 수 있음(예: POTN의 boxscore leader) → 선수 문서의 teamId로 보완
+    private var resolvedTeamId: String {
+        if !teamId.isEmpty { return teamId }
+        return viewModel.player.teamId ?? ""
+    }
+    
     var body: some View {
         let player = PlayerSummaryViewModel(player: viewModel.player)
         
@@ -24,7 +30,7 @@ struct PlayerView: View {
             
             // Dynamic Background based on Team Color
             LinearGradient(
-                colors: [Color(self.teamId.dark), .black],
+                colors: [Color(resolvedTeamId.dark), .black],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -90,23 +96,23 @@ struct PlayerView: View {
                     // 5. Yearly Stats Sections
                     VStack(spacing: 20) {
                         if player.hasTraditional {
-                            PlayerYearlyStatsCardView(title: "Traditional Stats", stats: player.traditional, teamId: teamId)
+                            PlayerYearlyStatsCardView(title: "Traditional Stats", stats: player.traditional, teamId: resolvedTeamId)
                         }
                         
                         if player.hasAdvanced {
-                            PlayerYearlyStatsCardView(title: "Advanced Stats", stats: player.advanced, teamId: teamId)
+                            PlayerYearlyStatsCardView(title: "Advanced Stats", stats: player.advanced, teamId: resolvedTeamId)
                         }
                         
                         if player.hasScoring {
-                            PlayerYearlyStatsCardView(title: "Scoring Stats", stats: player.scoring, teamId: teamId)
+                            PlayerYearlyStatsCardView(title: "Scoring Stats", stats: player.scoring, teamId: resolvedTeamId)
                         }
                         
                         if player.hasUsage {
-                            PlayerYearlyStatsCardView(title: "Usage Stats", stats: player.usage, teamId: teamId)
+                            PlayerYearlyStatsCardView(title: "Usage Stats", stats: player.usage, teamId: resolvedTeamId)
                         }
                         
                         if player.hasMisc {
-                            PlayerYearlyStatsCardView(title: "Misc Stats", stats: player.misc, teamId: teamId)
+                            PlayerYearlyStatsCardView(title: "Misc Stats", stats: player.misc, teamId: resolvedTeamId)
                         }
                     }
                     .padding(.top, 20)
@@ -127,7 +133,7 @@ struct PlayerView: View {
             ToolbarItem(placement: .principal) {
                 HStack(spacing: 4) {
                     if RemoteConfigManager.shared.shouldUseOfficialTeamData {
-                        Image(self.teamId.teamIdToTriCode)
+                        Image(resolvedTeamId.teamIdToTriCode)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 28, height: 28)
@@ -166,7 +172,7 @@ struct PlayerView: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(self.teamId.dark).opacity(0.45),
+                            Color(resolvedTeamId.dark).opacity(0.45),
                             Color.white.opacity(0.06),
                             Color.black.opacity(0.65)
                         ],
@@ -284,7 +290,7 @@ struct PlayerView: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(self.teamId.dark).opacity(0.35),
+                            Color(resolvedTeamId.dark).opacity(0.35),
                             Color.black.opacity(0.6)
                         ],
                         startPoint: .topLeading,
