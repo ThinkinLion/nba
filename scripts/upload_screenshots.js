@@ -66,13 +66,34 @@ async function apiRequest(endpoint, method = "GET", body = null) {
     if (body) {
         options.body = JSON.stringify(body);
     }
-    const res = await fetch(`https://api.appstoreconnect.apple.com${endpoint}`, options);
-    if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`API ${method} ${endpoint} failed (${res.status}): ${errText}`);
+    // 네트워크 오류("fetch failed": DNS/TLS/연결 끊김)와 429/5xx 는 일시적일 수 있어 지수 백오프로 재시도
+    const maxAttempts = 5;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        let res;
+        try {
+            res = await fetch(`https://api.appstoreconnect.apple.com${endpoint}`, options);
+        } catch (err) {
+            if (attempt === maxAttempts) throw new Error(`API ${method} ${endpoint} 네트워크 오류 (${maxAttempts}회 재시도 실패): ${err.message}`);
+            const wait = 2000 * attempt;
+            console.log(`⚠️ 네트워크 오류 (${err.message}) — ${wait / 1000}초 후 재시도 (${attempt}/${maxAttempts})`);
+            await new Promise(r => setTimeout(r, wait));
+            continue;
+        }
+        if (res.status === 429 || res.status >= 500) {
+            const errText = await res.text();
+            if (attempt === maxAttempts) throw new Error(`API ${method} ${endpoint} failed (${res.status}): ${errText}`);
+            const wait = 5000 * attempt;
+            console.log(`⚠️ 서버 응답 ${res.status} — ${wait / 1000}초 후 재시도 (${attempt}/${maxAttempts})`);
+            await new Promise(r => setTimeout(r, wait));
+            continue;
+        }
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`API ${method} ${endpoint} failed (${res.status}): ${errText}`);
+        }
+        if (res.status === 204) return null;
+        return await res.json();
     }
-    if (res.status === 204) return null;
-    return await res.json();
 }
 
 // 3. 단일 스크린샷 바이너리 업로드 함수
