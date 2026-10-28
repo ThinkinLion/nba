@@ -104,12 +104,16 @@ if [ ! -f "$KEY_PATH" ]; then
 fi
 echo "🔑 Verified API Key: $KEY_PATH"
 
-# 0. 마케팅 버전 변경 (--version)
-if [ -n "$NEW_MARKETING_VERSION" ]; then
-    echo "🏷️  Marketing version: $(agvtool what-marketing-version -terse1 2>/dev/null || echo '?') ➔ $NEW_MARKETING_VERSION"
-    agvtool new-marketing-version "$NEW_MARKETING_VERSION" > /dev/null
+# 0. 마케팅 버전 (--version)
+# Info.plist 에 CFBundleShortVersionString 키가 없고 빌드 설정 MARKETING_VERSION 으로만 관리하므로
+# agvtool 대신 project.pbxproj 의 앱 타겟 값을 직접 치환한다.
+CURRENT_MARKETING_VERSION=$(xcodebuild -project "$PROJECT" -scheme "$SCHEME" -configuration Release -showBuildSettings 2>/dev/null | awk '/^ *MARKETING_VERSION = /{print $3; exit}')
+if [ -n "$NEW_MARKETING_VERSION" ] && [ "$NEW_MARKETING_VERSION" != "$CURRENT_MARKETING_VERSION" ]; then
+    echo "🏷️  Marketing version: ${CURRENT_MARKETING_VERSION:-?} ➔ $NEW_MARKETING_VERSION"
+    sed -i '' "s/MARKETING_VERSION = ${CURRENT_MARKETING_VERSION};/MARKETING_VERSION = ${NEW_MARKETING_VERSION};/g" "$PROJECT/project.pbxproj"
+    CURRENT_MARKETING_VERSION="$NEW_MARKETING_VERSION"
 fi
-echo "🏷️  Marketing Version: $(agvtool what-marketing-version -terse1 2>/dev/null || echo 'unknown')"
+echo "🏷️  Marketing Version: ${CURRENT_MARKETING_VERSION:-unknown}"
 
 # 1. 빌드 번호 +1 자동 증가
 if [ "$BUMP_VERSION" = true ]; then
