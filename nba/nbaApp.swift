@@ -79,14 +79,14 @@ struct nbaApp: App {
         .accentColor(.white)
       } else {
         TabView(selection: $selectedTab) {
-          // Tab 0: Games (경기 스코어보드, 날짜별 일정, 데일리 MVP)
+          // Tab 0: Today (개인화 홈 피드: My Teams, 경기, POTN, Movers, League Leaders)
           NavigationView {
-            GamesView()
+            TodayView()
           }
           .navigationViewStyle(.stack)
           .tabItem {
               Image(systemName: "basketball.fill")
-              Text("Games")
+              Text("Today")
           }
           .tag(0)
           
