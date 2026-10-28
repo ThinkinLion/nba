@@ -14,6 +14,9 @@
 
 set -e
 
+# Xcode 경로 자동 감지 (xcode-select 가 CommandLineTools 를 가리키는 경우 대비)
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/xcode_env.sh"
+
 # 색상 정의
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'

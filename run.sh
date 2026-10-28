@@ -5,6 +5,9 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR"
 
+# Xcode 경로 자동 감지 (xcode-select 가 CommandLineTools 를 가리키는 경우 대비)
+source "$DIR/scripts/xcode_env.sh"
+
 BUNDLE_ID="com.spearhead.nbaPowerRanking"
 CONFIGURATION="Debug"
 DERIVED_DATA_PATH="$DIR/build/DerivedData"
