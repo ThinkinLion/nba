@@ -18,7 +18,12 @@ struct OfficialPowerRankingDetailView: View {
         teamState.detailViewState
     }
     
-    @State private var selectedTab: PowerRankingTab = .analysis
+    // 레이아웃 검증/스크린샷용: -screenshot-team-tab <analysis|stats|roster> 로 초기 탭 지정
+    @State private var selectedTab: PowerRankingTab = {
+        let args = ProcessInfo.processInfo.arguments
+        guard let idx = args.firstIndex(of: "-screenshot-team-tab"), args.count > idx + 1 else { return .analysis }
+        switch args[idx + 1] { case "stats": return .stats; case "roster": return .roster; default: return .analysis }
+    }()
     @State private var teamModel: TeamModel? // New State
     private let teamRepository = FirestoreTeamRepository() // Repository
     

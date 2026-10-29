@@ -528,15 +528,19 @@ struct TeamStatsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 26) {
+            // 0. Key numbers (리그 순위 포함)
+            if let teamModel {
+                TeamKeyNumbersView(team: teamModel, teamColor: teamColor)
+            }
             
-            // 1. Detailed Season Stats (Categorized)
+            // 1. Season summary + Splits
             let stats = currentSeasonStats
             if !stats.isEmpty {
                 CategorizedTeamStatsView(stats: stats, teamColor: teamColor)
             }
             
-            // 2. Stat Kings (Leaders)
+            // 2. Stat leaders (roster)
             if !roster.isEmpty {
                 TeamLeadersView(roster: roster, teamColor: teamColor)
             }
