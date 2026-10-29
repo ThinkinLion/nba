@@ -48,14 +48,12 @@ struct PlayerSeasonSummaryView: View {
             // 리그 Top 5 배지 (statsLeaders 역인덱스) — 해당 항목이 있을 때만
             let entries = leaders.entries(for: player.playerId)
             if !entries.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(entries.prefix(6)) { entry in
-                            LeaderBadgeView(entry: entry)
-                        }
+                FlowLayout(spacing: 6) {
+                    ForEach(entries.prefix(8)) { entry in
+                        LeaderBadgeView(entry: entry)
                     }
-                    .padding(.horizontal, 16)
                 }
+                .padding(.horizontal, 16)
                 .padding(.top, 4)
             }
         }

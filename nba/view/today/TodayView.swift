@@ -15,7 +15,6 @@ struct TodayView: View {
     @StateObject private var powerRankingViewModel = PowerRankingViewModel() // 팀 상세(PowerRankingDetailView) 진입용
     @ObservedObject private var favorites = FavoritesManager.shared
     @ObservedObject private var leaders = LeadersStore.shared
-    @ObservedObject private var picksManager = PicksManager.shared
     @Environment(\.requestReview) private var requestReview
     @State private var selectedDateIndex: Int = 0
     @State private var hasAppeared = false
@@ -62,12 +61,6 @@ struct TodayView: View {
                         .padding(.bottom, 22)
                         .id("myteams")
 
-                        // 1-1. TONIGHT · YOUR PICKS (예정 경기 승자 예측)
-                        if !viewModel.schedule.isEmpty {
-                            PicksModuleView(schedule: viewModel.schedule)
-                                .padding(.bottom, 24)
-                                .id("picks")
-                        }
 
                         // 2. GAMES (내 팀 경기 우선)
                         gamesModule
@@ -145,26 +138,18 @@ struct TodayView: View {
                 await viewModel.fetchStandingsAsync()
                 await powerRankingViewModel.fetchPowerRankings()
                 await leaders.loadIfNeeded()
-                gradePicksAndMaybeAskReview()
+                maybeAskReview()
             }
         }
         .analyticsScreen(name: "NBA-TodayView")
     }
 
-    // MARK: - Picks grading & review prompt
+    // MARK: - Review prompt
     
-    /// 결과가 들어온 경기로 예측을 채점하고, 긍정 순간이면 시스템 별점 요청을 띄움
-    private func gradePicksAndMaybeAskReview() {
-        let graded = picksManager.grade(with: viewModel.gameRecap)
+    /// 긍정 순간(5·20·50번째 실행 등)에만 시스템 별점 요청을 띄움. 애플 연 3회 제한·로컬 90일 간격 준수
+    private func maybeAskReview() {
         let manager = ReviewPromptManager.shared
-        var trigger: ReviewPromptManager.Trigger? = nil
-        if graded, let s = picksManager.lastGradedSummary {
-            Analytics.logEvent("picks_graded", parameters: ["correct": s.correct, "total": s.total])
-            trigger = .picksGraded(correct: s.correct, total: s.total)
-        } else if manager.shouldPrompt(.sessionMilestone) {
-            trigger = .sessionMilestone
-        }
-        guard let trigger, manager.shouldPrompt(trigger) else { return }
+        guard manager.shouldPrompt(.sessionMilestone) else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             requestReview()
             manager.markPrompted()

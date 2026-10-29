@@ -12,7 +12,6 @@ import Firebase
 protocol StandingsRepository {
     func fetchStandings(seasonYear: String) async throws -> StandingsModel
     func fetchGameRecap() async throws -> [GamesModel]
-    func fetchSchedule() async throws -> [GamesModel]
 }
 
 final class FirestoreStandingsRepository: StandingsRepository {
@@ -33,13 +32,5 @@ final class FirestoreStandingsRepository: StandingsRepository {
             return game.items.count > 0 ? game : nil
         }
     }
-    
-    /// 예정 경기 (schedule/{date}, 크롤러가 LA 기준 오늘·내일 저장). 최신순 3일치
-    func fetchSchedule() async throws -> [GamesModel] {
-        let snapshot = try await db.collection("schedule")
-            .order(by: "date", descending: true)
-            .limit(to: 3)
-            .getDocuments()
-        return snapshot.documents.compactMap { try? $0.data(as: GamesModel.self) }
-    }
+
 }

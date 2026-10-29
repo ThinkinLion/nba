@@ -15,7 +15,6 @@ final class ReviewPromptManager {
     static var writeReviewURL: URL { URL(string: "https://apps.apple.com/app/id\(appStoreId)?action=write-review")! }
     
     enum Trigger {
-        case picksGraded(correct: Int, total: Int)   // 예측 채점 직후 (절반 이상 적중)
         case sessionMilestone                        // 5·20·50번째 실행
         case favoritesSet                            // 온보딩/프로필에서 팀을 고른 직후
     }
@@ -48,8 +47,6 @@ final class ReviewPromptManager {
     func shouldPrompt(_ trigger: Trigger) -> Bool {
         guard sessionCount >= minSessions, daysSinceLastPrompt >= minDaysBetweenPrompts else { return false }
         switch trigger {
-        case .picksGraded(let correct, let total):
-            return total >= 3 && correct * 2 >= total
         case .sessionMilestone:
             return [5, 20, 50].contains(sessionCount)
         case .favoritesSet:

@@ -1,7 +1,7 @@
-Call the winners.
+Today, refined.
 
-- Tonight's Picks: pick the winner of every game on tonight's slate, right from Today. Your record, hit rate and streak build up as results come in.
-- Last slate recap: see how many of yesterday's calls you got right.
+- Favorites: tap any followed player to jump straight to their page.
+- Faster team picking with a tighter 4-column grid.
+- League Top 5 badges on player pages now wrap neatly instead of scrolling.
 - Rate Power Rank from the Favorites screen if the app is working for you.
-- Scheduled games now show tip-off times (ET).
 - Fixes and polish across Today, player and team pages.

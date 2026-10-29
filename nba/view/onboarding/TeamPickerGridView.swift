@@ -9,10 +9,10 @@ import SwiftUI
 
 struct TeamPickerGridView: View {
     @Binding var selected: Set<String> // triCode
-    var columns: Int = 3
+    var columns: Int = 4
     
     private var gridItems: [GridItem] {
-        Array(repeating: GridItem(.flexible(), spacing: 10), count: columns)
+        Array(repeating: GridItem(.flexible(), spacing: 8), count: columns)
     }
     
     var body: some View {
@@ -30,7 +30,7 @@ struct TeamPickerGridView: View {
                 .foregroundColor(.white.opacity(0.5))
                 .tracking(0.8)
             
-            LazyVGrid(columns: gridItems, spacing: 10) {
+            LazyVGrid(columns: gridItems, spacing: 8) {
                 ForEach(teams) { team in
                     TeamPickerTile(team: team, isSelected: selected.contains(team.triCode)) {
                         if selected.contains(team.triCode) {
@@ -57,7 +57,7 @@ struct TeamPickerTile: View {
             VStack(spacing: 6) {
                 ZStack(alignment: .topTrailing) {
                     teamLogo
-                        .frame(width: 40, height: 40)
+                        .frame(width: 36, height: 36)
                     
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
@@ -69,16 +69,11 @@ struct TeamPickerTile: View {
                 }
                 
                 Text(team.triCode)
-                    .font(.system(size: 13, weight: .black, design: .rounded))
+                    .font(.system(size: 12, weight: .black, design: .rounded))
                     .foregroundColor(.white)
-                Text(team.name)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.white.opacity(0.6))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(

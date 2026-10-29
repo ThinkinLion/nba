@@ -25,7 +25,10 @@ struct ProfileSheetView: View {
                         } else {
                             VStack(spacing: 8) {
                                 ForEach(favorites.favoritePlayers) { player in
-                                    playerRow(player)
+                                    NavigationLink(destination: PlayerView(playerId: player.id, teamId: player.teamId)) {
+                                        playerRow(player)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                         }
@@ -139,6 +142,9 @@ struct ProfileSheetView: View {
                     .foregroundColor(.white.opacity(0.5))
             }
             Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(.white.opacity(0.35))
             Button(action: {
                 favorites.removeFavoritePlayer(id: player.id)
                 Analytics.logEvent("favorite_player_remove", parameters: ["player_id": player.id])
